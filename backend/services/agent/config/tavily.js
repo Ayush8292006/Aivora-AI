@@ -1,24 +1,22 @@
 // backend/services/agent/config/tavily.js
+import path from "path";
+import dotenv from "dotenv";
+import { fileURLToPath } from "url";
 import { TavilySearch } from "@langchain/tavily";
-import dotenv from 'dotenv';
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+dotenv.config({ path: path.resolve(__dirname, "../.env") });
+dotenv.config({ path: path.resolve(__dirname, "../../.env") });
 dotenv.config();
 
-// ✅ Check if API key exists
-if (!process.env.TAVILY_API_KEY) {
-    console.error('❌ TAVILY_API_KEY is not set in environment variables');
-    console.error('Please add TAVILY_API_KEY to your .env file');
-}
-
-console.log('🔑 TAVILY_API_KEY:', process.env.TAVILY_API_KEY ? '✅ Set' : '❌ Not set');
+const tavilyApiKey = process.env.TAVILY_API_KEY || "placeholder_tavily_key";
 
 export const searchTool = new TavilySearch({
-    apiKey: process.env.TAVILY_API_KEY, // ✅ Add this - Required!
-    maxResults: 5,
+    apiKey: tavilyApiKey,
+    maxResults: 6,
     topic: "general",
     includeImages: true,
     includeImageDescriptions: true,
-    searchDepth: "basic"
+    searchDepth: "advanced"
 });
-
-console.log('✅ Tavily search tool initialized');

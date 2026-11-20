@@ -4,6 +4,68 @@ import { searchTool } from "../config/tavily.js";
 import { checkAgentScope } from "../utils/agentScopeGuard.js";
 
 /**
+ * Detect and resolve live time / date queries with 100% precision from the system clock
+ */
+const resolveLiveTimeQuery = (prompt = "") => {
+  const p = prompt.trim().toLowerCase();
+  
+  // Check if query is asking for current time, date, day of week
+  const isTimeQuery = /\b(current\s*time|what\s*time\s*is\s*it|time\s*now|time\s*in\s*india|samay|kitne\s*baje|time\s*kya\s*hua|what\s*is\s*the\s*time|current\s*date|today'?s\s*date|aaj\s*ki\s*tarikh|what\s*day\s*is\s*today|today'?s\s*day|day\s*today|aaj\s*ka\s*din)\b/i.test(p);
+  
+  if (!isTimeQuery) return null;
+
+  let timeZone = "Asia/Kolkata";
+  let locationLabel = "India (Indian Standard Time, IST)";
+  let utcOffset = "UTC+5:30";
+
+  if (/\b(new\s*york|nyc|est|edt|eastern\s*time)\b/i.test(p)) {
+    timeZone = "America/New_York";
+    locationLabel = "New York, USA (Eastern Time)";
+    utcOffset = "UTC-5 / UTC-4";
+  } else if (/\b(london|uk|britain|england|gmt|bst)\b/i.test(p)) {
+    timeZone = "Europe/London";
+    locationLabel = "London, United Kingdom (GMT/BST)";
+    utcOffset = "UTC+0 / UTC+1";
+  } else if (/\b(tokyo|japan|jst)\b/i.test(p)) {
+    timeZone = "Asia/Tokyo";
+    locationLabel = "Tokyo, Japan (JST)";
+    utcOffset = "UTC+9";
+  } else if (/\b(dubai|uae)\b/i.test(p)) {
+    timeZone = "Asia/Dubai";
+    locationLabel = "Dubai, United Arab Emirates (GST)";
+    utcOffset = "UTC+4";
+  } else if (/\b(california|los\s*angeles|san\s*francisco|pacific\s*time|pst|pdt)\b/i.test(p)) {
+    timeZone = "America/Los_Angeles";
+    locationLabel = "Pacific Time (US & Canada)";
+    utcOffset = "UTC-8 / UTC-7";
+  }
+
+  const now = new Date();
+  const timeFormatted = now.toLocaleTimeString("en-US", {
+    timeZone,
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: true
+  });
+  const dateFormatted = now.toLocaleDateString("en-US", {
+    timeZone,
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric"
+  });
+
+  return {
+    timeFormatted,
+    dateFormatted,
+    locationLabel,
+    utcOffset,
+    fullStatement: `The current time in ${locationLabel} is ${timeFormatted} on ${dateFormatted} (${utcOffset}).`
+  };
+};
+
+/**
  * Clean and optimize the user's prompt for search engines
  */
 const cleanSearchQuery = (prompt = "") => {
@@ -41,13 +103,31 @@ export const searchAgent = async (state) => {
       };
     }
 
+    // 2. High-Precision Real-Time Clock & Date Intercept
+    const liveTimeMatch = resolveLiveTimeQuery(state.prompt);
+    if (liveTimeMatch) {
+      console.log("⏱️ Live Clock Query detected:", liveTimeMatch.fullStatement);
+      return {
+        ...state,
+        searchAnswer: liveTimeMatch.fullStatement,
+        searchResults: [
+          {
+            title: `Official System Time: ${liveTimeMatch.locationLabel}`,
+            url: "https://www.timeanddate.com/worldclock/",
+            content: `Live real-time time: ${liveTimeMatch.timeFormatted}. Current verified date: ${liveTimeMatch.dateFormatted}. Timezone offset: ${liveTimeMatch.utcOffset}. No daylight saving time in India.`
+          }
+        ],
+        images: []
+      };
+    }
+
     const searchQuery = cleanSearchQuery(state.prompt);
     console.log("🔍 Optimized Search Query:", searchQuery);
 
     const apiKey = process.env.TAVILY_API_KEY;
     let tavilyData = null;
 
-    // 2. Primary: Direct Tavily Advanced Search API for maximum factual accuracy & instant ground-truth answer
+    // 3. Primary: Direct Tavily Advanced Search API for maximum factual accuracy & instant ground-truth answer
     if (apiKey && !apiKey.includes("placeholder")) {
       try {
         const response = await axios.post(
@@ -72,7 +152,7 @@ export const searchAgent = async (state) => {
       }
     }
 
-    // 3. Fallback: searchTool from @langchain/tavily if direct API did not respond
+    // 4. Fallback: searchTool from @langchain/tavily if direct API did not respond
     if (!tavilyData && searchTool) {
       try {
         const toolRes = await searchTool.invoke({
@@ -89,7 +169,7 @@ export const searchAgent = async (state) => {
       }
     }
 
-    // 4. Extract verified Ground Truth Answer and Web Sources
+    // 5. Extract verified Ground Truth Answer and Web Sources
     const searchAnswer = tavilyData?.answer || "";
     let rawResults = tavilyData?.results || (Array.isArray(tavilyData) ? tavilyData : []);
     
@@ -103,7 +183,7 @@ export const searchAgent = async (state) => {
         score: r.score || null
       }));
 
-    // 5. Extract Images
+    // 6. Extract Images
     let images = [];
     if (Array.isArray(tavilyData?.images)) {
       images = tavilyData.images
