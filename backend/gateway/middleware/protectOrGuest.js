@@ -4,12 +4,24 @@ import crypto from "crypto";
 
 const protectOrGuest = async (req, res, next) => {
     try {
-        const sessionId = req.cookies?.sessionId;
+        const authHeader = req.headers["authorization"];
+        const bearerToken = authHeader && authHeader.startsWith("Bearer ") ? authHeader.split(" ")[1] : null;
+        const sessionId = req.cookies?.sessionId || bearerToken;
+
         if (sessionId) {
-            const session = await redis.get(`session-${sessionId}`);
-            if (session) {
-                req.user = JSON.parse(session);
-                return next();
+            try {
+                const session = await redis.get(`session-${sessionId}`);
+                if (session) {
+                    const parsed = JSON.parse(session);
+                    req.user = {
+                        ...parsed,
+                        userId: parsed.userId || parsed._id,
+                        isGuest: false
+                    };
+                    return next();
+                }
+            } catch (redisErr) {
+                console.warn("⚠️ Redis session get error in protectOrGuest:", redisErr.message);
             }
         }
 

@@ -8,12 +8,14 @@ import { checkCreditBalance, settleAIUsage } from "../utils/tokenAccounting.js";
 export const agent = async (req, res) => {
     try {
         let userId = req.headers["x-user-id"];
-        let guestSessionId = req.headers["x-guest-session-id"] || req.cookies?.guestSessionId;
+        let isGuestHeader = req.headers["x-is-guest"];
 
-        const isGuest = !userId || String(userId).startsWith("guest_") || Boolean(guestSessionId);
+        // Registered user if userId exists and doesn't start with guest_
+        const isGuest = isGuestHeader === "true" || !userId || String(userId).startsWith("guest_");
 
         let guestRecord = null;
         if (isGuest) {
+            let guestSessionId = req.headers["x-guest-session-id"] || req.cookies?.guestSessionId;
             if (!guestSessionId) {
                 guestSessionId = String(userId).startsWith("guest_") ? userId : `guest_${Date.now()}`;
             }
@@ -39,7 +41,7 @@ export const agent = async (req, res) => {
                 });
             }
         } else {
-            // REGISTERED USER: Check Credit Balance before processing
+            // REGISTERED USER: Check Credit Balance before processing (Auto-initializes 100 free bonus credits if needed)
             const creditCheck = await checkCreditBalance(userId, 1);
             if (!creditCheck.allowed) {
                 return res.status(402).json({

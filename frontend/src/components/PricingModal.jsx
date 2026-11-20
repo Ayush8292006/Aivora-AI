@@ -89,7 +89,8 @@ export default function PricingModal() {
 
     try {
       if (!userData || userData.isGuest) {
-        setErrorNotice("Please log in or create an account first to purchase credits.");
+        setErrorNotice("Please create an account or sign in so your credits are securely credited to your personal wallet.");
+        window.dispatchEvent(new CustomEvent('aivora:open-login', { detail: { mode: 'register' } }));
         setProcessingCode(null);
         return;
       }
@@ -225,6 +226,25 @@ export default function PricingModal() {
         </div>
 
         {/* Notices */}
+        {(!userData || userData.isGuest) && (
+          <div className="mx-6 mt-4 p-3.5 rounded-2xl bg-[#EAE2D2] border border-[#DDD3C1] text-[#1E1B18] text-xs flex flex-wrap items-center justify-between gap-3 animate-in fade-in">
+            <div className="flex items-center gap-2">
+              <Shield size={16} className="text-[#4A653C] shrink-0" />
+              <span>You are exploring in <strong>Guest Mode</strong>. Create an account so your credits and conversations are saved privately to your personal wallet.</span>
+            </div>
+            <button
+              type="button"
+              onClick={() => {
+                dispatch(closePricingModal());
+                window.dispatchEvent(new CustomEvent('aivora:open-login', { detail: { mode: 'register' } }));
+              }}
+              className="px-3.5 py-1.5 rounded-xl bg-[#1E2B1F] hover:bg-[#283A27] text-white font-bold text-xs border-none cursor-pointer shadow-2xs"
+            >
+              Sign Up / Login
+            </button>
+          </div>
+        )}
+
         {successNotice && (
           <div className="mx-6 mt-4 p-3 rounded-2xl bg-[#E8F5E9] border border-[#A5D6A7] text-[#2E7D32] text-xs font-bold flex items-center gap-2 animate-in fade-in">
             <CheckCircle2 size={16} />

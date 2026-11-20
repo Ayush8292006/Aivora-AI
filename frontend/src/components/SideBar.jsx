@@ -497,9 +497,13 @@ function SideBar({
                 <Settings size={13} />
               </button>
               <button 
-                onClick={() => {
-                  logOut()
+                onClick={async () => {
+                  await logOut()
                   dispatch(setUserdata(null))
+                  dispatch(setConversations([]))
+                  dispatch(setSelectedConversation(null))
+                  dispatch(clearMessages())
+                  dispatch(setWallet({ availableCredits: 0 }))
                 }}
                 className='p-1 rounded-lg text-[#8EA58C] hover:text-white hover:bg-[#283A27]/80 transition-colors border-none bg-transparent cursor-pointer'
                 title="Log Out"

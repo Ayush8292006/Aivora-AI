@@ -67,6 +67,16 @@ function Home() {
     initSession()
   }, [dispatch])
 
+  // Global listener to trigger Login / Signup modal
+  useEffect(() => {
+    const handleOpenLogin = (e) => {
+      setLoginInitialMode(e.detail?.mode || 'login')
+      setLoginModalOpen(true)
+    }
+    window.addEventListener('aivora:open-login', handleOpenLogin)
+    return () => window.removeEventListener('aivora:open-login', handleOpenLogin)
+  }, [])
+
   // Listen to hash changes for browser back/forward
   useEffect(() => {
     const handleHashChange = () => {

@@ -1,5 +1,3 @@
-import { getAuth } from "firebase-admin/auth";
-import { app } from "../config/firebase.js";
 import User from "../models/user.model.js";
 import redis from "../../../shared/redis/redis.js";
 import crypto from "crypto";
@@ -19,18 +17,26 @@ const verifyPassword = (password, storedHash) => {
 
 const setSessionAndCookie = async (res, user) => {
     const sessionId = crypto.randomUUID();
-    await redis.set(
-        `session-${sessionId}`,
-        JSON.stringify({
-            userId: user._id,
-            name: user.name,
-            email: user.email,
-            avatar: user.avatar,
-            role: user.role || "user"
-        }),
-        "EX",
-        7 * 24 * 60 * 60
-    );
+    const sessionData = {
+        userId: String(user._id),
+        _id: String(user._id),
+        name: user.name,
+        email: user.email,
+        avatar: user.avatar,
+        role: user.role || "user",
+        isGuest: false
+    };
+
+    try {
+        await redis.set(
+            `session-${sessionId}`,
+            JSON.stringify(sessionData),
+            "EX",
+            7 * 24 * 60 * 60
+        );
+    } catch (redisErr) {
+        console.warn("⚠️ Redis session set error:", redisErr.message);
+    }
 
     const isProd = process.env.NODE_ENV === "production";
     res.cookie("sessionId", sessionId, {
@@ -43,42 +49,45 @@ const setSessionAndCookie = async (res, user) => {
     return sessionId;
 };
 
-// 1. Google OAuth Login
+// 1. Unified Login (Supports email/password or legacy token)
 export const login = async (req, res) => {
     try {
-        const { token } = req.body;
-        if (!token) {
-            return res.status(400).json({ success: false, message: "Token is required" });
-        }
+        const { email, password, token } = req.body;
 
-        const decoded = await getAuth(app).verifyIdToken(token);
-        let user = await User.findOne({
-            $or: [{ firebaseUid: decoded.uid }, { email: decoded.email?.toLowerCase() }]
-        });
+        // Standard Email & Password Login
+        if (email && password) {
+            const cleanEmail = email.toLowerCase().trim();
+            const user = await User.findOne({ email: cleanEmail });
 
-        if (!user) {
-            user = await User.create({
-                firebaseUid: decoded.uid,
-                name: decoded.name || decoded.email?.split("@")[0] || "Aivora User",
-                email: decoded.email?.toLowerCase(),
-                avatar: decoded.picture || "",
-                role: "user",
-                isEmailVerified: true
-            });
-        } else if (!user.firebaseUid) {
-            user.firebaseUid = decoded.uid;
-            if (decoded.picture && !user.avatar) user.avatar = decoded.picture;
+            if (!user || !user.passwordHash) {
+                return res.status(401).json({ success: false, message: "Invalid email or password" });
+            }
+
+            const isMatch = verifyPassword(password, user.passwordHash);
+            if (!isMatch) {
+                return res.status(401).json({ success: false, message: "Invalid email or password" });
+            }
+
+            user.lastLoginAt = new Date();
             await user.save();
+
+            const sessionId = await setSessionAndCookie(res, user);
+
+            return res.status(200).json({
+                _id: user._id,
+                userId: user._id,
+                name: user.name,
+                email: user.email,
+                avatar: user.avatar,
+                role: user.role || "user",
+                isGuest: false,
+                token: sessionId
+            });
         }
 
-        user.lastLoginAt = new Date();
-        await user.save();
-
-        await setSessionAndCookie(res, user);
-
-        return res.status(200).json(user);
+        return res.status(400).json({ success: false, message: "Email and password are required" });
     } catch (error) {
-        console.error("Google Login Error:", error);
+        console.error("Login Error:", error);
         return res.status(500).json({ success: false, message: `Login error: ${error.message}` });
     }
 };
@@ -108,58 +117,39 @@ export const register = async (req, res) => {
             email: cleanEmail,
             passwordHash,
             role: "user",
-            avatar: `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(name)}`,
+            avatar: `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(name.trim())}`,
             isEmailVerified: true
         });
 
-        await setSessionAndCookie(res, user);
+        const sessionId = await setSessionAndCookie(res, user);
 
-        return res.status(201).json(user);
+        return res.status(201).json({
+            _id: user._id,
+            userId: user._id,
+            name: user.name,
+            email: user.email,
+            avatar: user.avatar,
+            role: user.role || "user",
+            isGuest: false,
+            token: sessionId
+        });
     } catch (error) {
         console.error("Register Error:", error);
         return res.status(500).json({ success: false, message: `Registration error: ${error.message}` });
     }
 };
 
-// 3. Email & Password Login
-export const loginWithPassword = async (req, res) => {
-    try {
-        const { email, password } = req.body;
-
-        if (!email || !password) {
-            return res.status(400).json({ success: false, message: "Email and password are required" });
-        }
-
-        const cleanEmail = email.toLowerCase().trim();
-        const user = await User.findOne({ email: cleanEmail });
-
-        if (!user || !user.passwordHash) {
-            return res.status(401).json({ success: false, message: "Invalid email or password" });
-        }
-
-        const isMatch = verifyPassword(password, user.passwordHash);
-        if (!isMatch) {
-            return res.status(401).json({ success: false, message: "Invalid email or password" });
-        }
-
-        user.lastLoginAt = new Date();
-        await user.save();
-
-        await setSessionAndCookie(res, user);
-
-        return res.status(200).json(user);
-    } catch (error) {
-        console.error("Password Login Error:", error);
-        return res.status(500).json({ success: false, message: `Login error: ${error.message}` });
-    }
-};
+// 3. Email & Password Login alias
+export const loginWithPassword = login;
 
 // 4. Logout
 export const logOut = async (req, res) => {
     try {
-        const sessionId = req.cookies?.sessionId;
+        const sessionId = req.cookies?.sessionId || (req.headers["authorization"]?.startsWith("Bearer ") ? req.headers["authorization"].split(" ")[1] : null);
         if (sessionId) {
-            await redis.del(`session-${sessionId}`);
+            try {
+                await redis.del(`session-${sessionId}`);
+            } catch (err) {}
         }
 
         const isProd = process.env.NODE_ENV === "production";

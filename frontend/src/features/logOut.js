@@ -1,13 +1,14 @@
-import React from 'react'
 import api from '../../utils/axios.js'
 
 async function logOut() {
- try {
-    const {data}=await api.get("/api/auth/logout")
-    console.log(data)
- } catch (error) {
-    console.log(error)
- }
+  try {
+    await api.get("/api/auth/logout")
+  } catch (error) {
+    console.error("Logout API error:", error)
+  } finally {
+    localStorage.removeItem("aivora_token")
+    localStorage.removeItem("aivora_user")
+  }
 }
 
 export default logOut

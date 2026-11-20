@@ -1,28 +1,26 @@
-
-import React from 'react'
-import { auth, googleProvider } from '../utils/firebase.js'
-import api from '../utils/axios.js'
+import React, { useEffect } from 'react'
 import Home from './pages/Home.jsx'
-import { useEffect } from 'react'
 import getCurrentUser from './features/getCurrentUser.js'
 import { useDispatch } from 'react-redux'
 import { setUserdata } from './redux/userSlice.js'
 
 function App() {
+  const dispatch = useDispatch()
 
-  const dispatch=useDispatch()
-useEffect(()=>{
-  const getUser=async()=>{
-    const data=await getCurrentUser()
-    dispatch(setUserdata(data))
-  }
-  getUser()
-},[])
- 
+  useEffect(() => {
+    const getUser = async () => {
+      const data = await getCurrentUser()
+      if (data && data._id && !data.isGuest) {
+        dispatch(setUserdata(data))
+      }
+    }
+    getUser()
+  }, [dispatch])
+
   return (
-   <>
-   <Home/>
-   </>
+    <>
+      <Home />
+    </>
   )
 }
 

@@ -1,14 +1,13 @@
 // src/components/LoginModal.jsx
 import React, { useState } from 'react'
-import { X, Sparkles, Shield, ArrowRight, Mail, Lock, User, Loader2 } from 'lucide-react'
-import { FcGoogle } from "react-icons/fc"
-import { signInWithPopup } from 'firebase/auth'
-import { auth, googleProvider } from '../../utils/firebase.js'
+import { X, Sparkles, Shield, ArrowRight, Mail, Lock, User, Loader2, CheckCircle2 } from 'lucide-react'
 import api from '../../utils/axios.js'
 import { useDispatch, useSelector } from 'react-redux'
 import { setUserdata } from '../redux/userSlice.js'
 import { setWallet } from '../redux/creditSlice.js'
+import { setConversations, setSelectedConversation } from '../redux/conversationSlice.js'
 import { getWalletApi, convertGuestApi } from '../features/creditApi.js'
+import { getConversation } from '../features/getConversations.js'
 
 export default function LoginModal({ isOpen, onClose, onSuccess, initialMode = 'login' }) {
   const dispatch = useDispatch()
@@ -25,18 +24,36 @@ export default function LoginModal({ isOpen, onClose, onSuccess, initialMode = '
 
   const handlePostAuth = async (userData) => {
     try {
+      // Store token & user data locally for persistent authorization headers
+      if (userData?.token) {
+        localStorage.setItem("aivora_token", userData.token)
+      }
+      localStorage.setItem("aivora_user", JSON.stringify(userData))
       dispatch(setUserdata(userData))
 
       // Link any prior guest conversation to the newly signed in user
       if (guestSession?.sessionId) {
-        await convertGuestApi(guestSession.sessionId)
-        await api.post('/api/chat/link-guest', { guestUserId: guestSession.sessionId }).catch(() => {})
+        try {
+          await convertGuestApi(guestSession.sessionId)
+          await api.post('/api/chat/link-guest', { guestUserId: guestSession.sessionId })
+        } catch (linkErr) {
+          console.warn("Guest link warning:", linkErr.message)
+        }
       }
 
-      // Fetch personal wallet & 100 signup bonus credits
+      // Fetch personal wallet & 100 signup bonus credits strictly for this user
       const walletRes = await getWalletApi()
       if (walletRes?.wallet) {
         dispatch(setWallet(walletRes.wallet))
+      }
+
+      // Fetch strictly this user's conversations
+      const convList = await getConversation()
+      if (Array.isArray(convList)) {
+        dispatch(setConversations(convList))
+        if (convList.length > 0) {
+          dispatch(setSelectedConversation(convList[0]))
+        }
       }
 
       if (onSuccess) onSuccess(userData)
@@ -48,49 +65,36 @@ export default function LoginModal({ isOpen, onClose, onSuccess, initialMode = '
     }
   }
 
-  const handleGoogleLogin = async () => {
-    setErrorMsg(null)
-    setLoading(true)
-    try {
-      const res = await signInWithPopup(auth, googleProvider)
-      const token = await res.user.getIdToken()
-      const { data } = await api.post("/api/auth/login", { token })
-      await handlePostAuth(data)
-    } catch (err) {
-      console.error('Google login error:', err)
-      setErrorMsg(err.response?.data?.message || err.message || "Failed to sign in with Google.")
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  const handleEmailAuth = async (e) => {
+  const handleAuthSubmit = async (e) => {
     e.preventDefault()
     setErrorMsg(null)
     setLoading(true)
 
     try {
       if (mode === 'register') {
-        if (!name.trim()) throw new Error("Please enter your name.")
+        if (!name.trim()) throw new Error("Please enter your full name.")
         if (!email.trim() || !password) throw new Error("Please enter your email and password.")
         if (password.length < 6) throw new Error("Password must be at least 6 characters.")
 
         const { data } = await api.post('/api/auth/register', {
           name: name.trim(),
-          email: email.trim(),
+          email: email.trim().toLowerCase(),
           password
         })
+
         await handlePostAuth(data)
       } else {
         if (!email.trim() || !password) throw new Error("Please enter your email and password.")
 
-        const { data } = await api.post('/api/auth/login-password', {
-          email: email.trim(),
+        const { data } = await api.post('/api/auth/login', {
+          email: email.trim().toLowerCase(),
           password
         })
+
         await handlePostAuth(data)
       }
     } catch (err) {
+      console.error("Auth error:", err)
       setErrorMsg(err.response?.data?.message || err.message || "Authentication failed.")
     } finally {
       setLoading(false)
@@ -99,13 +103,15 @@ export default function LoginModal({ isOpen, onClose, onSuccess, initialMode = '
 
   const continueAsGuest = () => {
     const guestId = guestSession?.sessionId || `guest_${Date.now()}`
-    dispatch(setUserdata({
+    const guestObj = {
       _id: guestId,
+      userId: guestId,
       name: 'Guest User',
       email: 'guest@aivora.ai',
       isGuest: true
-    }))
-    if (onSuccess) onSuccess({ isGuest: true })
+    }
+    dispatch(setUserdata(guestObj))
+    if (onSuccess) onSuccess(guestObj)
     if (onClose) onClose()
   }
 
@@ -139,14 +145,14 @@ export default function LoginModal({ isOpen, onClose, onSuccess, initialMode = '
           </div>
         </div>
 
-        {/* Mode Selector Tabs */}
+        {/* Mode Selector Tabs (Sign In vs Create Account) */}
         <div className="grid grid-cols-2 p-1 bg-[#EAE2D2] rounded-xl text-xs font-semibold">
           <button
             type="button"
             onClick={() => { setMode('login'); setErrorMsg(null); }}
-            className={`py-1.5 rounded-lg transition-all border-none cursor-pointer ${
+            className={`py-2 rounded-lg transition-all border-none cursor-pointer text-center ${
               mode === 'login' 
-                ? 'bg-[#1E2B1F] text-white shadow-2xs' 
+                ? 'bg-[#1E2B1F] text-white shadow-2xs font-bold' 
                 : 'bg-transparent text-[#696256] hover:text-[#1E1B18]'
             }`}
           >
@@ -155,15 +161,28 @@ export default function LoginModal({ isOpen, onClose, onSuccess, initialMode = '
           <button
             type="button"
             onClick={() => { setMode('register'); setErrorMsg(null); }}
-            className={`py-1.5 rounded-lg transition-all border-none cursor-pointer ${
+            className={`py-2 rounded-lg transition-all border-none cursor-pointer text-center ${
               mode === 'register' 
-                ? 'bg-[#1E2B1F] text-white shadow-2xs' 
+                ? 'bg-[#1E2B1F] text-white shadow-2xs font-bold' 
                 : 'bg-transparent text-[#696256] hover:text-[#1E1B18]'
             }`}
           >
             Create Account
           </button>
         </div>
+
+        {/* Value Prop Banner for New Accounts */}
+        {mode === 'register' && (
+          <div className="p-3 rounded-2xl bg-[#F0EBE1] border border-[#DDD3C1] text-xs text-[#1E2B1F] space-y-1">
+            <div className="flex items-center gap-1.5 font-bold text-[#1E2B1F]">
+              <Sparkles size={13} className="text-[#C9A875]" />
+              <span>Instant 100 Free Bonus Credits</span>
+            </div>
+            <p className="text-[11px] text-[#696256]">
+              Private encrypted conversation history, personalized wallet, and full access to all 8 AI modes.
+            </p>
+          </div>
+        )}
 
         {/* Error message */}
         {errorMsg && (
@@ -172,25 +191,8 @@ export default function LoginModal({ isOpen, onClose, onSuccess, initialMode = '
           </div>
         )}
 
-        {/* Google OAuth Quick Button */}
-        <button 
-          type="button"
-          onClick={handleGoogleLogin}
-          disabled={loading}
-          className="w-full flex items-center justify-center gap-2.5 py-2.5 px-4 rounded-xl text-xs font-bold bg-[#FAF8F3] hover:bg-[#F2ECE0] text-[#1E1B18] border border-[#DDD3C1] cursor-pointer transition-all shadow-2xs"
-        >
-          <FcGoogle size={18} />
-          <span>Continue with Google</span>
-        </button>
-
-        <div className="flex items-center gap-2 text-[10px] text-[#8E8779] uppercase font-bold tracking-wider">
-          <div className="h-px bg-[#DDD3C1] flex-1" />
-          <span>or with email</span>
-          <div className="h-px bg-[#DDD3C1] flex-1" />
-        </div>
-
         {/* Email & Password Form */}
-        <form onSubmit={handleEmailAuth} className="space-y-2.5 text-xs">
+        <form onSubmit={handleAuthSubmit} className="space-y-3 text-xs">
           {mode === 'register' && (
             <div className="space-y-1">
               <label className="font-semibold text-[#696256] block text-[11px]">Full Name</label>
@@ -199,10 +201,10 @@ export default function LoginModal({ isOpen, onClose, onSuccess, initialMode = '
                 <input
                   type="text"
                   required
-                  placeholder="Ayush Kumar"
+                  placeholder="Your Name"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-[#DDD3C1] bg-white text-xs text-[#1E1B18] focus:outline-none focus:border-[#1E2B1F]"
+                  className="w-full pl-9 pr-3 py-2.5 rounded-xl border border-[#DDD3C1] bg-white text-xs text-[#1E1B18] focus:outline-none focus:border-[#1E2B1F]"
                 />
               </div>
             </div>
@@ -218,7 +220,7 @@ export default function LoginModal({ isOpen, onClose, onSuccess, initialMode = '
                 placeholder="name@example.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full pl-9 pr-3 py-2 rounded-xl border border-[#DDD3C1] bg-white text-xs text-[#1E1B18] focus:outline-none focus:border-[#1E2B1F]"
+                className="w-full pl-9 pr-3 py-2.5 rounded-xl border border-[#DDD3C1] bg-white text-xs text-[#1E1B18] focus:outline-none focus:border-[#1E2B1F]"
               />
             </div>
           </div>
@@ -233,7 +235,7 @@ export default function LoginModal({ isOpen, onClose, onSuccess, initialMode = '
                 placeholder="••••••••"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full pl-9 pr-3 py-2 rounded-xl border border-[#DDD3C1] bg-white text-xs text-[#1E1B18] focus:outline-none focus:border-[#1E2B1F]"
+                className="w-full pl-9 pr-3 py-2.5 rounded-xl border border-[#DDD3C1] bg-white text-xs text-[#1E1B18] focus:outline-none focus:border-[#1E2B1F]"
               />
             </div>
           </div>
@@ -241,7 +243,7 @@ export default function LoginModal({ isOpen, onClose, onSuccess, initialMode = '
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-2.5 rounded-xl text-xs font-bold bg-[#1E2B1F] hover:bg-[#283A27] text-white flex items-center justify-center gap-2 border-none cursor-pointer transition-all shadow-xs mt-1"
+            className="w-full py-2.5 rounded-xl text-xs font-bold bg-[#1E2B1F] hover:bg-[#283A27] text-white flex items-center justify-center gap-2 border-none cursor-pointer transition-all shadow-xs mt-2"
           >
             {loading ? (
               <Loader2 size={14} className="animate-spin text-white" />
@@ -252,21 +254,21 @@ export default function LoginModal({ isOpen, onClose, onSuccess, initialMode = '
         </form>
 
         {/* Continue as Guest */}
-        <div className="pt-1 border-t border-[#DDD3C1]">
+        <div className="pt-2 border-t border-[#DDD3C1]">
           <button 
             type="button"
             onClick={continueAsGuest}
-            className="w-full flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl text-xs font-semibold bg-[#E8DDC8] hover:bg-[#DDD2BD] text-[#1E2B1F] border border-[#C8BEAC] cursor-pointer transition-all"
+            className="w-full flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl text-xs font-semibold bg-[#E8DDC8] hover:bg-[#DDD2BD] text-[#1E1B18] border border-[#C8BEAC] cursor-pointer transition-all"
           >
             <span>Continue as Guest (4 Free Questions)</span>
             <ArrowRight size={13} />
           </button>
         </div>
 
-        {/* Security Note */}
+        {/* Security & Privacy Note */}
         <div className="flex items-center justify-center gap-1.5 text-[10.5px] text-[#696256]">
           <Shield size={12} className="text-[#4A653C]" />
-          <span>Encrypted storage & auto 100 signup bonus credits</span>
+          <span>Strict per-user data isolation & encrypted storage</span>
         </div>
       </div>
     </div>

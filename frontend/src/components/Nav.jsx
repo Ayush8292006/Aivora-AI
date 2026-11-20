@@ -214,14 +214,23 @@ function Nav({
           
           {/* Credit / Guest Balance Pill */}
           {isGuest ? (
-            <button
-              onClick={() => dispatch(openGuestLimitModal())}
-              className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#EAE2D2] hover:bg-[#DDD2BD] text-[#1E1B18] border border-[#DDD3C1] text-xs font-semibold cursor-pointer transition-colors shadow-2xs"
-              title="Guest Usage Status"
-            >
-              <span className="w-1.5 h-1.5 rounded-full bg-[#4ADE80] animate-pulse" />
-              <span>{guestRemaining}/4 Free Questions</span>
-            </button>
+            <div className="flex items-center gap-1.5">
+              <button
+                onClick={() => dispatch(openGuestLimitModal())}
+                className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#EAE2D2] hover:bg-[#DDD2BD] text-[#1E1B18] border border-[#DDD3C1] text-xs font-semibold cursor-pointer transition-colors shadow-2xs"
+                title="Guest Usage Status"
+              >
+                <span className="w-1.5 h-1.5 rounded-full bg-[#4ADE80] animate-pulse" />
+                <span>{guestRemaining}/4 Free Questions</span>
+              </button>
+              <button
+                onClick={() => window.dispatchEvent(new CustomEvent('aivora:open-login', { detail: { mode: 'register' } }))}
+                className="px-3 py-1 rounded-full bg-[#1E2B1F] hover:bg-[#283A27] text-[#E8DDC8] text-xs font-bold cursor-pointer transition-colors border-none shadow-2xs"
+                title="Sign up for 100 bonus credits & private wallet"
+              >
+                Sign Up Free
+              </button>
+            </div>
           ) : (
             <button
               onClick={() => dispatch(openPricingModal())}
