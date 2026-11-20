@@ -1,6 +1,9 @@
 // src/components/ChatInput.jsx
 import React, { useState, useEffect, useRef } from 'react'
-import { Mic, Paperclip, Send, Loader2, Zap, MessageSquare, Code2, FileText, Presentation, ImageIcon, Globe, X, StopCircle } from 'lucide-react'
+import { 
+  Mic, Paperclip, Send, Loader2, Sparkles, MessageSquare, 
+  Code2, FileText, Presentation, ImageIcon, Globe, X, StopCircle 
+} from 'lucide-react'
 import sendMessage from '../features/sendMessage'
 import { uploadFile } from '../features/uploadFile'
 import { useSelector, useDispatch } from 'react-redux'
@@ -30,12 +33,10 @@ function ChatInput() {
     }
   }, [selectedConversation?._id, selectedConversation?.title])
 
-  // Client-side file validation and upload
   const handleFileUpload = async (files) => {
     if (!files || files.length === 0) return
 
     for (const file of Array.from(files)) {
-      // Validate type
       const isPdf = file.type === "application/pdf" || file.name.toLowerCase().endsWith(".pdf")
       const isImage = file.type.startsWith("image/")
 
@@ -44,7 +45,6 @@ function ChatInput() {
         continue
       }
 
-      // Validate size
       const sizeMb = file.size / (1024 * 1024)
       if (isImage && sizeMb > 8) {
         alert(`Image exceeds 8 MB limit (${sizeMb.toFixed(1)} MB).`)
@@ -160,7 +160,6 @@ function ChatInput() {
     setIsLoading(true)
     setValue("")
 
-    // Format validated attachments
     const readyAttachments = attachments
       .filter(a => a.fileId)
       .map(a => ({
@@ -199,14 +198,13 @@ function ChatInput() {
       }
     }
 
-    // Set status message based on selected agent
     const agentName = selectedAgent.toLowerCase()
     if (agentName === "pdf") setStatusMessage("Designing & generating PDF document...")
     else if (agentName === "ppt") setStatusMessage("Structuring presentation & building slides...")
     else if (agentName === "image") setStatusMessage("Synthesizing image graphics...")
     else if (agentName === "coding") setStatusMessage("Writing & organizing project code...")
     else if (agentName === "search") setStatusMessage("Searching web & aggregating sources...")
-    else setStatusMessage("Aivora AI is thinking...")
+    else setStatusMessage("Aurora AI is thinking...")
 
     const controller = new AbortController()
     abortControllerRef.current = controller
@@ -274,7 +272,7 @@ function ChatInput() {
   }
 
   const agents = [
-    { id: "auto", icon: Zap, label: "Auto" },
+    { id: "auto", icon: Sparkles, label: "Auto" },
     { id: "chat", icon: MessageSquare, label: "Chat" },
     { id: "coding", icon: Code2, label: "Coding" },
     { id: "pdf", icon: FileText, label: "PDF" },
@@ -284,7 +282,7 @@ function ChatInput() {
   ]
 
   return (
-    <div className='w-full overflow-hidden px-3 md:px-5 py-4 border-t border-white/[0.06] bg-[#0d0f14]'>
+    <div className='w-full pt-1 pb-1'>
       <input
         type="file"
         ref={fileInputRef}
@@ -294,59 +292,62 @@ function ChatInput() {
         className="hidden"
       />
 
+      {/* Floating Prompt Composer Dock */}
       <div 
         onPaste={handlePaste}
         onDragOver={handleDragOver}
         onDrop={handleDrop}
-        className='flex flex-col gap-2 bg-white/[0.03] border border-white/[0.07] rounded-2xl px-4 pt-3.5 pb-3 focus-within:border-indigo-500/30 focus-within:shadow-lg focus-within:shadow-indigo-500/5 transition-all duration-300'
+        className='aurora-glass-card rounded-[24px] p-3 sm:p-3.5 flex flex-col gap-2.5 border border-[#284933]/70 shadow-2xl relative'
       >
 
-        {/* Agent Chips */}
-        <div className='flex w-full gap-2 pr-2 flex-wrap'>
+        {/* Agent Chips Row (matching reference image) */}
+        <div className='flex items-center gap-1.5 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden py-0.5'>
           {agents.map((agent) => {
             const isActive = selectedAgent === agent.label
             const Icon = agent.icon
             return (
-              <div
+              <button
                 key={agent.id}
+                type="button"
                 onClick={() => setSelectedAgent(agent.label)}
                 className={`
-                  flex-shrink-0 cursor-pointer inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium border transition-all duration-200
+                  flex-shrink-0 cursor-pointer inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-semibold transition-all duration-200 border-none
                   ${isActive
-                    ? "bg-gradient-to-r from-indigo-500 to-violet-600 text-white border-transparent shadow-[0_1px_8px_rgba(99,102,241,.35)]"
-                    : "bg-white/[0.03] text-slate-400 border-white/[0.06] hover:bg-white/[0.08]"
+                    ? agent.label === 'Auto'
+                      ? "aurora-active-pill shadow-md shadow-[#4de370]/20"
+                      : "bg-gradient-to-r from-[#dfc499] to-[#c7a168] text-[#17140e] font-bold shadow-md shadow-[#dfc499]/20"
+                    : "bg-[#0b1b11]/80 text-[#8ca893] hover:text-[#e4efe6] hover:bg-[#122b1a]"
                   }
                 `}
               >
-                <Icon size={13} className={isActive ? "text-white" : "text-slate-500"} />
-                {agent.label}
-              </div>
+                <Icon size={12} className={isActive ? (agent.label === 'Auto' ? 'text-[#051c0e]' : 'text-[#17140e]') : 'text-[#7d9984]'} />
+                <span>{agent.label}</span>
+              </button>
             )
           })}
         </div>
 
         {/* Attachment Preview Chips */}
         {attachments.length > 0 && (
-          <div className="flex flex-wrap gap-2 pt-1">
+          <div className="flex flex-wrap gap-2 pt-0.5">
             {attachments.map((att) => (
               <div
                 key={att.id}
-                className="relative flex items-center gap-2 bg-white/[0.06] border border-white/[0.1] rounded-xl px-2.5 py-1.5 text-xs text-slate-200 shadow-sm"
+                className="relative flex items-center gap-2 bg-[#102416]/90 border border-[#2b5438] rounded-xl px-2.5 py-1 text-xs text-[#c4d6c7] shadow-sm"
               >
                 {att.kind === "image" && att.previewUrl ? (
-                  <img src={att.previewUrl} alt="thumb" className="w-6 h-6 rounded object-cover" />
+                  <img src={att.previewUrl} alt="thumb" className="w-5 h-5 rounded object-cover" />
                 ) : (
-                  <FileText size={16} className="text-indigo-400" />
+                  <FileText size={14} className="text-[#dfc499]" />
                 )}
-                <span className="max-w-[140px] truncate">{att.name}</span>
-                <span className="text-[10px] text-slate-400">({Math.round(att.size / 1024)} KB)</span>
+                <span className="max-w-[130px] truncate text-[11px]">{att.name}</span>
 
                 {att.uploading ? (
-                  <Loader2 size={12} className="animate-spin text-indigo-400 ml-1" />
+                  <Loader2 size={12} className="animate-spin text-[#4de370] ml-1" />
                 ) : (
                   <button
                     onClick={() => handleRemoveAttachment(att.id)}
-                    className="text-slate-400 hover:text-red-400 transition-colors p-0.5 rounded cursor-pointer border-none bg-transparent"
+                    className="text-[#7d9984] hover:text-red-400 transition-colors p-0.5 rounded cursor-pointer border-none bg-transparent"
                   >
                     <X size={12} />
                   </button>
@@ -356,71 +357,84 @@ function ChatInput() {
           </div>
         )}
 
-        {/* Text Area */}
+        {/* Prompt Input Textarea */}
         <textarea
           placeholder="Ask anything, request a PDF resume, generate slides, create an image..."
           onChange={(e) => setValue(e.target.value)}
           value={value}
           onKeyDown={handleKeyDown}
           disabled={isLoading}
-          className="w-full bg-transparent outline-none resize-none text-[14px] text-slate-200 placeholder:text-slate-600 leading-relaxed [scrollbar-width:none] [&::-webkit-scrollbar]:hidden disabled:opacity-50 min-h-[50px] max-h-[120px]"
-          rows={2}
+          className="w-full bg-transparent outline-none resize-none text-[13.5px] text-[#f5f8f5] placeholder:text-[#6c8672] leading-relaxed [scrollbar-width:none] [&::-webkit-scrollbar]:hidden disabled:opacity-50 min-h-[38px] max-h-[110px]"
+          rows={1}
         />
 
         {/* Status Bubble while running */}
         {isLoading && statusMessage && (
-          <div className="flex items-center justify-between bg-indigo-500/10 border border-indigo-500/20 rounded-xl px-3 py-1.5 text-xs text-indigo-300">
+          <div className="flex items-center justify-between bg-[#122b1a]/90 border border-[#2e5e3d] rounded-xl px-3 py-1.5 text-xs text-[#9dfcb1]">
             <div className="flex items-center gap-2">
-              <Loader2 size={13} className="animate-spin text-indigo-400" />
-              <span>{statusMessage}</span>
+              <Loader2 size={12} className="animate-spin text-[#4de370]" />
+              <span className="text-[11.5px]">{statusMessage}</span>
             </div>
             <button
               onClick={handleStop}
-              className="flex items-center gap-1 text-[11px] font-medium text-red-400 hover:text-red-300 bg-red-500/10 hover:bg-red-500/20 px-2 py-0.5 rounded-md border border-red-500/20 cursor-pointer transition-all"
+              className="flex items-center gap-1 text-[10.5px] font-semibold text-red-400 hover:text-red-300 bg-red-500/10 hover:bg-red-500/20 px-2 py-0.5 rounded-md border border-red-500/20 cursor-pointer transition-all"
             >
-              <StopCircle size={12} />
+              <StopCircle size={11} />
               Stop
             </button>
           </div>
         )}
 
-        <div className='flex items-center justify-between'>
-          <div className='flex items-center gap-1.5'>
+        {/* Bottom Actions Row (Paperclip, Mic, Globe on left; Circular Gold Send on right) */}
+        <div className='flex items-center justify-between pt-0.5'>
+          <div className='flex items-center gap-1'>
             <button 
               type="button"
               onClick={() => fileInputRef.current?.click()}
-              className='flex items-center justify-center w-8 h-8 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-white/[0.05] border border-transparent hover:border-white/[0.06] transition-all duration-150 bg-transparent cursor-pointer disabled:opacity-50'
+              className='flex items-center justify-center w-7 h-7 rounded-lg text-[#8ca893] hover:text-white hover:bg-[#142e1d] transition-all bg-transparent border-none cursor-pointer disabled:opacity-50'
               disabled={isLoading || isUploading}
-              title="Attach PDF or Image"
+              title="Attach File or Image"
             >
-              <Paperclip size={16}/>
+              <Paperclip size={15}/>
             </button>
             <button 
               type="button"
-              className='flex items-center justify-center w-8 h-8 rounded-lg text-slate-500 hover:text-slate-300 hover:bg-white/[0.05] border border-transparent hover:border-white/[0.06] transition-all duration-150 bg-transparent cursor-pointer disabled:opacity-50'
+              className='flex items-center justify-center w-7 h-7 rounded-lg text-[#8ca893] hover:text-white hover:bg-[#142e1d] transition-all bg-transparent border-none cursor-pointer disabled:opacity-50'
               disabled={isLoading}
               title="Voice Input"
             >
-              <Mic size={16}/>
+              <Mic size={15}/>
+            </button>
+            <button 
+              type="button"
+              onClick={() => setSelectedAgent("Search")}
+              className={`flex items-center justify-center w-7 h-7 rounded-lg transition-all bg-transparent border-none cursor-pointer ${
+                selectedAgent === 'Search' ? 'text-[#4de370] bg-[#142e1d]' : 'text-[#8ca893] hover:text-white hover:bg-[#142e1d]'
+              }`}
+              title="Web Search"
+            >
+              <Globe size={15}/>
             </button>
           </div>
           
+          {/* Circular Champagne Gold Send Button (exact match with reference image) */}
           <button
             disabled={(!value.trim() && attachments.length === 0) || isLoading || isUploading}
             onClick={handleSendMessage}
-            className={`flex items-center justify-center w-8 h-8 rounded-lg border-none cursor-pointer transition-all duration-200 ${
+            className={`w-9 h-9 rounded-full flex items-center justify-center border-none cursor-pointer transition-all duration-200 ${
               (value.trim() || attachments.length > 0) && !isLoading && !isUploading
-                ? "bg-gradient-to-br from-indigo-500 to-violet-600 hover:from-indigo-600 hover:to-violet-700 hover:shadow-lg hover:shadow-indigo-500/20 text-white hover:scale-105 active:scale-95" 
-                : "bg-white/[0.05] text-slate-600 cursor-not-allowed"
+                ? "aurora-gold-btn text-[#17140e] shadow-lg shadow-[#dfc499]/20 hover:scale-105 active:scale-95" 
+                : "bg-[#142e1d] text-[#55705a] cursor-not-allowed"
             }`}
           >
             {isLoading ? (
-              <Loader2 size={15} className="animate-spin" />
+              <Loader2 size={15} className="animate-spin text-[#17140e]" />
             ) : (
-              <Send size={15} />
+              <Send size={14} className="translate-x-[1px]" />
             )}
           </button>
         </div>
+
       </div>
     </div>
   )

@@ -1,1 +1,162 @@
 @import "tailwindcss";
+
+@layer base {
+  :root {
+    --aurora-bg: #050a06;
+    --aurora-dark: #08110b;
+    --aurora-panel: rgba(11, 21, 15, 0.76);
+    --aurora-card: rgba(16, 31, 21, 0.65);
+    --aurora-border: rgba(50, 85, 60, 0.32);
+    --aurora-border-glow: rgba(77, 227, 112, 0.25);
+    --aurora-gold-border: rgba(223, 196, 153, 0.22);
+    --aurora-gold-from: #f4e5cb;
+    --aurora-gold-mid: #dfc499;
+    --aurora-gold-to: #c7a168;
+    --aurora-emerald: #4de370;
+    --aurora-emerald-glow: rgba(77, 227, 112, 0.4);
+  }
+
+  body {
+    background-color: #040805;
+    color: #e5ece6;
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(52, 90, 64, 0.35);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(77, 227, 112, 0.5);
+}
+
+/* Ambient Background Silk Waves */
+.aurora-ambient-bg {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+  background: radial-gradient(circle at 15% 20%, rgba(18, 48, 28, 0.5) 0%, transparent 45%),
+              radial-gradient(circle at 85% 75%, rgba(20, 52, 32, 0.45) 0%, transparent 50%),
+              radial-gradient(circle at 50% 50%, rgba(10, 24, 15, 0.8) 0%, #040805 100%);
+}
+
+.aurora-ribbon-1 {
+  position: absolute;
+  top: -15%;
+  right: -10%;
+  width: 900px;
+  height: 900px;
+  background: radial-gradient(ellipse at center, rgba(77, 227, 112, 0.12) 0%, rgba(223, 196, 153, 0.08) 35%, transparent 70%);
+  filter: blur(80px);
+  transform: rotate(-25deg);
+  animation: floatSlow 20s ease-in-out infinite alternate;
+}
+
+.aurora-ribbon-2 {
+  position: absolute;
+  bottom: -20%;
+  left: -10%;
+  width: 1000px;
+  height: 800px;
+  background: radial-gradient(ellipse at center, rgba(30, 85, 48, 0.25) 0%, rgba(200, 165, 110, 0.06) 40%, transparent 70%);
+  filter: blur(90px);
+  transform: rotate(15deg);
+  animation: floatSlow 25s ease-in-out infinite alternate-reverse;
+}
+
+.aurora-ribbon-3 {
+  position: absolute;
+  top: 40%;
+  left: 30%;
+  width: 600px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(77, 227, 112, 0.08) 0%, transparent 60%);
+  filter: blur(70px);
+  pointer-events: none;
+}
+
+@keyframes floatSlow {
+  0% { transform: translateY(0px) rotate(-20deg) scale(1); }
+  50% { transform: translateY(-30px) rotate(-15deg) scale(1.05); }
+  100% { transform: translateY(20px) rotate(-25deg) scale(0.98); }
+}
+
+/* Glass Panels */
+.aurora-glass-panel {
+  background: rgba(10, 20, 14, 0.74);
+  backdrop-filter: blur(28px);
+  -webkit-backdrop-filter: blur(28px);
+  border: 1px solid rgba(52, 90, 65, 0.35);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.55), inset 0 1px 0 rgba(230, 215, 180, 0.12);
+}
+
+.aurora-glass-card {
+  background: rgba(14, 28, 19, 0.65);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid rgba(50, 85, 60, 0.35);
+}
+
+/* Luxury Champagne Gold Button */
+.aurora-gold-btn {
+  background: linear-gradient(135deg, #f4e5cb 0%, #dfc499 50%, #c7a168 100%);
+  color: #17140e;
+  font-weight: 600;
+  box-shadow: 0 4px 20px rgba(210, 175, 120, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.aurora-gold-btn:hover {
+  filter: brightness(1.06);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 25px rgba(210, 175, 120, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+
+.aurora-gold-btn:active {
+  transform: translateY(0px) scale(0.98);
+}
+
+/* Active Emerald Agent Pill */
+.aurora-active-pill {
+  background: linear-gradient(135deg, #9dfcb1 0%, #4de370 100%);
+  color: #061c0e;
+  font-weight: 700;
+  box-shadow: 0 2px 14px rgba(77, 227, 112, 0.4);
+}
+
+/* Active Recent Chat Card */
+.aurora-active-chat {
+  background: rgba(17, 38, 25, 0.82);
+  border: 1px solid rgba(77, 227, 112, 0.45);
+  box-shadow: 0 0 20px rgba(77, 227, 112, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+/* Prose Typography Tweaks for ChatGPT Bubble */
+.prose-aurora {
+  color: #e5ede6;
+}
+.prose-aurora strong, .prose-aurora b {
+  color: #dfc499;
+  font-weight: 600;
+}
+.prose-aurora a {
+  color: #e2c9a2;
+  text-decoration: underline;
+  text-decoration-color: rgba(226, 201, 162, 0.4);
+  text-underline-offset: 3px;
+}
+.prose-aurora a:hover {
+  color: #4de370;
+  text-decoration-color: #4de370;
+}
