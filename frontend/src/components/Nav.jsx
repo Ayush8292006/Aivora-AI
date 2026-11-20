@@ -56,11 +56,11 @@ function Nav({ onOpenMobileMenu }) {
       {/* Mobile Top Navigation */}
       <div className='lg:hidden flex items-center justify-between px-2 py-1.5'>
         <div className='flex items-center gap-2'>
-          <div className='w-7 h-7 rounded-xl bg-gradient-to-br from-[#263B2B] to-[#14291F] border border-white/20 text-[#E8DDC8] font-bold flex items-center justify-center text-xs shadow-xs'>
+          <div className='w-7 h-7 rounded-xl bg-gradient-to-br from-[#30271F] to-[#211C16] border border-white/20 text-[#E9DDC8] font-bold flex items-center justify-center text-xs shadow-xs'>
             A
           </div>
-          <span className='text-sm font-bold text-[#F8F7F0]'>Aivora AI</span>
-          <span className='bg-gradient-to-r from-[#E8DDC8] to-[#C6A46A] text-[#14291F] font-extrabold text-[10px] px-2 py-0.5 rounded-full'>
+          <span className='text-sm font-bold text-[#F5F0E6]'>Aivora AI</span>
+          <span className='bg-gradient-to-r from-[#E9DDC8] to-[#C9AD7C] text-[#211C16] font-extrabold text-[10px] px-2 py-0.5 rounded-full'>
             Pro
           </span>
         </div>
@@ -76,7 +76,7 @@ function Nav({ onOpenMobileMenu }) {
           
           <button
             onClick={onOpenMobileMenu}
-            className='p-2 rounded-xl text-[#E8DDC8] hover:text-white glass-card border border-white/10 cursor-pointer'
+            className='p-2 rounded-xl text-[#E9DDC8] hover:text-white glass-card border border-white/10 cursor-pointer'
             title="Open Conversations"
           >
             <Menu size={16} />
@@ -88,10 +88,10 @@ function Nav({ onOpenMobileMenu }) {
       <div className='hidden lg:flex items-center justify-between px-2 py-1 gap-3'>
         
         {/* Left: Minimal Search Bar Pill with Ctrl + K */}
-        <div className='flex items-center gap-2.5 glass-card rounded-full px-4 py-1.5 text-xs text-[#789477] w-72 hover:border-white/25 transition-all cursor-text'>
-          <Search size={13} className='text-[#789477]' />
-          <span className='flex-1 truncate text-[#E8DDC8]/70 text-[11px]'>Search anything...</span>
-          <span className='text-[10px] font-mono bg-white/5 text-[#E8DDC8]/90 px-1.5 py-0.2 rounded border border-white/10'>
+        <div className='flex items-center gap-2.5 glass-card rounded-full px-4 py-1.5 text-xs text-[#89977B] w-72 hover:border-white/25 transition-all cursor-text'>
+          <Search size={13} className='text-[#89977B]' />
+          <span className='flex-1 truncate text-[#E9DDC8]/70 text-[11px]'>Search anything...</span>
+          <span className='text-[10px] font-mono bg-white/5 text-[#E9DDC8]/90 px-1.5 py-0.2 rounded border border-white/10'>
             Ctrl+K
           </span>
         </div>
@@ -103,10 +103,10 @@ function Nav({ onOpenMobileMenu }) {
           <div className='relative'>
             <button
               onClick={() => setDropdownOpen(!dropdownOpen)}
-              className='flex items-center gap-1.5 glass-card rounded-full px-3.5 py-1.5 text-xs font-medium text-[#E8DDC8] hover:text-white hover:border-white/25 transition-all cursor-pointer'
+              className='flex items-center gap-1.5 glass-card rounded-full px-3.5 py-1.5 text-xs font-medium text-[#E9DDC8] hover:text-white hover:border-white/25 transition-all cursor-pointer'
             >
               <span>Generated Image ({aspectRatio})</span>
-              <ChevronDown size={12} className='text-[#789477]' />
+              <ChevronDown size={12} className='text-[#89977B]' />
             </button>
 
             {dropdownOpen && (
@@ -122,8 +122,8 @@ function Nav({ onOpenMobileMenu }) {
                       }}
                       className={`w-full text-left px-3 py-1.5 text-xs transition-colors cursor-pointer border-none ${
                         aspectRatio === val 
-                          ? 'bg-[#263B2B] text-[#E8DDC8] font-bold' 
-                          : 'bg-transparent text-[#F8F7F0]/80 hover:bg-white/10 hover:text-white'
+                          ? 'bg-[#343B29] text-[#E9DDC8] font-bold' 
+                          : 'bg-transparent text-[#F5F0E6]/80 hover:bg-white/10 hover:text-white'
                       }`}
                     >
                       {ratio}
@@ -147,7 +147,7 @@ function Nav({ onOpenMobileMenu }) {
           {/* Fullscreen Expand Button */}
           <button
             onClick={() => dispatch(toggleMaximize())}
-            className='flex items-center justify-center w-8 h-8 rounded-full glass-card text-[#789477] hover:text-white hover:border-white/25 transition-all cursor-pointer'
+            className='flex items-center justify-center w-8 h-8 rounded-full glass-card text-[#89977B] hover:text-white hover:border-white/25 transition-all cursor-pointer'
             title="Toggle Expanded View"
           >
             <Maximize2 size={13} />

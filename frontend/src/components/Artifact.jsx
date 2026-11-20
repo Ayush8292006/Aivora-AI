@@ -128,18 +128,18 @@ ${htmlFile?.content || ''}
       {/* Panel Header */}
       <div className="flex items-center justify-between pb-3 px-1 border-b border-white/10">
         <div className="flex items-center gap-2 min-w-0">
-          <div className="w-7 h-7 rounded-xl bg-[#263B2B]/70 border border-white/20 flex items-center justify-center shrink-0 shadow-xs">
-            {(!activeArtifact || activeArtifact?.type === 'image') && <ImageIcon size={14} className="text-[#789477]" />}
+          <div className="w-7 h-7 rounded-xl bg-[#30271F]/70 border border-white/20 flex items-center justify-center shrink-0 shadow-xs">
+            {(!activeArtifact || activeArtifact?.type === 'image') && <ImageIcon size={14} className="text-[#89977B]" />}
             {activeArtifact?.type === 'pdf' && <FileText size={14} className="text-[#E57373]" />}
-            {activeArtifact?.type === 'ppt' && <Presentation size={14} className="text-[#C6A46A]" />}
-            {activeArtifact?.type === 'Project' && <Code2 size={14} className="text-[#E8DDC8]" />}
+            {activeArtifact?.type === 'ppt' && <Presentation size={14} className="text-[#C9AD7C]" />}
+            {activeArtifact?.type === 'Project' && <Code2 size={14} className="text-[#E9DDC8]" />}
           </div>
 
           <div className="min-w-0">
-            <h3 className="text-xs font-bold text-[#F8F7F0] truncate">
+            <h3 className="text-xs font-bold text-[#F5F0E6] truncate">
               {activeArtifact?.title || "Generated Image"}
             </h3>
-            <span className="text-[10px] text-[#789477]">
+            <span className="text-[10px] text-[#89977B]">
               {activeArtifact?.type ? `${activeArtifact.type.toUpperCase()} Preview` : "Visual Preview (1:1)"}
             </span>
           </div>
@@ -158,7 +158,7 @@ ${htmlFile?.content || ''}
 
           <button
             onClick={() => dispatch(toggleMaximize())}
-            className="p-1.5 rounded-lg text-[#789477] hover:text-white hover:bg-white/10 transition-colors border-none bg-transparent cursor-pointer hidden lg:block"
+            className="p-1.5 rounded-lg text-[#89977B] hover:text-white hover:bg-white/10 transition-colors border-none bg-transparent cursor-pointer hidden lg:block"
             title={isMaximized ? "Restore" : "Maximize"}
           >
             {isMaximized ? <Minimize2 size={14} /> : <Maximize2 size={14} />}
@@ -166,7 +166,7 @@ ${htmlFile?.content || ''}
 
           <button
             onClick={() => dispatch(setArtifactOpen(false))}
-            className="p-1.5 rounded-lg text-[#789477] hover:text-white hover:bg-white/10 transition-colors border-none bg-transparent cursor-pointer"
+            className="p-1.5 rounded-lg text-[#89977B] hover:text-white hover:bg-white/10 transition-colors border-none bg-transparent cursor-pointer"
             title="Close Panel"
           >
             <X size={15} />
@@ -185,12 +185,12 @@ ${htmlFile?.content || ''}
             <div className="relative flex-1 rounded-2xl overflow-hidden border border-white/15 bg-black/40 flex items-center justify-center group shadow-2xl">
               
               {/* Zoom badge at top right */}
-              <div className="absolute top-3 right-3 z-10 flex items-center gap-1.5 bg-black/60 backdrop-blur-md border border-white/20 rounded-full px-2.5 py-1 text-[11px] text-[#E8DDC8] shadow-lg">
-                <ZoomIn size={12} className="text-[#789477]" />
+              <div className="absolute top-3 right-3 z-10 flex items-center gap-1.5 bg-black/60 backdrop-blur-md border border-white/20 rounded-full px-2.5 py-1 text-[11px] text-[#E9DDC8] shadow-lg">
+                <ZoomIn size={12} className="text-[#89977B]" />
                 <span className="font-mono text-[10.5px]">{Math.round(imageZoom * 100)}%</span>
                 <button
                   onClick={() => setImageZoom(z => z > 1 ? 1 : 1.5)}
-                  className="text-[#789477] hover:text-white bg-transparent border-none cursor-pointer ml-0.5 text-xs font-bold"
+                  className="text-[#89977B] hover:text-white bg-transparent border-none cursor-pointer ml-0.5 text-xs font-bold"
                   title="Toggle Zoom"
                 >
                   ∔
@@ -209,19 +209,19 @@ ${htmlFile?.content || ''}
             {/* Prompt Information Glass Card */}
             <div className="glass-card rounded-2xl p-3.5 shadow-lg">
               <div className="flex items-center justify-between mb-1.5">
-                <div className="flex items-center gap-1.5 text-xs font-bold text-[#E8DDC8]">
-                  <span className='text-[#C6A46A]'>✦</span>
+                <div className="flex items-center gap-1.5 text-xs font-bold text-[#E9DDC8]">
+                  <span className='text-[#C9AD7C]'>✦</span>
                   <span>Prompt:</span>
                 </div>
                 <button
                   onClick={() => handleCopyPrompt(displayPrompt)}
-                  className="text-[#789477] hover:text-[#E8DDC8] transition-colors p-1 rounded-lg hover:bg-white/10 border-none bg-transparent cursor-pointer"
+                  className="text-[#89977B] hover:text-[#E9DDC8] transition-colors p-1 rounded-lg hover:bg-white/10 border-none bg-transparent cursor-pointer"
                   title="Copy Prompt"
                 >
-                  {copiedPrompt ? <Check size={12} className="text-[#789477]" /> : <Copy size={12} />}
+                  {copiedPrompt ? <Check size={12} className="text-[#89977B]" /> : <Copy size={12} />}
                 </button>
               </div>
-              <p className="text-[11.5px] text-[#E8DDC8]/80 leading-relaxed line-clamp-4 italic">
+              <p className="text-[11.5px] text-[#E9DDC8]/80 leading-relaxed line-clamp-4 italic">
                 {displayPrompt}
               </p>
             </div>
@@ -234,7 +234,7 @@ ${htmlFile?.content || ''}
           <div className="flex-1 flex flex-col h-full rounded-2xl overflow-hidden border border-white/15 bg-black/30">
             <div className="flex items-center justify-between px-3.5 py-2 bg-white/5 border-b border-white/10 text-xs">
               <span className="font-bold text-[#E57373]">PDF Document</span>
-              <span className="text-[11px] font-mono text-[#789477]">{activeArtifact.meta?.pages || 1} Page(s)</span>
+              <span className="text-[11px] font-mono text-[#89977B]">{activeArtifact.meta?.pages || 1} Page(s)</span>
             </div>
 
             <div className="flex-1 p-2">
@@ -245,7 +245,7 @@ ${htmlFile?.content || ''}
                   className="w-full h-full rounded-xl border border-white/10 bg-white"
                 />
               ) : (
-                <div className="flex flex-col items-center justify-center h-full gap-2 text-[#789477]">
+                <div className="flex flex-col items-center justify-center h-full gap-2 text-[#89977B]">
                   <FileText size={36} className="text-[#E57373] opacity-70" />
                   <p className="text-xs">PDF ready for download</p>
                 </div>
@@ -259,13 +259,13 @@ ${htmlFile?.content || ''}
           <div className="flex-1 flex flex-col h-full rounded-2xl overflow-hidden border border-white/15 bg-black/30">
             <div className="flex items-center justify-between px-3.5 py-2 bg-white/5 border-b border-white/10 text-xs">
               <div className="flex items-center gap-1.5">
-                <span className="font-bold text-[#E8DDC8]">Slide {currentSlideIndex + 1}</span>
-                <span className="text-[11px] text-[#789477]">of {slides.length}</span>
+                <span className="font-bold text-[#E9DDC8]">Slide {currentSlideIndex + 1}</span>
+                <span className="text-[11px] text-[#89977B]">of {slides.length}</span>
               </div>
               <button
                 onClick={() => setShowNotes(!showNotes)}
                 className={`px-2 py-0.5 rounded text-[10px] font-medium border-none cursor-pointer transition-colors ${
-                  showNotes ? 'bg-[#C6A46A] text-[#14291F] font-bold' : 'bg-white/10 text-[#E8DDC8]'
+                  showNotes ? 'bg-[#C9AD7C] text-[#211C16] font-bold' : 'bg-white/10 text-[#E9DDC8]'
                 }`}
               >
                 Speaker Notes
@@ -274,20 +274,20 @@ ${htmlFile?.content || ''}
 
             <div className="flex-1 flex items-center justify-center p-3 overflow-hidden">
               {slides.length > 0 && slides[currentSlideIndex] ? (
-                <div className="w-full aspect-video rounded-xl bg-[#14291F]/90 border border-white/20 p-4 flex flex-col justify-between text-[#F8F7F0] shadow-xl">
+                <div className="w-full aspect-video rounded-xl bg-[#211C16]/90 border border-white/20 p-4 flex flex-col justify-between text-[#F5F0E6] shadow-xl">
                   <div>
-                    <h2 className="text-sm font-bold text-[#E8DDC8] mb-2 pb-1 border-b border-white/10">
+                    <h2 className="text-sm font-bold text-[#E9DDC8] mb-2 pb-1 border-b border-white/10">
                       {slides[currentSlideIndex].title}
                     </h2>
                     {Array.isArray(slides[currentSlideIndex].bullets) && (
-                      <ul className="space-y-1.5 text-xs pl-4 list-disc marker:text-[#789477]">
+                      <ul className="space-y-1.5 text-xs pl-4 list-disc marker:text-[#89977B]">
                         {slides[currentSlideIndex].bullets.map((b, idx) => (
-                          <li key={idx} className="leading-snug text-[#E8DDC8]/80">{b}</li>
+                          <li key={idx} className="leading-snug text-[#E9DDC8]/80">{b}</li>
                         ))}
                       </ul>
                     )}
                   </div>
-                  <div className="flex items-center justify-between text-[10px] text-[#789477] pt-2 border-t border-white/10">
+                  <div className="flex items-center justify-between text-[10px] text-[#89977B] pt-2 border-t border-white/10">
                     <span>{activeArtifact.title}</span>
                     <span>{currentSlideIndex + 1} / {slides.length}</span>
                   </div>
@@ -300,15 +300,15 @@ ${htmlFile?.content || ''}
               <button
                 disabled={currentSlideIndex === 0}
                 onClick={() => setCurrentSlideIndex(prev => Math.max(prev - 1, 0))}
-                className="p-1 rounded-lg text-[#789477] hover:text-white bg-white/5 disabled:opacity-30 border-none cursor-pointer"
+                className="p-1 rounded-lg text-[#89977B] hover:text-white bg-white/5 disabled:opacity-30 border-none cursor-pointer"
               >
                 <ChevronLeft size={14} />
               </button>
-              <span className="text-xs font-mono text-[#E8DDC8]">{currentSlideIndex + 1} / {slides.length || 1}</span>
+              <span className="text-xs font-mono text-[#E9DDC8]">{currentSlideIndex + 1} / {slides.length || 1}</span>
               <button
                 disabled={currentSlideIndex === slides.length - 1}
                 onClick={() => setCurrentSlideIndex(prev => Math.min(prev + 1, slides.length - 1))}
-                className="p-1 rounded-lg text-[#789477] hover:text-white bg-white/5 disabled:opacity-30 border-none cursor-pointer"
+                className="p-1 rounded-lg text-[#89977B] hover:text-white bg-white/5 disabled:opacity-30 border-none cursor-pointer"
               >
                 <ChevronRight size={14} />
               </button>
@@ -324,7 +324,7 @@ ${htmlFile?.content || ''}
                 <button
                   onClick={() => setTab("code")}
                   className={`px-2.5 py-1 rounded-lg text-xs font-bold border-none cursor-pointer transition-colors ${
-                    tab === 'code' ? 'btn-liquid-gold' : 'text-[#789477] bg-transparent'
+                    tab === 'code' ? 'btn-liquid-gold' : 'text-[#89977B] bg-transparent'
                   }`}
                 >
                   Code
@@ -332,7 +332,7 @@ ${htmlFile?.content || ''}
                 <button
                   onClick={() => setTab("preview")}
                   className={`px-2.5 py-1 rounded-lg text-xs font-bold border-none cursor-pointer transition-colors ${
-                    tab === 'preview' ? 'btn-liquid-gold' : 'text-[#789477] bg-transparent'
+                    tab === 'preview' ? 'btn-liquid-gold' : 'text-[#89977B] bg-transparent'
                   }`}
                 >
                   Preview
@@ -343,13 +343,13 @@ ${htmlFile?.content || ''}
                 <div className="flex items-center gap-1 bg-white/5 p-0.5 rounded-lg border border-white/10">
                   <button
                     onClick={() => setDeviceView('desktop')}
-                    className={`p-1 rounded border-none cursor-pointer ${deviceView === 'desktop' ? 'bg-[#263B2B] text-white' : 'text-[#789477] bg-transparent'}`}
+                    className={`p-1 rounded border-none cursor-pointer ${deviceView === 'desktop' ? 'bg-[#30271F] text-white' : 'text-[#89977B] bg-transparent'}`}
                   >
                     <Monitor size={11} />
                   </button>
                   <button
                     onClick={() => setDeviceView('mobile')}
-                    className={`p-1 rounded border-none cursor-pointer ${deviceView === 'mobile' ? 'bg-[#263B2B] text-white' : 'text-[#789477] bg-transparent'}`}
+                    className={`p-1 rounded border-none cursor-pointer ${deviceView === 'mobile' ? 'bg-[#30271F] text-white' : 'text-[#89977B] bg-transparent'}`}
                   >
                     <Smartphone size={11} />
                   </button>
@@ -358,7 +358,7 @@ ${htmlFile?.content || ''}
             </div>
 
             {/* Monaco Editor or Preview Frame */}
-            <div className="flex-1 relative overflow-hidden bg-[#0C140E]">
+            <div className="flex-1 relative overflow-hidden bg-[#13100D]">
               {tab === 'code' ? (
                 <Editor
                   height="100%"

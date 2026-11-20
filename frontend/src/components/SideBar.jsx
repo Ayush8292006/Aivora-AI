@@ -59,13 +59,13 @@ function SideBar({ mobileMenuOpen, setMobileMenuOpen }) {
       {/* Top Header: Brand Mark + Pro Badge + Action */}
       <div className='flex items-center justify-between px-2 pt-1 pb-3 border-b border-white/10'>
         <div className='flex items-center gap-2.5'>
-          <div className='w-7 h-7 rounded-xl bg-gradient-to-br from-[#263B2B] to-[#14291F] border border-white/20 flex items-center justify-center font-bold text-xs text-[#E8DDC8] shadow-xs'>
+          <div className='w-7 h-7 rounded-xl bg-gradient-to-br from-[#30271F] to-[#211C16] border border-white/20 flex items-center justify-center font-bold text-xs text-[#E9DDC8] shadow-xs'>
             A
           </div>
-          <span className='text-[15px] font-bold tracking-tight text-[#F8F7F0]'>
+          <span className='text-[15px] font-bold tracking-tight text-[#F5F0E6]'>
             Aivora AI
           </span>
-          <span className='bg-gradient-to-r from-[#E8DDC8] to-[#C6A46A] text-[#14291F] font-extrabold text-[10px] px-2 py-0.5 rounded-full shadow-xs tracking-wider uppercase'>
+          <span className='bg-gradient-to-r from-[#E9DDC8] to-[#C9AD7C] text-[#211C16] font-extrabold text-[10px] px-2 py-0.5 rounded-full shadow-xs tracking-wider uppercase'>
             Pro
           </span>
         </div>
@@ -73,7 +73,7 @@ function SideBar({ mobileMenuOpen, setMobileMenuOpen }) {
         <div className='flex items-center gap-1'>
           <button 
             onClick={handleCreateConversation}
-            className='flex items-center justify-center w-7 h-7 rounded-lg text-[#E8DDC8]/80 hover:text-white hover:bg-white/10 transition-all border-none bg-transparent cursor-pointer'
+            className='flex items-center justify-center w-7 h-7 rounded-lg text-[#E9DDC8]/80 hover:text-white hover:bg-white/10 transition-all border-none bg-transparent cursor-pointer'
             title="New Chat"
           >
             <PenSquare size={14} />
@@ -81,7 +81,7 @@ function SideBar({ mobileMenuOpen, setMobileMenuOpen }) {
           {setMobileMenuOpen && (
             <button 
               onClick={() => setMobileMenuOpen(false)}
-              className='lg:hidden flex items-center justify-center w-7 h-7 rounded-lg text-[#789477] hover:text-white hover:bg-white/10 transition-all border-none bg-transparent cursor-pointer'
+              className='lg:hidden flex items-center justify-center w-7 h-7 rounded-lg text-[#89977B] hover:text-white hover:bg-white/10 transition-all border-none bg-transparent cursor-pointer'
             >
               <X size={15} />
             </button>
@@ -102,12 +102,12 @@ function SideBar({ mobileMenuOpen, setMobileMenuOpen }) {
 
       {/* Recents Section Header */}
       <div className='flex items-center justify-between px-2 pt-2 pb-1.5'>
-        <span className='text-[10.5px] font-bold text-[#789477] tracking-wider uppercase'>
+        <span className='text-[10.5px] font-bold text-[#89977B] tracking-wider uppercase'>
           Recents
         </span>
         <button 
           onClick={handleCreateConversation}
-          className='text-[10px] text-[#C6A46A] hover:text-[#E8DDC8] transition-colors bg-transparent border-none cursor-pointer font-medium'
+          className='text-[10px] text-[#C9AD7C] hover:text-[#E9DDC8] transition-colors bg-transparent border-none cursor-pointer font-medium'
         >
           {conversations?.length || 0} chats
         </button>
@@ -124,31 +124,31 @@ function SideBar({ mobileMenuOpen, setMobileMenuOpen }) {
                 onClick={() => handleSelectConv(conv)}
                 className={`group relative flex items-center justify-between gap-2.5 px-3 py-2.5 rounded-xl cursor-pointer transition-all duration-200 ${
                   isActive 
-                    ? "glass-active-chat text-[#F8F7F0] font-semibold" 
-                    : "bg-transparent hover:bg-white/5 text-[#E8DDC8]/70 hover:text-[#F8F7F0]"
+                    ? "glass-active-chat text-[#F5F0E6] font-semibold" 
+                    : "bg-transparent hover:bg-white/5 text-[#E9DDC8]/70 hover:text-[#F5F0E6]"
                 }`}
               >
                 <div className='flex items-center gap-2.5 min-w-0'>
                   <MessageSquare 
                     size={14} 
-                    className={`shrink-0 ${isActive ? 'text-[#C6A46A]' : 'text-[#789477] group-hover:text-[#E8DDC8]'}`} 
+                    className={`shrink-0 ${isActive ? 'text-[#C9AD7C]' : 'text-[#89977B] group-hover:text-[#E9DDC8]'}`} 
                   />
                   <span className='text-xs truncate'>
                     {conv?.title || "New Chat"}
                   </span>
                 </div>
 
-                {/* Glowing Active Dot */}
+                {/* Glowing Active Dot in Warm Champagne */}
                 {isActive && (
-                  <span className='w-1.5 h-1.5 rounded-full bg-[#789477] shrink-0 shadow-[0_0_6px_#789477]' />
+                  <span className='w-1.5 h-1.5 rounded-full bg-[#C9AD7C] shrink-0 shadow-[0_0_6px_#C9AD7C]' />
                 )}
               </div>
             )
           })
         ) : (
           <div className='flex flex-col items-center justify-center h-32 text-center px-4'>
-            <MessageSquare size={18} className='text-[#789477]/60 mb-2' />
-            <p className='text-xs text-[#789477]'>No conversations yet</p>
+            <MessageSquare size={18} className='text-[#89977B]/60 mb-2' />
+            <p className='text-xs text-[#89977B]'>No conversations yet</p>
           </div>
         )}
       </div>
@@ -167,23 +167,23 @@ function SideBar({ mobileMenuOpen, setMobileMenuOpen }) {
                     className='w-8 h-8 rounded-xl object-cover border border-white/20'
                   />
                 ) : (
-                  <div className='w-8 h-8 rounded-xl bg-[#263B2B] border border-white/20 flex items-center justify-center text-[#E8DDC8]'>
+                  <div className='w-8 h-8 rounded-xl bg-[#30271F] border border-white/20 flex items-center justify-center text-[#E9DDC8]'>
                     <UserIcon size={14} />
                   </div>
                 )}
                 {/* Active online dot */}
-                <span className='absolute -bottom-0.5 -right-0.5 w-2 h-2 rounded-full bg-[#789477] border border-[#14291F] shadow-[0_0_4px_#789477]'></span>
+                <span className='absolute -bottom-0.5 -right-0.5 w-2 h-2 rounded-full bg-[#89977B] border border-[#211C16] shadow-[0_0_4px_#89977B]'></span>
               </div>
 
               <div className='min-w-0'>
-                <p className='text-xs font-semibold text-[#F8F7F0] truncate leading-tight'>
+                <p className='text-xs font-semibold text-[#F5F0E6] truncate leading-tight'>
                   {userData?.name || "User"}
                 </p>
                 <div className='flex items-center gap-1.5 mt-0.5'>
-                  <span className='text-[10px] text-[#789477] truncate max-w-[80px] leading-tight'>
+                  <span className='text-[10px] text-[#89977B] truncate max-w-[80px] leading-tight'>
                     {userData?.email?.split('@')[0] || "Pro Workspace"}
                   </span>
-                  <span className='text-[9px] font-semibold text-[#C6A46A] bg-[#263B2B]/60 px-1.5 py-0.2 rounded-full border border-white/10'>
+                  <span className='text-[9px] font-semibold text-[#C9AD7C] bg-[#343B29]/70 px-1.5 py-0.2 rounded-full border border-white/10'>
                     Online
                   </span>
                 </div>
@@ -196,7 +196,7 @@ function SideBar({ mobileMenuOpen, setMobileMenuOpen }) {
                   logOut()
                   dispatch(setUserdata(null))
                 }}
-                className='p-1.5 rounded-lg text-[#789477] hover:text-red-400 hover:bg-white/10 transition-colors border-none bg-transparent cursor-pointer'
+                className='p-1.5 rounded-lg text-[#89977B] hover:text-red-400 hover:bg-white/10 transition-colors border-none bg-transparent cursor-pointer'
                 title="Log Out"
               >
                 <LogOut size={13} />
@@ -204,7 +204,7 @@ function SideBar({ mobileMenuOpen, setMobileMenuOpen }) {
             </div>
           </div>
         ) : (
-          <div className='p-2 text-center text-xs text-[#789477]'>
+          <div className='p-2 text-center text-xs text-[#89977B]'>
             Guest Session
           </div>
         )}

@@ -36,12 +36,13 @@ function Home() {
   }
 
   return (
-    <div className='relative h-screen w-screen bg-[#08100B] text-[#F8F7F0] overflow-hidden flex flex-col font-["Plus_Jakarta_Sans",sans-serif]'>
+    <div className='relative h-screen w-screen bg-[#181410] text-[#F5F0E6] overflow-hidden flex flex-col font-["Plus_Jakarta_Sans",sans-serif]'>
       
-      {/* Liquid Glass Ambient Lighting Refraction Pools */}
+      {/* Liquid Glass Ambient Lighting Refraction Pools (Deep Espresso, Dark Walnut, Rich Olive & Warm Champagne) */}
       <div className='liquid-ambient-bg'>
         <div className='liquid-light-pool-1'></div>
         <div className='liquid-light-pool-2'></div>
+        <div className='liquid-light-pool-3'></div>
       </div>
 
       {/* Main 3-Panel Dashboard Layout */}
@@ -57,11 +58,11 @@ function Home() {
       </div>
 
       {/* Mobile Bottom Glass Navigation Bar */}
-      <div className='relative z-20 lg:hidden flex items-center justify-around py-2.5 px-6 bg-[#102217]/85 backdrop-blur-2xl border-t border-white/10'>
+      <div className='relative z-20 lg:hidden flex items-center justify-around py-2.5 px-6 bg-[#211C16]/85 backdrop-blur-2xl border-t border-white/10'>
         <button
           onClick={() => setMobileTab('home')}
           className={`flex flex-col items-center gap-1 bg-transparent border-none cursor-pointer transition-colors ${
-            mobileTab === 'home' ? 'text-[#E8DDC8] font-bold' : 'text-[#789477] hover:text-[#F8F7F0]'
+            mobileTab === 'home' ? 'text-[#E9DDC8] font-bold' : 'text-[#89977B] hover:text-[#F5F0E6]'
           }`}
         >
           <MessageSquare size={17} />
@@ -70,7 +71,7 @@ function Home() {
         <button
           onClick={() => setMobileTab('explore')}
           className={`flex flex-col items-center gap-1 bg-transparent border-none cursor-pointer transition-colors ${
-            mobileTab === 'explore' ? 'text-[#E8DDC8] font-bold' : 'text-[#789477] hover:text-[#F8F7F0]'
+            mobileTab === 'explore' ? 'text-[#E9DDC8] font-bold' : 'text-[#89977B] hover:text-[#F5F0E6]'
           }`}
         >
           <Compass size={17} />
@@ -79,7 +80,7 @@ function Home() {
         <button
           onClick={() => setMobileTab('library')}
           className={`flex flex-col items-center gap-1 bg-transparent border-none cursor-pointer transition-colors ${
-            mobileTab === 'library' ? 'text-[#E8DDC8] font-bold' : 'text-[#789477] hover:text-[#F8F7F0]'
+            mobileTab === 'library' ? 'text-[#E9DDC8] font-bold' : 'text-[#89977B] hover:text-[#F5F0E6]'
           }`}
         >
           <BookOpen size={17} />
@@ -88,7 +89,7 @@ function Home() {
         <button
           onClick={() => setMobileTab('profile')}
           className={`flex flex-col items-center gap-1 bg-transparent border-none cursor-pointer transition-colors ${
-            mobileTab === 'profile' ? 'text-[#E8DDC8] font-bold' : 'text-[#789477] hover:text-[#F8F7F0]'
+            mobileTab === 'profile' ? 'text-[#E9DDC8] font-bold' : 'text-[#89977B] hover:text-[#F5F0E6]'
           }`}
         >
           <UserIcon size={17} />
@@ -102,28 +103,28 @@ function Home() {
           <div className='w-full max-w-[380px] glass-panel rounded-3xl p-7 flex flex-col gap-5 relative overflow-hidden shadow-2xl border border-white/15'>
             
             {/* Top Gloss Refraction highlight */}
-            <div className='absolute -top-16 -right-16 w-36 h-36 bg-[#C6A46A]/15 rounded-full blur-2xl pointer-events-none'></div>
+            <div className='absolute -top-16 -right-16 w-36 h-36 bg-[#C9AD7C]/15 rounded-full blur-2xl pointer-events-none'></div>
 
             {/* Header: Brand Mark + Name + Pro */}
             <div className='flex items-center gap-3'>
-              <div className='w-10 h-10 rounded-2xl bg-gradient-to-br from-[#263B2B] to-[#14291F] border border-white/20 flex items-center justify-center font-bold text-base text-[#E8DDC8] shadow-sm'>
+              <div className='w-10 h-10 rounded-2xl bg-gradient-to-br from-[#30271F] to-[#211C16] border border-white/20 flex items-center justify-center font-bold text-base text-[#E9DDC8] shadow-sm'>
                 A
               </div>
               <div>
                 <div className='flex items-center gap-2'>
-                  <h2 className='text-base font-bold text-[#F8F7F0] tracking-tight'>Aivora AI</h2>
-                  <span className='bg-gradient-to-r from-[#E8DDC8] to-[#C6A46A] text-[#14291F] font-extrabold text-[10px] px-2 py-0.5 rounded-full shadow-xs'>
+                  <h2 className='text-base font-bold text-[#F5F0E6] tracking-tight'>Aivora AI</h2>
+                  <span className='bg-gradient-to-r from-[#E9DDC8] to-[#C9AD7C] text-[#211C16] font-extrabold text-[10px] px-2 py-0.5 rounded-full shadow-xs'>
                     Pro
                   </span>
                 </div>
-                <p className='text-xs text-[#789477] font-medium'>Luxury Multi-Agent Workspace</p>
+                <p className='text-xs text-[#89977B] font-medium'>Luxury Multi-Agent Workspace</p>
               </div>
             </div>
 
             {/* Description */}
             <div className='flex flex-col gap-1 text-left'>
-              <p className='text-sm font-semibold text-[#F8F7F0]'>Welcome to your workspace</p>
-              <p className='text-xs text-[#E8DDC8]/70 leading-relaxed'>
+              <p className='text-sm font-semibold text-[#F5F0E6]'>Welcome to your workspace</p>
+              <p className='text-xs text-[#E9DDC8]/70 leading-relaxed'>
                 Sign in to create high-impact documents, presentations, research summaries, and code with multi-agent orchestration.
               </p>
             </div>
@@ -137,7 +138,7 @@ function Home() {
               <span>Continue with Google</span>
             </button>
 
-            <p className='text-[10.5px] text-center text-[#789477]'>
+            <p className='text-[10.5px] text-center text-[#89977B]'>
               Protected by multi-agent security & encrypted cloud storage.
             </p>
           </div>

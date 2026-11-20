@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import Markdown from 'react-markdown'
 import { 
   X, ZoomIn, Copy, Check, FileText, Presentation, 
-  Code2, ImageIcon, Download, ExternalLink, Sparkles 
+  Code2, ImageIcon, Download, ExternalLink 
 } from 'lucide-react'
 import remarkGfm from 'remark-gfm'
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
@@ -86,9 +86,9 @@ function MessageBubble({ role, content, images = [], artifacts = [], attachments
   const getArtifactIcon = (type) => {
     switch (type) {
       case 'pdf': return <FileText size={15} className="text-[#E57373]" />
-      case 'ppt': return <Presentation size={15} className="text-[#C6A46A]" />
-      case 'image': return <ImageIcon size={15} className="text-[#789477]" />
-      default: return <Code2 size={15} className="text-[#E8DDC8]" />
+      case 'ppt': return <Presentation size={15} className="text-[#C9AD7C]" />
+      case 'image': return <ImageIcon size={15} className="text-[#89977B]" />
+      default: return <Code2 size={15} className="text-[#E9DDC8]" />
     }
   }
 
@@ -102,12 +102,12 @@ function MessageBubble({ role, content, images = [], artifacts = [], attachments
             {attachments.map((att, idx) => (
               <div 
                 key={idx}
-                className="flex items-center gap-1.5 bg-[#263B2B]/60 border border-white/15 rounded-xl px-2.5 py-1 text-xs text-[#E8DDC8] shadow-sm backdrop-blur-md"
+                className="flex items-center gap-1.5 bg-[#30271F]/60 border border-white/15 rounded-xl px-2.5 py-1 text-xs text-[#E9DDC8] shadow-sm backdrop-blur-md"
               >
                 {att.kind === 'image' ? (
-                  <ImageIcon size={12} className="text-[#789477]" />
+                  <ImageIcon size={12} className="text-[#89977B]" />
                 ) : (
-                  <FileText size={12} className="text-[#C6A46A]" />
+                  <FileText size={12} className="text-[#C9AD7C]" />
                 )}
                 <span className="max-w-[150px] truncate text-[11px] font-medium">{att.name}</span>
               </div>
@@ -119,10 +119,10 @@ function MessageBubble({ role, content, images = [], artifacts = [], attachments
         <div className={`
           relative max-w-[94%] sm:max-w-[88%] md:max-w-[82%] transition-all duration-200
           ${isUser 
-            ? 'bg-[#263B2B]/75 border border-white/20 text-[#F8F7F0] rounded-2xl rounded-br-sm px-4 py-3 shadow-lg backdrop-blur-xl' 
+            ? 'bg-[#343B29]/75 border border-white/20 text-[#F5F0E6] rounded-2xl rounded-br-sm px-4 py-3 shadow-lg backdrop-blur-xl' 
             : isError
               ? 'bg-red-950/35 border border-red-500/35 text-red-200 rounded-2xl rounded-bl-sm p-4 backdrop-blur-xl'
-              : 'glass-card text-[#F8F7F0] rounded-2xl rounded-bl-sm p-4 sm:p-5 shadow-xl'
+              : 'glass-card text-[#F5F0E6] rounded-2xl rounded-bl-sm p-4 sm:p-5 shadow-xl'
           }
         `}>
           
@@ -130,20 +130,20 @@ function MessageBubble({ role, content, images = [], artifacts = [], attachments
           {!isUser && (
             <div className="flex items-center justify-between pb-2.5 mb-2.5 border-b border-white/10">
               <div className="flex items-center gap-2">
-                <div className="w-5 h-5 rounded-lg bg-gradient-to-br from-[#263B2B] to-[#14291F] border border-white/20 flex items-center justify-center text-[10px] font-bold text-[#E8DDC8] shadow-xs">
+                <div className="w-5 h-5 rounded-lg bg-gradient-to-br from-[#30271F] to-[#211C16] border border-white/20 flex items-center justify-center text-[10px] font-bold text-[#E9DDC8] shadow-xs">
                   A
                 </div>
-                <span className="text-xs font-bold text-[#F8F7F0] tracking-tight">Aivora AI</span>
-                <span className="w-1.5 h-1.5 rounded-full bg-[#789477] shadow-[0_0_6px_#789477]" />
+                <span className="text-xs font-bold text-[#F5F0E6] tracking-tight">Aivora AI</span>
+                <span className="w-1.5 h-1.5 rounded-full bg-[#C9AD7C] shadow-[0_0_6px_#C9AD7C]" />
               </div>
 
               {/* Action: Copy Message */}
               <button
                 onClick={copyFullMessage}
-                className="opacity-70 group-hover:opacity-100 p-1 rounded-md text-[#789477] hover:text-[#E8DDC8] hover:bg-white/10 transition-all border-none bg-transparent cursor-pointer"
+                className="opacity-70 group-hover:opacity-100 p-1 rounded-md text-[#89977B] hover:text-[#E9DDC8] hover:bg-white/10 transition-all border-none bg-transparent cursor-pointer"
                 title="Copy response"
               >
-                {copiedMessage ? <Check size={12} className="text-[#789477]" /> : <Copy size={12} />}
+                {copiedMessage ? <Check size={12} className="text-[#89977B]" /> : <Copy size={12} />}
               </button>
             </div>
           )}
@@ -154,7 +154,7 @@ function MessageBubble({ role, content, images = [], artifacts = [], attachments
               remarkPlugins={[remarkGfm]}
               components={{
                 strong({ children }) {
-                  return <strong className="text-[#E8DDC8] font-bold">{children}</strong>
+                  return <strong className="text-[#E9DDC8] font-bold">{children}</strong>
                 },
                 a({ href, children }) {
                   return (
@@ -162,7 +162,7 @@ function MessageBubble({ role, content, images = [], artifacts = [], attachments
                       href={href} 
                       target="_blank" 
                       rel="noreferrer" 
-                      className="text-[#C6A46A] hover:text-[#E8DDC8] underline decoration-[#C6A46A]/40 transition-colors"
+                      className="text-[#C9AD7C] hover:text-[#E9DDC8] underline decoration-[#C9AD7C]/45 transition-colors"
                     >
                       {children}
                     </a>
@@ -174,14 +174,14 @@ function MessageBubble({ role, content, images = [], artifacts = [], attachments
                   const codeIndex = node?.position?.start?.line || 0
 
                   return !inline && match ? (
-                    <div className="relative my-3 rounded-xl overflow-hidden border border-white/12 bg-[#0C140E]/90 shadow-lg">
-                      <div className="flex items-center justify-between px-3.5 py-1.5 bg-[#14291F]/60 border-b border-white/10 text-xs text-[#789477]">
-                        <span className="font-mono text-[11px] text-[#C6A46A]">{match[1]}</span>
+                    <div className="relative my-3 rounded-xl overflow-hidden border border-white/12 bg-[#17130F]/90 shadow-lg">
+                      <div className="flex items-center justify-between px-3.5 py-1.5 bg-[#211C16]/70 border-b border-white/10 text-xs text-[#89977B]">
+                        <span className="font-mono text-[11px] text-[#C9AD7C]">{match[1]}</span>
                         <button
                           onClick={() => copyToClipboard(codeString, codeIndex)}
-                          className="flex items-center gap-1.5 hover:text-white transition-colors bg-transparent border-none cursor-pointer py-0.5 text-[#789477]"
+                          className="flex items-center gap-1.5 hover:text-white transition-colors bg-transparent border-none cursor-pointer py-0.5 text-[#89977B]"
                         >
-                          {copiedCode === codeIndex ? <Check size={12} className="text-[#789477]" /> : <Copy size={12} />}
+                          {copiedCode === codeIndex ? <Check size={12} className="text-[#89977B]" /> : <Copy size={12} />}
                           <span className="text-[11px]">{copiedCode === codeIndex ? 'Copied' : 'Copy'}</span>
                         </button>
                       </div>
@@ -196,7 +196,7 @@ function MessageBubble({ role, content, images = [], artifacts = [], attachments
                       </SyntaxHighlighter>
                     </div>
                   ) : (
-                    <code className="bg-[#14291F]/80 text-[#E8DDC8] px-1.5 py-0.5 rounded-md text-xs font-mono border border-white/10" {...props}>
+                    <code className="bg-[#211C16]/80 text-[#E9DDC8] px-1.5 py-0.5 rounded-md text-xs font-mono border border-white/10" {...props}>
                       {children}
                     </code>
                   )
@@ -214,7 +214,7 @@ function MessageBubble({ role, content, images = [], artifacts = [], attachments
                 <div 
                   key={idx}
                   onClick={() => openLightbox(url)}
-                  className="group/img relative rounded-xl overflow-hidden border border-white/15 bg-black/30 aspect-[4/3] cursor-pointer hover:border-white/30 transition-all shadow-md"
+                  className="group/img relative rounded-xl overflow-hidden border border-white/15 bg-black/35 aspect-[4/3] cursor-pointer hover:border-white/30 transition-all shadow-md"
                 >
                   <img
                     src={url}
@@ -236,20 +236,20 @@ function MessageBubble({ role, content, images = [], artifacts = [], attachments
               {artifacts.map((art, aIdx) => (
                 <div
                   key={art.id || aIdx}
-                  className="flex items-center justify-between gap-3 p-3 rounded-xl bg-[#14291F]/45 border border-white/10 hover:border-white/25 transition-all shadow-xs"
+                  className="flex items-center justify-between gap-3 p-3 rounded-xl bg-[#211C16]/55 border border-white/10 hover:border-white/25 transition-all shadow-xs"
                 >
                   <div className="flex items-center gap-2.5 min-w-0">
-                    <div className="p-2 rounded-lg bg-[#263B2B]/60 border border-white/15 shadow-xs">
+                    <div className="p-2 rounded-lg bg-[#343B29]/70 border border-white/15 shadow-xs">
                       {getArtifactIcon(art.type)}
                     </div>
                     <div className="min-w-0">
                       <div className="flex items-center gap-2">
-                        <p className="text-xs font-bold text-[#F8F7F0] truncate">{art.title}</p>
-                        <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-white/5 text-[#E8DDC8] border border-white/10">
+                        <p className="text-xs font-bold text-[#F5F0E6] truncate">{art.title}</p>
+                        <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-white/5 text-[#E9DDC8] border border-white/10">
                           v{art.version || 1}
                         </span>
                       </div>
-                      <p className="text-[11px] text-[#789477] capitalize">{art.type} Artifact</p>
+                      <p className="text-[11px] text-[#89977B] capitalize">{art.type} Artifact</p>
                     </div>
                   </div>
 
@@ -267,7 +267,7 @@ function MessageBubble({ role, content, images = [], artifacts = [], attachments
                     {art.url && (
                       <button
                         onClick={() => handleDownloadFile(art.url, art.title)}
-                        className="flex items-center gap-1 p-1.5 rounded-lg text-[#789477] hover:text-[#E8DDC8] hover:bg-white/10 transition-colors border-none bg-transparent cursor-pointer"
+                        className="flex items-center gap-1 p-1.5 rounded-lg text-[#89977B] hover:text-[#E9DDC8] hover:bg-white/10 transition-colors border-none bg-transparent cursor-pointer"
                         title="Download"
                       >
                         <Download size={13} />
@@ -295,14 +295,14 @@ function MessageBubble({ role, content, images = [], artifacts = [], attachments
                 e.stopPropagation()
                 handleDownloadFile(lightboxImage, 'image.png')
               }}
-              className="text-[#E8DDC8] hover:text-white glass-card p-2 rounded-xl transition-all cursor-pointer"
+              className="text-[#E9DDC8] hover:text-white glass-card p-2 rounded-xl transition-all cursor-pointer"
               title="Download Image"
             >
               <Download size={18} />
             </button>
             <button
               onClick={closeLightbox}
-              className="text-[#789477] hover:text-white glass-card p-2 rounded-xl transition-all cursor-pointer"
+              className="text-[#89977B] hover:text-white glass-card p-2 rounded-xl transition-all cursor-pointer"
             >
               <X size={18} />
             </button>

@@ -314,11 +314,11 @@ function ChatInput() {
                   shrink-0 cursor-pointer inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-semibold transition-all duration-200 border-none
                   ${isActive
                     ? "btn-liquid-gold shadow-md"
-                    : "bg-white/5 hover:bg-white/10 text-[#E8DDC8]/70 hover:text-white"
+                    : "bg-white/5 hover:bg-white/10 text-[#E9DDC8]/70 hover:text-white"
                   }
                 `}
               >
-                <Icon size={12} className={isActive ? 'text-[#14291F]' : 'text-[#789477]'} />
+                <Icon size={12} className={isActive ? 'text-[#211C16]' : 'text-[#89977B]'} />
                 <span>{agent.label}</span>
               </button>
             )
@@ -331,21 +331,21 @@ function ChatInput() {
             {attachments.map((att) => (
               <div
                 key={att.id}
-                className="relative flex items-center gap-2 bg-[#263B2B]/60 border border-white/15 rounded-xl px-2.5 py-1 text-xs text-[#E8DDC8] shadow-sm backdrop-blur-md"
+                className="relative flex items-center gap-2 bg-[#30271F]/60 border border-white/15 rounded-xl px-2.5 py-1 text-xs text-[#E9DDC8] shadow-sm backdrop-blur-md"
               >
                 {att.kind === "image" && att.previewUrl ? (
                   <img src={att.previewUrl} alt="thumb" className="w-5 h-5 rounded object-cover" />
                 ) : (
-                  <FileText size={13} className="text-[#C6A46A]" />
+                  <FileText size={13} className="text-[#C9AD7C]" />
                 )}
                 <span className="max-w-[130px] truncate text-[11px]">{att.name}</span>
 
                 {att.uploading ? (
-                  <Loader2 size={12} className="animate-spin text-[#789477] ml-1" />
+                  <Loader2 size={12} className="animate-spin text-[#89977B] ml-1" />
                 ) : (
                   <button
                     onClick={() => handleRemoveAttachment(att.id)}
-                    className="text-[#789477] hover:text-red-400 transition-colors p-0.5 rounded cursor-pointer border-none bg-transparent"
+                    className="text-[#89977B] hover:text-red-400 transition-colors p-0.5 rounded cursor-pointer border-none bg-transparent"
                   >
                     <X size={12} />
                   </button>
@@ -362,15 +362,15 @@ function ChatInput() {
           value={value}
           onKeyDown={handleKeyDown}
           disabled={isLoading}
-          className="w-full bg-transparent outline-none resize-none text-[13.5px] text-[#F8F7F0] placeholder:text-[#789477]/80 leading-relaxed [scrollbar-width:none] [&::-webkit-scrollbar]:hidden disabled:opacity-50 min-h-[38px] max-h-[120px]"
+          className="w-full bg-transparent outline-none resize-none text-[13.5px] text-[#F5F0E6] placeholder:text-[#89977B]/80 leading-relaxed [scrollbar-width:none] [&::-webkit-scrollbar]:hidden disabled:opacity-50 min-h-[38px] max-h-[120px]"
           rows={1}
         />
 
         {/* Status Bubble while running */}
         {isLoading && statusMessage && (
-          <div className="flex items-center justify-between bg-white/5 border border-white/10 rounded-xl px-3 py-1.5 text-xs text-[#E8DDC8] backdrop-blur-md">
+          <div className="flex items-center justify-between bg-white/5 border border-white/10 rounded-xl px-3 py-1.5 text-xs text-[#E9DDC8] backdrop-blur-md">
             <div className="flex items-center gap-2">
-              <Loader2 size={12} className="animate-spin text-[#C6A46A]" />
+              <Loader2 size={12} className="animate-spin text-[#C9AD7C]" />
               <span className="text-[11.5px] font-medium">{statusMessage}</span>
             </div>
             <button
@@ -389,7 +389,7 @@ function ChatInput() {
             <button 
               type="button"
               onClick={() => fileInputRef.current?.click()}
-              className='flex items-center justify-center w-7 h-7 rounded-lg text-[#789477] hover:text-[#E8DDC8] hover:bg-white/10 transition-all bg-transparent border-none cursor-pointer disabled:opacity-50'
+              className='flex items-center justify-center w-7 h-7 rounded-lg text-[#89977B] hover:text-[#E9DDC8] hover:bg-white/10 transition-all bg-transparent border-none cursor-pointer disabled:opacity-50'
               disabled={isLoading || isUploading}
               title="Attach File or Image"
             >
@@ -397,7 +397,7 @@ function ChatInput() {
             </button>
             <button 
               type="button"
-              className='flex items-center justify-center w-7 h-7 rounded-lg text-[#789477] hover:text-[#E8DDC8] hover:bg-white/10 transition-all bg-transparent border-none cursor-pointer disabled:opacity-50'
+              className='flex items-center justify-center w-7 h-7 rounded-lg text-[#89977B] hover:text-[#E9DDC8] hover:bg-white/10 transition-all bg-transparent border-none cursor-pointer disabled:opacity-50'
               disabled={isLoading}
               title="Voice Input"
             >
@@ -407,7 +407,7 @@ function ChatInput() {
               type="button"
               onClick={() => setSelectedAgent("Search")}
               className={`flex items-center justify-center w-7 h-7 rounded-lg transition-all bg-transparent border-none cursor-pointer ${
-                selectedAgent === 'Search' ? 'text-[#E8DDC8] bg-white/15' : 'text-[#789477] hover:text-[#E8DDC8] hover:bg-white/10'
+                selectedAgent === 'Search' ? 'text-[#E9DDC8] bg-white/15' : 'text-[#89977B] hover:text-[#E9DDC8] hover:bg-white/10'
               }`}
               title="Web Search Mode"
             >
@@ -422,11 +422,11 @@ function ChatInput() {
             className={`w-9 h-9 rounded-full flex items-center justify-center border-none cursor-pointer transition-all duration-200 ${
               (value.trim() || attachments.length > 0) && !isLoading && !isUploading
                 ? "btn-liquid-gold shadow-lg hover:scale-105 active:scale-95" 
-                : "bg-white/5 text-[#789477]/50 cursor-not-allowed"
+                : "bg-white/5 text-[#89977B]/50 cursor-not-allowed"
             }`}
           >
             {isLoading ? (
-              <Loader2 size={15} className="animate-spin text-[#14291F]" />
+              <Loader2 size={15} className="animate-spin text-[#211C16]" />
             ) : (
               <Send size={14} className="translate-x-[1px]" />
             )}

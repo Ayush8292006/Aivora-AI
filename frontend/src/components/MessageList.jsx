@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react'
 import { useSelector } from 'react-redux'
 import MessageBubble from './MessageBubble'
-import { FileText, Presentation, ImageIcon, Code2, ArrowUpRight } from 'lucide-react'
+import { FileText, Presentation, ImageIcon, ArrowUpRight } from 'lucide-react'
 
 function MessageList() {
   const { selectedConversation } = useSelector(state => state.conversation)
@@ -30,18 +30,18 @@ function MessageList() {
         <div className='h-full flex flex-col items-center justify-center gap-6 text-center py-8 px-4 relative'>
           
           {/* Subtle Ambient Light Glow behind welcome icon */}
-          <div className='absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-[#C6A46A]/10 rounded-full blur-3xl pointer-events-none'></div>
+          <div className='absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-[#C9AD7C]/12 rounded-full blur-3xl pointer-events-none'></div>
           
           <div className='flex flex-col items-center gap-3.5 relative z-10'>
-            <div className='w-16 h-16 rounded-2xl bg-gradient-to-br from-[#263B2B] to-[#14291F] border border-white/20 flex items-center justify-center shadow-xl shadow-black/40'>
-              <span className='text-2xl text-[#E8DDC8] font-bold'>A</span>
+            <div className='w-16 h-16 rounded-2xl bg-gradient-to-br from-[#30271F] to-[#211C16] border border-white/20 flex items-center justify-center shadow-xl shadow-black/40'>
+              <span className='text-2xl text-[#E9DDC8] font-bold'>A</span>
             </div>
             
             <div className='flex flex-col gap-1'>
-              <h2 className='text-xl sm:text-2xl font-bold text-[#F8F7F0] tracking-tight'>
+              <h2 className='text-xl sm:text-2xl font-bold text-[#F5F0E6] tracking-tight'>
                 How can I help you today?
               </h2>
-              <p className='text-xs sm:text-sm text-[#789477] max-w-md leading-relaxed'>
+              <p className='text-xs sm:text-sm text-[#89977B] max-w-md leading-relaxed'>
                 Multi-agent workspace: chat, search, code, generate PDF documents, presentation decks & graphics.
               </p>
             </div>
@@ -57,19 +57,19 @@ function MessageList() {
                   className='glass-card-interactive p-3 rounded-xl flex items-center justify-between gap-3 text-left cursor-pointer group'
                 >
                   <div className='flex items-center gap-2.5 min-w-0'>
-                    <div className='w-7 h-7 rounded-lg bg-[#263B2B]/60 flex items-center justify-center text-[#E8DDC8] shrink-0 border border-white/10'>
+                    <div className='w-7 h-7 rounded-lg bg-[#343B29]/70 flex items-center justify-center text-[#E9DDC8] shrink-0 border border-white/10'>
                       <Icon size={13} />
                     </div>
                     <div className='min-w-0'>
-                      <span className='text-[10px] font-bold text-[#C6A46A] uppercase tracking-wider block'>
+                      <span className='text-[10px] font-bold text-[#C9AD7C] uppercase tracking-wider block'>
                         {s.type}
                       </span>
-                      <span className='text-xs text-[#E8DDC8]/85 group-hover:text-white transition-colors truncate block'>
+                      <span className='text-xs text-[#E9DDC8]/85 group-hover:text-white transition-colors truncate block'>
                         {s.text}
                       </span>
                     </div>
                   </div>
-                  <ArrowUpRight size={13} className='text-[#789477] group-hover:text-[#E8DDC8] shrink-0 transition-colors' />
+                  <ArrowUpRight size={13} className='text-[#89977B] group-hover:text-[#E9DDC8] shrink-0 transition-colors' />
                 </div>
               )
             })}
