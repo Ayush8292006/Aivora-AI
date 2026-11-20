@@ -54,18 +54,18 @@ function SideBar({ mobileMenuOpen, setMobileMenuOpen }) {
   }
 
   const sidebarContent = (
-    <div className='flex flex-col h-full w-full bg-[#F3EFE6] rounded-2xl p-3.5 relative overflow-hidden border border-[#DFD9CC] select-none'>
+    <div className='flex flex-col h-full w-full bg-[#D8D0BF] rounded-2xl p-3.5 relative overflow-hidden border border-[#BEB49F] select-none'>
       
       {/* Top Header: Brand Mark + Pro Badge + Action */}
-      <div className='flex items-center justify-between px-2 pt-1 pb-3 border-b border-[#DFD9CC]'>
+      <div className='flex items-center justify-between px-2 pt-1 pb-3 border-b border-[#BEB49F]'>
         <div className='flex items-center gap-2.5'>
-          <div className='w-7 h-7 rounded-full bg-[#24201C] text-[#F3EFE6] flex items-center justify-center font-bold text-xs shadow-xs'>
+          <div className='w-7 h-7 rounded-full bg-[#24201C] text-[#D8D0BF] flex items-center justify-center font-bold text-xs shadow-xs'>
             A
           </div>
-          <span className='text-[15px] font-bold tracking-tight text-[#23211E]'>
+          <span className='text-[15px] font-bold tracking-tight text-[#1E1B18]'>
             Aivora AI
           </span>
-          <span className='bg-[#24201C] text-[#F3EFE6] font-bold text-[10px] px-2 py-0.5 rounded-full uppercase tracking-wider'>
+          <span className='bg-[#24201C] text-[#D8D0BF] font-bold text-[10px] px-2 py-0.5 rounded-full uppercase tracking-wider'>
             PRO
           </span>
         </div>
@@ -73,7 +73,7 @@ function SideBar({ mobileMenuOpen, setMobileMenuOpen }) {
         <div className='flex items-center gap-1'>
           <button 
             onClick={handleCreateConversation}
-            className='flex items-center justify-center w-7 h-7 rounded-lg text-[#7A7469] hover:text-[#23211E] hover:bg-[#EAE4D8] transition-all border-none bg-transparent cursor-pointer'
+            className='flex items-center justify-center w-7 h-7 rounded-lg text-[#696256] hover:text-[#1E1B18] hover:bg-[#CCC3B0] transition-all border-none bg-transparent cursor-pointer'
             title="New Chat"
           >
             <PenSquare size={14} />
@@ -81,7 +81,7 @@ function SideBar({ mobileMenuOpen, setMobileMenuOpen }) {
           {setMobileMenuOpen && (
             <button 
               onClick={() => setMobileMenuOpen(false)}
-              className='lg:hidden flex items-center justify-center w-7 h-7 rounded-lg text-[#7A7469] hover:text-[#23211E] hover:bg-[#EAE4D8] transition-all border-none bg-transparent cursor-pointer'
+              className='lg:hidden flex items-center justify-center w-7 h-7 rounded-lg text-[#696256] hover:text-[#1E1B18] hover:bg-[#CCC3B0] transition-all border-none bg-transparent cursor-pointer'
             >
               <X size={15} />
             </button>
@@ -93,7 +93,7 @@ function SideBar({ mobileMenuOpen, setMobileMenuOpen }) {
       <div className='py-3 px-1'>
         <button 
           onClick={handleCreateConversation}
-          className='w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-xs font-semibold bg-[#2F3D2E] hover:bg-[#253124] text-white border-none cursor-pointer tracking-wide shadow-xs transition-colors'
+          className='w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-xs font-semibold bg-[#243223] hover:bg-[#1A2619] text-white border-none cursor-pointer tracking-wide shadow-xs transition-colors'
         >
           <Plus size={14} />
           <span>New Chat</span>
@@ -102,12 +102,12 @@ function SideBar({ mobileMenuOpen, setMobileMenuOpen }) {
 
       {/* Recents Section Header */}
       <div className='flex items-center justify-between px-2 pt-2 pb-1.5'>
-        <span className='text-[10.5px] font-bold text-[#7A7469] tracking-wider uppercase'>
+        <span className='text-[10.5px] font-bold text-[#696256] tracking-wider uppercase'>
           RECENTS
         </span>
         <button 
           onClick={handleCreateConversation}
-          className='text-[10.5px] text-[#7A7469] hover:text-[#23211E] transition-colors bg-transparent border-none cursor-pointer font-medium'
+          className='text-[10.5px] text-[#696256] hover:text-[#1E1B18] transition-colors bg-transparent border-none cursor-pointer font-medium'
         >
           {conversations?.length || 0} chats
         </button>
@@ -124,14 +124,14 @@ function SideBar({ mobileMenuOpen, setMobileMenuOpen }) {
                 onClick={() => handleSelectConv(conv)}
                 className={`group relative flex items-center justify-between gap-2.5 px-3 py-2.5 rounded-xl cursor-pointer transition-all duration-150 ${
                   isActive 
-                    ? "bg-[#D8DFD2] border border-[#BAC6B1] text-[#23211E] font-semibold" 
-                    : "bg-transparent hover:bg-[#EAE4D8] text-[#23211E] border border-transparent"
+                    ? "bg-[#B6C6AE] border border-[#9BB091] text-[#1E1B18] font-semibold" 
+                    : "bg-transparent hover:bg-[#CCC3B0] text-[#1E1B18] border border-transparent"
                 }`}
               >
                 <div className='flex items-center gap-2.5 min-w-0'>
                   <MessageSquare 
                     size={14} 
-                    className={`shrink-0 ${isActive ? 'text-[#23211E]' : 'text-[#7A7469] group-hover:text-[#23211E]'}`} 
+                    className={`shrink-0 ${isActive ? 'text-[#1E1B18]' : 'text-[#696256] group-hover:text-[#1E1B18]'}`} 
                   />
                   <span className='text-xs truncate'>
                     {conv?.title || "New Chat"}
@@ -140,23 +140,23 @@ function SideBar({ mobileMenuOpen, setMobileMenuOpen }) {
 
                 {/* Active Indicator Dot */}
                 {isActive && (
-                  <span className='w-2 h-2 rounded-full bg-[#6C8461] shrink-0' />
+                  <span className='w-2 h-2 rounded-full bg-[#4A653C] shrink-0' />
                 )}
               </div>
             )
           })
         ) : (
           <div className='flex flex-col items-center justify-center h-32 text-center px-4'>
-            <MessageSquare size={18} className='text-[#7A7469]/50 mb-2' />
-            <p className='text-xs text-[#7A7469]'>No conversations yet</p>
+            <MessageSquare size={18} className='text-[#696256]/50 mb-2' />
+            <p className='text-xs text-[#696256]'>No conversations yet</p>
           </div>
         )}
       </div>
 
       {/* Bottom User Profile Section */}
-      <div className='pt-2 mt-auto border-t border-[#DFD9CC]'>
+      <div className='pt-2 mt-auto border-t border-[#BEB49F]'>
         {userData ? (
-          <div className='bg-[#E7E1D5] border border-[#D8D1C3] rounded-2xl p-2.5 flex items-center justify-between gap-2'>
+          <div className='bg-[#C9BFAC] border border-[#B3A894] rounded-2xl p-2.5 flex items-center justify-between gap-2'>
             <div className='flex items-center gap-2.5 min-w-0'>
               <div className='relative shrink-0'>
                 {userData?.avatar && !imageError ? (
@@ -164,33 +164,33 @@ function SideBar({ mobileMenuOpen, setMobileMenuOpen }) {
                     src={userData.avatar} 
                     alt="avatar" 
                     onError={() => setImageError(true)}
-                    className='w-8 h-8 rounded-full object-cover border border-[#DFD9CC]'
+                    className='w-8 h-8 rounded-full object-cover border border-[#BEB49F]'
                   />
                 ) : (
-                  <div className='w-8 h-8 rounded-full bg-[#DFD9CC] flex items-center justify-center text-[#23211E]'>
+                  <div className='w-8 h-8 rounded-full bg-[#B3A894] flex items-center justify-center text-[#1E1B18]'>
                     <UserIcon size={14} />
                   </div>
                 )}
               </div>
 
               <div className='min-w-0'>
-                <p className='text-xs font-semibold text-[#23211E] truncate leading-tight'>
+                <p className='text-xs font-semibold text-[#1E1B18] truncate leading-tight'>
                   {userData?.name || "Ayush Kumar"}
                 </p>
-                <p className='text-[10px] text-[#7A7469] truncate max-w-[85px] leading-tight mt-0.5'>
+                <p className='text-[10px] text-[#696256] truncate max-w-[85px] leading-tight mt-0.5'>
                   {userData?.email?.split('@')[0] || "viterkerkaai0475"}
                 </p>
               </div>
             </div>
 
             <div className='flex items-center gap-1 shrink-0'>
-              <span className='w-2 h-2 rounded-full bg-[#6C8461] mr-1' />
+              <span className='w-2 h-2 rounded-full bg-[#4A653C] mr-1' />
               <button 
                 onClick={() => {
                   logOut()
                   dispatch(setUserdata(null))
                 }}
-                className='p-1 rounded-lg text-[#7A7469] hover:text-[#23211E] hover:bg-[#DFD9CC] transition-colors border-none bg-transparent cursor-pointer'
+                className='p-1 rounded-lg text-[#696256] hover:text-[#1E1B18] hover:bg-[#B3A894] transition-colors border-none bg-transparent cursor-pointer'
                 title="Log Out"
               >
                 <LogOut size={13} />
@@ -198,7 +198,7 @@ function SideBar({ mobileMenuOpen, setMobileMenuOpen }) {
             </div>
           </div>
         ) : (
-          <div className='p-2 text-center text-xs text-[#7A7469]'>
+          <div className='p-2 text-center text-xs text-[#696256]'>
             Guest Session
           </div>
         )}

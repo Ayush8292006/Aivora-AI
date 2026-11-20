@@ -2,33 +2,33 @@
 
 @layer base {
   :root {
-    --bg-outer: #E8E3D9;
-    --sidebar-bg: #F3EFE6;
-    --sidebar-border: #DFD9CC;
-    --chat-bg: #F9F8F4;
-    --chat-border: #E2DDD2;
+    --bg-outer: #C7BEAD;
+    --sidebar-bg: #D8D0BF;
+    --sidebar-border: #BEB49F;
+    --chat-bg: #E0D8C8;
+    --chat-border: #C6BEAA;
     --preview-bg: #141413;
     --preview-border: #2A2825;
-    --olive-btn: #2F3D2E;
-    --olive-active: #5A523B;
-    --olive-dot: #6C8461;
-    --sage-active-bg: #D8DFD2;
-    --sage-active-border: #BAC6B1;
-    --espresso-btn: #2E2822;
-    --ai-card-bg: #EFECE4;
-    --ai-card-border: #DDD7C9;
-    --artifact-bg: #F8F6F1;
-    --artifact-border: #E4DEC9;
-    --user-bubble: #8E8477;
-    --text-primary: #23211E;
-    --text-secondary: #7A7469;
-    --stone-pill: #E4DFD4;
-    --stone-pill-text: #3A3630;
+    --olive-btn: #243223;
+    --olive-active: #3E4D3A;
+    --olive-dot: #4A653C;
+    --sage-active-bg: #B6C6AE;
+    --sage-active-border: #9BB091;
+    --espresso-btn: #241F1A;
+    --ai-card-bg: #D3CABE;
+    --ai-card-border: #BCB29F;
+    --artifact-bg: #DDD4C5;
+    --artifact-border: #C4B9A4;
+    --user-bubble: #645A4C;
+    --text-primary: #1E1B18;
+    --text-secondary: #696256;
+    --stone-pill: #C5BCAB;
+    --stone-pill-text: #2A2621;
   }
 
   body {
-    background-color: #E8E3D9;
-    color: #23211E;
+    background-color: #C7BEAD;
+    color: #1E1B18;
     font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -44,11 +44,11 @@
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: #D8D1C3;
+  background: #B8AE9A;
   border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #B8B0A2;
+  background: #9D927E;
 }
 
 /* Dark Panel Scrollbar */
@@ -61,7 +61,7 @@
 
 /* Prose for AI Cream Cards */
 .prose-editorial-cream {
-  color: #23211E;
+  color: #1E1B18;
   font-size: 0.9375rem;
   line-height: 1.6;
 }
@@ -85,9 +85,9 @@
 }
 
 .prose-editorial-cream a {
-  color: #2F3D2E;
+  color: #243223;
   text-decoration: underline;
-  text-decoration-color: #8E8477;
+  text-decoration-color: #645A4C;
   text-underline-offset: 3px;
   transition: color 0.15s ease;
 }
@@ -98,17 +98,17 @@
 .prose-editorial-cream code {
   font-family: 'JetBrains Mono', monospace;
   font-size: 0.85em;
-  background-color: #E5DFD3;
-  color: #23211E;
+  background-color: #C8BEAC;
+  color: #1E1B18;
   padding: 0.15em 0.4em;
   border-radius: 5px;
-  border: 1px solid #DCD5C7;
+  border: 1px solid #B8AE9A;
 }
 
 .prose-editorial-cream blockquote {
-  border-left: 3px solid #6C8461;
+  border-left: 3px solid #4A653C;
   padding-left: 0.9rem;
   margin: 0.8rem 0;
-  color: #555149;
+  color: #4A443B;
   font-style: italic;
 }

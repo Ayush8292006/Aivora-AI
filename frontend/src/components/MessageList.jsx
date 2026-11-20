@@ -30,15 +30,15 @@ function MessageList() {
         <div className='h-full flex flex-col items-center justify-center gap-5 text-center py-8 px-4'>
           
           <div className='flex flex-col items-center gap-3'>
-            <div className='w-12 h-12 rounded-full bg-[#24201C] text-[#F3EFE6] flex items-center justify-center font-bold text-lg shadow-xs'>
+            <div className='w-12 h-12 rounded-full bg-[#24201C] text-[#D8D0BF] flex items-center justify-center font-bold text-lg shadow-xs'>
               A
             </div>
             
             <div className='flex flex-col gap-1'>
-              <h2 className='text-xl sm:text-2xl font-bold text-[#23211E] tracking-tight'>
+              <h2 className='text-xl sm:text-2xl font-bold text-[#1E1B18] tracking-tight'>
                 How can I help you today?
               </h2>
-              <p className='text-xs sm:text-sm text-[#7A7469] max-w-md leading-relaxed'>
+              <p className='text-xs sm:text-sm text-[#696256] max-w-md leading-relaxed'>
                 Multi-agent workspace: chat, search, code, generate PDF documents, presentation decks & graphics.
               </p>
             </div>
@@ -51,22 +51,22 @@ function MessageList() {
               return (
                 <div 
                   key={index}
-                  className='bg-[#EFECE4] hover:bg-[#EAE4D8] border border-[#DDD7C9] p-3 rounded-xl flex items-center justify-between gap-3 text-left cursor-pointer transition-colors shadow-2xs group'
+                  className='bg-[#D3CABE] hover:bg-[#CCC3B0] border border-[#BCB29F] p-3 rounded-xl flex items-center justify-between gap-3 text-left cursor-pointer transition-colors shadow-2xs group'
                 >
                   <div className='flex items-center gap-2.5 min-w-0'>
-                    <div className='w-7 h-7 rounded-lg bg-[#F8F6F1] flex items-center justify-center text-[#23211E] shrink-0 border border-[#E4DEC9]'>
+                    <div className='w-7 h-7 rounded-lg bg-[#DDD4C5] flex items-center justify-center text-[#1E1B18] shrink-0 border border-[#C4B9A4]'>
                       <Icon size={13} />
                     </div>
                     <div className='min-w-0'>
-                      <span className='text-[10px] font-bold text-[#6C8461] uppercase tracking-wider block'>
+                      <span className='text-[10px] font-bold text-[#4A653C] uppercase tracking-wider block'>
                         {s.type}
                       </span>
-                      <span className='text-xs text-[#23211E] group-hover:text-black transition-colors truncate block'>
+                      <span className='text-xs text-[#1E1B18] group-hover:text-black transition-colors truncate block'>
                         {s.text}
                       </span>
                     </div>
                   </div>
-                  <ArrowUpRight size={13} className='text-[#7A7469] group-hover:text-[#23211E] shrink-0 transition-colors' />
+                  <ArrowUpRight size={13} className='text-[#696256] group-hover:text-[#1E1B18] shrink-0 transition-colors' />
                 </div>
               )
             })}
