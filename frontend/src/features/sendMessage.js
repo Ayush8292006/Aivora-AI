@@ -19,6 +19,7 @@ async function sendMessage(payload, signal) {
     console.error('❌ Error sending message:', error.response?.data || error.message)
     return {
       success: false,
+      ...(error.response?.data || {}),
       error: error.response?.data?.message || error.message || 'Failed to send message'
     }
   }

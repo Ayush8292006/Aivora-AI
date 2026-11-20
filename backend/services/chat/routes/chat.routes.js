@@ -1,5 +1,5 @@
 import express from "express"
-import { createConversation, deleteConversation, getConversation, getConversationById, getMesaage, saveMesaage, updateConversation } from "../controllers/chat.controller.js"
+import { createConversation, deleteConversation, getConversation, getConversationById, getMesaage, saveMesaage, updateConversation, linkGuestConversations } from "../controllers/chat.controller.js"
 
 const router = express.Router()
 
@@ -10,5 +10,6 @@ router.delete("/conversation/:id", deleteConversation)
 router.post("/save-message", saveMesaage)
 router.get("/get-messages/:conversationId", getMesaage)
 router.post("/update-conversation", updateConversation)
+router.post("/link-guest", linkGuestConversations)
 
 export default router

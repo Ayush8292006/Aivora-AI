@@ -1,12 +1,14 @@
 import React, { useState } from 'react'
 import { 
   Download, Maximize2, Menu, Plus, Copy, Check, 
-  Sparkles, Home, Settings, PanelLeftClose, PanelLeft, Code2
+  Sparkles, Home, Settings, PanelLeftClose, PanelLeft, Code2,
+  Zap, Activity
 } from 'lucide-react'
 import { useSelector, useDispatch } from 'react-redux'
 import { createConversation } from '../features/createConversation'
 import { addConversation, setSelectedConversation } from '../redux/conversationSlice'
 import { clearMessages, toggleMaximize, setArtifactOpen } from '../redux/messageSlice'
+import { openPricingModal, openUsageModal, openGuestLimitModal } from '../redux/creditSlice'
 
 function Nav({ 
   onOpenMobileMenu, 
@@ -18,9 +20,13 @@ function Nav({
 }) {
   const { selectedConversation } = useSelector(state => state.conversation)
   const { artifacts, activeArtifactId, isOpen } = useSelector(state => state.message)
+  const { availableCredits, guestSession } = useSelector(state => state.credit)
+  const { userData } = useSelector(state => state.user)
   const dispatch = useDispatch()
   const [copiedTitle, setCopiedTitle] = useState(false)
 
+  const isGuest = !userData || userData.isGuest
+  const guestRemaining = guestSession?.questionsRemaining ?? 4
   const activeArtifact = artifacts?.find(a => a.id === activeArtifactId) || artifacts?.[artifacts.length - 1]
 
   const handleDownload = () => {
@@ -89,18 +95,30 @@ function Nav({
           )}
         </div>
 
-        {/* Center: Brand Mark + Name + Pro */}
+        {/* Center: Brand Mark + Name + Credit Badge */}
         <div 
           onClick={onGoToLanding}
-          className='flex items-center gap-2 cursor-pointer'
+          className='flex items-center gap-1.5 cursor-pointer'
         >
           <div className='w-6 h-6 rounded-full bg-[#24201C] text-[#E8DDC8] font-bold flex items-center justify-center text-[11px] shadow-xs'>
             A
           </div>
-          <span className='text-[14.5px] font-bold text-[#1E1B18] tracking-tight'>Aivora AI</span>
-          <span className='bg-[#24201C] text-[#E8DDC8] font-bold text-[9px] px-1.5 py-0.5 rounded-full uppercase tracking-wider'>
-            PRO
-          </span>
+          <span className='text-[14px] font-bold text-[#1E1B18] tracking-tight'>Aivora</span>
+          {isGuest ? (
+            <span 
+              onClick={(e) => { e.stopPropagation(); dispatch(openGuestLimitModal()); }}
+              className='bg-[#E8DDC8] text-[#1E2B1F] font-bold text-[9px] px-1.5 py-0.5 rounded-full'
+            >
+              {guestRemaining}/4 Free
+            </span>
+          ) : (
+            <span 
+              onClick={(e) => { e.stopPropagation(); dispatch(openPricingModal()); }}
+              className='bg-[#1E2B1F] text-[#C9A875] font-bold text-[9px] px-1.5 py-0.5 rounded-full flex items-center gap-0.5'
+            >
+              <Zap size={9} /> {availableCredits}
+            </span>
+          )}
         </div>
 
         {/* Right: Actions */}
@@ -178,11 +196,44 @@ function Nav({
                 <span>Explore Modes</span>
               </button>
             )}
+
+            {/* Conversation Token Usage Button */}
+            <button
+              onClick={() => dispatch(openUsageModal())}
+              className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[#696256] hover:text-[#1E1B18] hover:bg-[#F2ECE0] transition-colors border-none bg-transparent cursor-pointer font-medium text-xs"
+              title="View Chat Token & Credit Usage"
+            >
+              <Activity size={13} className="text-[#C9A875]" />
+              <span>Usage Details</span>
+            </button>
           </div>
         </div>
 
-        {/* Right Action Icons: Open Preview button if artifact exists + Copy Link + Settings + Fullscreen */}
-        <div className='flex items-center gap-1.5'>
+        {/* Right Action Icons: Wallet Balance Pill + Open Preview button + Copy Link + Settings */}
+        <div className='flex items-center gap-2'>
+          
+          {/* Credit / Guest Balance Pill */}
+          {isGuest ? (
+            <button
+              onClick={() => dispatch(openGuestLimitModal())}
+              className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#EAE2D2] hover:bg-[#DDD2BD] text-[#1E1B18] border border-[#DDD3C1] text-xs font-semibold cursor-pointer transition-colors shadow-2xs"
+              title="Guest Usage Status"
+            >
+              <span className="w-1.5 h-1.5 rounded-full bg-[#4ADE80] animate-pulse" />
+              <span>{guestRemaining}/4 Free Questions</span>
+            </button>
+          ) : (
+            <button
+              onClick={() => dispatch(openPricingModal())}
+              className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#1E2B1F] hover:bg-[#283A27] text-white border border-[#3E553D] text-xs font-bold cursor-pointer transition-colors shadow-2xs"
+              title="Click to Buy AI Credits"
+            >
+              <Zap size={13} className="text-[#C9A875]" />
+              <span className="text-[#E8DDC8] font-mono">{availableCredits.toLocaleString()}</span>
+              <span className="text-[10px] text-[#CBD8CA] uppercase font-sans">Credits</span>
+            </button>
+          )}
+
           {artifacts && artifacts.length > 0 && !isOpen && (
             <button
               onClick={() => dispatch(setArtifactOpen(true))}
@@ -198,7 +249,7 @@ function Nav({
             <button
               onClick={onOpenSettings}
               className='p-1.5 rounded-lg text-[#696256] hover:text-[#1E1B18] hover:bg-[#F2ECE0] transition-colors border-none bg-transparent cursor-pointer'
-              title="Settings & Profile"
+              title="Settings & Credits"
             >
               <Settings size={14} />
             </button>

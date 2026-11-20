@@ -126,3 +126,19 @@ export const getMesaage = async (req, res) => {
     });
   }
 };
+
+export const linkGuestConversations = async (req, res) => {
+  try {
+    const userId = req.headers["x-user-id"];
+    const { guestUserId } = req.body;
+    if (userId && guestUserId && String(guestUserId).startsWith("guest_")) {
+      await Conversation.updateMany(
+        { userId: String(guestUserId) },
+        { userId: String(userId) }
+      );
+    }
+    return res.status(200).json({ success: true });
+  } catch (err) {
+    return res.status(500).json({ success: false, message: err.message });
+  }
+};

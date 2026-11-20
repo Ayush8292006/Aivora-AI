@@ -1,12 +1,14 @@
 // src/pages/LandingPage.jsx
 import React, { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { useDispatch } from 'react-redux'
+import { openPricingModal } from '../redux/creditSlice.js'
 import { 
   Sparkles, MessageSquare, Code2, ImageIcon, FileText, 
   Presentation, Globe, Mic, LayoutDashboard, ArrowRight, 
   CheckCircle2, Download, ExternalLink, Layers, 
   ShieldCheck, Zap, Menu, X, ArrowUpRight, Play,
-  ChevronDown, Terminal, Check
+  ChevronDown, Terminal, Check, CreditCard, Award
 } from 'lucide-react'
 
 // Dynamic Typewriter Component
@@ -45,6 +47,7 @@ function TypewriterText({ words = [], speed = 45, deleteSpeed = 25, pause = 2200
 }
 
 export default function LandingPage({ onStartChat, onOpenLogin, onOpenExplore }) {
+  const dispatch = useDispatch()
   const [mobileNavOpen, setMobileNavOpen] = useState(false)
   const [heroActiveTab, setHeroActiveTab] = useState('code')
   const [calculatorInput, setCalculatorInput] = useState('2,048')
@@ -238,6 +241,9 @@ export default function LandingPage({ onStartChat, onOpenLogin, onOpenExplore })
             <button onClick={() => scrollTo('why-aivora')} className="hover:text-[#1E1B18] transition-colors bg-transparent border-none cursor-pointer">
               Why Aivora
             </button>
+            <button onClick={() => scrollTo('pricing')} className="hover:text-[#1E1B18] transition-colors bg-transparent border-none cursor-pointer">
+              Pricing
+            </button>
             <button 
               onClick={onOpenExplore}
               className="text-[#3A5538] hover:text-[#1E2B1F] flex items-center gap-1.5 font-bold bg-[#E8DDC8]/60 hover:bg-[#E8DDC8] px-3 py-1.5 rounded-xl transition-colors border-none cursor-pointer"
@@ -309,6 +315,12 @@ export default function LandingPage({ onStartChat, onOpenLogin, onOpenExplore })
                 className="text-left text-xs font-bold text-[#1E1B18] py-2 px-2 rounded-lg hover:bg-[#F2ECE0] bg-transparent border-none"
               >
                 Why Aivora
+              </button>
+              <button 
+                onClick={() => scrollTo('pricing')}
+                className="text-left text-xs font-bold text-[#1E1B18] py-2 px-2 rounded-lg hover:bg-[#F2ECE0] bg-transparent border-none"
+              >
+                Pricing
               </button>
               <button 
                 onClick={() => { setMobileNavOpen(false); onOpenExplore(); }}
@@ -997,6 +1009,126 @@ export default function LandingPage({ onStartChat, onOpenLogin, onOpenExplore })
               </p>
             </motion.div>
 
+          </div>
+
+        </div>
+      </section>
+
+      {/* ========================================================
+          6.5. TRANSPARENT CREDIT PACKAGES & PRICING
+      ======================================================== */}
+      <section id="pricing" className="py-20 lg:py-28 bg-[#FAF8F3]/90 border-t border-[#DDD3C1] relative z-10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          
+          <div className="text-center max-w-2xl mx-auto space-y-3 mb-16">
+            <span className="text-xs font-bold text-[#4A653C] uppercase tracking-wider">
+              Pay As You Use
+            </span>
+            <h2 className="font-display text-3xl sm:text-5xl font-bold tracking-tight text-[#1E1B18]">
+              Simple, Transparent AI Credits
+            </h2>
+            <p className="text-sm text-[#554E43]">
+              No subscriptions or surprise recurring billing. Purchase credits whenever you need, with lifetime validity.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {[
+              {
+                code: 'starter',
+                name: 'Starter',
+                price: 49,
+                credits: 500,
+                desc: 'Ideal for trying out all models and test projects.',
+                features: ['500 AI credits (~50,000 words)', 'All 8 AI specialized modes', 'Interactive code sandbox', 'Vector PDF resume exports']
+              },
+              {
+                code: 'basic',
+                name: 'Basic',
+                price: 99,
+                credits: 1200,
+                desc: 'Suitable for students and regular creators.',
+                features: ['1,200 AI credits (~150,000 words)', 'High-speed Groq & Gemini', 'PowerPoint presentation engine', 'Cloud conversation sync']
+              },
+              {
+                code: 'pro',
+                name: 'Pro',
+                price: 199,
+                credits: 3000,
+                recommended: true,
+                desc: 'Most popular for active developers & architects.',
+                features: ['3,000 AI credits (~400,000 words)', 'Priority LangGraph routing', 'Unlimited code preview runners', '4K cinematic image synthesis', 'Real-time live web research']
+              },
+              {
+                code: 'premium',
+                name: 'Premium',
+                price: 499,
+                credits: 9000,
+                desc: 'Designed for intensive enterprise workflows.',
+                features: ['9,000 AI credits (~1,200,000 words)', 'DeepSeek reasoning models', 'Highest priority execution queue', 'Multi-modal document parsing', 'Priority technical support']
+              }
+            ].map((plan, idx) => (
+              <motion.div
+                key={plan.code}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-60px" }}
+                transition={{ duration: 0.5, delay: idx * 0.1 }}
+                whileHover={{ y: -6, transition: { duration: 0.2 } }}
+                className={`rounded-3xl p-6 flex flex-col justify-between relative transition-all duration-200 ${
+                  plan.recommended
+                    ? 'bg-[#1E2B1F] text-white shadow-xl border-2 border-[#C9A875]'
+                    : 'bg-[#F4EEE2] hover:bg-[#EAE2D2] text-[#1E1B18] border border-[#DDD3C1] shadow-2xs hover:shadow-md'
+                }`}
+              >
+                {plan.recommended && (
+                  <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-gradient-to-r from-[#C9A875] to-[#E8A338] text-[#1E2B1F] text-[10px] font-extrabold uppercase tracking-wider px-3 py-0.5 rounded-full shadow-xs flex items-center gap-1">
+                    <Award size={11} /> Recommended
+                  </span>
+                )}
+
+                <div className="space-y-4">
+                  <div>
+                    <h3 className="font-display text-xl font-bold tracking-tight">{plan.name}</h3>
+                    <p className={`text-xs mt-1 ${plan.recommended ? 'text-[#CBD8CA]' : 'text-[#554E43]'}`}>{plan.desc}</p>
+                  </div>
+
+                  <div className="pt-2 pb-2 border-y border-current/10">
+                    <div className="flex items-baseline gap-1">
+                      <span className="text-sm font-bold">₹</span>
+                      <span className="text-4xl font-extrabold font-display">{plan.price}</span>
+                      <span className={`text-xs ${plan.recommended ? 'text-[#CBD8CA]' : 'text-[#696256]'}`}>one-time</span>
+                    </div>
+                    <p className={`text-xs font-bold pt-1 ${plan.recommended ? 'text-[#C9A875]' : 'text-[#1E2B1F]'}`}>
+                      {plan.credits.toLocaleString()} AI Credits
+                    </p>
+                  </div>
+
+                  <ul className="space-y-2 text-xs">
+                    {plan.features.map((f, i) => (
+                      <li key={i} className="flex items-center gap-2">
+                        <Check size={14} className={plan.recommended ? 'text-[#4ADE80]' : 'text-[#1E2B1F]'} />
+                        <span className={plan.recommended ? 'text-white/90' : 'text-[#1E1B18]'}>{f}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                <div className="pt-6 mt-4 border-t border-current/10">
+                  <button
+                    onClick={() => dispatch(openPricingModal())}
+                    className={`w-full py-3 rounded-xl text-xs font-bold flex items-center justify-center gap-2 transition-all cursor-pointer border-none shadow-xs ${
+                      plan.recommended
+                        ? 'bg-[#E8DDC8] hover:bg-[#F2E8D7] text-[#1E2B1F]'
+                        : 'bg-[#1E2B1F] hover:bg-[#283A27] text-white'
+                    }`}
+                  >
+                    <CreditCard size={14} />
+                    <span>Buy {plan.name} Plan</span>
+                  </button>
+                </div>
+              </motion.div>
+            ))}
           </div>
 
         </div>

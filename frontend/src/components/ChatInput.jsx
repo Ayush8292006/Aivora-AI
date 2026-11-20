@@ -11,6 +11,7 @@ import { addMessage, setArtifacts } from '../redux/messageSlice'
 import { createConversation } from '../features/createConversation'
 import { addConversation, setConvTitle, setSelectedConversation } from '../redux/conversationSlice'
 import { updateConversation } from '../features/updateConversation'
+import { openPricingModal, openExhaustedModal, openGuestLimitModal, setWallet, setCurrentChatUsage, setGuestSession } from '../redux/creditSlice'
 
 function ChatInput() {
   const [value, setValue] = useState("")
@@ -24,6 +25,8 @@ function ChatInput() {
   const abortControllerRef = useRef(null)
 
   const { selectedConversation } = useSelector(state => state.conversation)
+  const { availableCredits, guestSession } = useSelector(state => state.credit)
+  const { userData } = useSelector(state => state.user)
   const dispatch = useDispatch()
 
   useEffect(() => {
@@ -157,6 +160,16 @@ function ChatInput() {
     const trimmedValue = value.trim()
     if ((!trimmedValue && attachments.length === 0) || isLoading || isUploading) return
 
+    const isGuest = !userData || userData.isGuest
+    if (isGuest && guestSession?.questionsRemaining <= 0) {
+      dispatch(openGuestLimitModal())
+      return
+    }
+    if (!isGuest && availableCredits <= 0) {
+      dispatch(openExhaustedModal())
+      return
+    }
+
     let conversationId = selectedConversation?._id
     let isNewConversation = false
 
@@ -252,8 +265,30 @@ function ChatInput() {
         return
       }
 
+      if (response?.guestLimitReached) {
+        dispatch(openGuestLimitModal())
+        return
+      }
+
+      if (response?.creditExhausted) {
+        dispatch(openExhaustedModal())
+        return
+      }
+
       if (!response || response.success === false) {
         throw new Error(response?.error || response?.message || 'Failed to get response')
+      }
+
+      // Update credit balance & usage
+      if (response?.usage) {
+        dispatch(setCurrentChatUsage(response.usage))
+        if (response.usage.availableCredits !== undefined) {
+          dispatch(setWallet({ availableCredits: response.usage.availableCredits }))
+        }
+      }
+
+      if (response?.guestSession) {
+        dispatch(setGuestSession(response.guestSession))
       }
 
       if (response?.artifacts && response.artifacts.length > 0) {
@@ -456,6 +491,23 @@ function ChatInput() {
             )}
           </button>
         </div>
+
+        {/* Guest Mode Free Usage Indicator */}
+        {(!userData || userData.isGuest) && (
+          <div className="flex items-center justify-between px-1 pt-1 text-[10.5px] text-[#7D7567]">
+            <span className="flex items-center gap-1 font-medium">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#4ADE80]" />
+              Guest Free Mode: {guestSession?.questionsRemaining ?? 4}/4 questions remaining
+            </span>
+            <button
+              type="button"
+              onClick={() => dispatch(openGuestLimitModal())}
+              className="text-[#1E2B1F] font-bold hover:underline bg-transparent border-none cursor-pointer p-0"
+            >
+              Sign up for 100 bonus credits &rarr;
+            </button>
+          </div>
+        )}
 
       </div>
     </div>
