@@ -46,15 +46,15 @@
 }
 
 .font-display {
-  font-family: 'Syne', -apple-system, sans-serif;
-  letter-spacing: -0.03em;
+  font-family: 'Outfit', 'Plus Jakarta Sans', sans-serif;
+  letter-spacing: -0.025em;
   font-weight: 800;
 }
 
 .font-condensed {
-  font-family: 'Oswald', -apple-system, sans-serif;
-  letter-spacing: -0.015em;
-  font-weight: 700;
+  font-family: 'Bebas Neue', 'Outfit', sans-serif;
+  letter-spacing: 0.05em;
+  font-weight: 400;
 }
 
 /* Minimal Matte Editorial Scrollbars */
