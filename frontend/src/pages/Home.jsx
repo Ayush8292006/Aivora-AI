@@ -8,7 +8,7 @@ import { setUserdata } from '../redux/userSlice.js'
 import SideBar from '../components/SideBar.jsx'
 import ChatArea from '../components/ChatArea.jsx'
 import Artifact from '../components/Artifact.jsx'
-import { Home as HomeIcon, Compass, BookOpen, User as UserIcon, Sparkles } from 'lucide-react'
+import { MessageSquare, Compass, BookOpen, User as UserIcon } from 'lucide-react'
 
 function Home() {
   const dispatch = useDispatch()
@@ -36,17 +36,16 @@ function Home() {
   }
 
   return (
-    <div className='relative h-screen w-screen bg-[#040805] text-[#e8f0e9] overflow-hidden flex flex-col font-["Plus_Jakarta_Sans",sans-serif]'>
+    <div className='relative h-screen w-screen bg-[#08100B] text-[#F8F7F0] overflow-hidden flex flex-col font-["Plus_Jakarta_Sans",sans-serif]'>
       
-      {/* Ambient Silk Ribbon Background Waves */}
-      <div className='aurora-ambient-bg'>
-        <div className='aurora-ribbon-1'></div>
-        <div className='aurora-ribbon-2'></div>
-        <div className='aurora-ribbon-3'></div>
+      {/* Liquid Glass Ambient Lighting Refraction Pools */}
+      <div className='liquid-ambient-bg'>
+        <div className='liquid-light-pool-1'></div>
+        <div className='liquid-light-pool-2'></div>
       </div>
 
-      {/* Main App Desktop / Tablet Layout Container */}
-      <div className='relative z-10 flex-1 flex p-2 sm:p-3 lg:p-4 gap-3 lg:gap-4 overflow-hidden max-w-[1780px] w-full mx-auto'>
+      {/* Main 3-Panel Dashboard Layout */}
+      <div className='relative z-10 flex-1 flex p-2 sm:p-3 lg:p-4 gap-3 lg:gap-4 overflow-hidden max-w-[1800px] w-full mx-auto'>
         <SideBar 
           mobileMenuOpen={mobileMenuOpen} 
           setMobileMenuOpen={setMobileMenuOpen} 
@@ -57,82 +56,90 @@ function Home() {
         <Artifact />
       </div>
 
-      {/* Mobile Bottom Navigation Bar (as shown in reference image) */}
-      <div className='relative z-20 lg:hidden flex items-center justify-around py-2.5 px-6 bg-[#08130b]/90 backdrop-blur-2xl border-t border-[#1e3825]/60'>
+      {/* Mobile Bottom Glass Navigation Bar */}
+      <div className='relative z-20 lg:hidden flex items-center justify-around py-2.5 px-6 bg-[#102217]/85 backdrop-blur-2xl border-t border-white/10'>
         <button
           onClick={() => setMobileTab('home')}
           className={`flex flex-col items-center gap-1 bg-transparent border-none cursor-pointer transition-colors ${
-            mobileTab === 'home' ? 'text-[#4de370]' : 'text-[#6e8a74] hover:text-[#c4d6c7]'
+            mobileTab === 'home' ? 'text-[#E8DDC8] font-bold' : 'text-[#789477] hover:text-[#F8F7F0]'
           }`}
         >
-          <HomeIcon size={18} />
-          <span className='text-[10px] font-medium'>Home</span>
+          <MessageSquare size={17} />
+          <span className='text-[10px]'>Chat</span>
         </button>
         <button
           onClick={() => setMobileTab('explore')}
           className={`flex flex-col items-center gap-1 bg-transparent border-none cursor-pointer transition-colors ${
-            mobileTab === 'explore' ? 'text-[#4de370]' : 'text-[#6e8a74] hover:text-[#c4d6c7]'
+            mobileTab === 'explore' ? 'text-[#E8DDC8] font-bold' : 'text-[#789477] hover:text-[#F8F7F0]'
           }`}
         >
-          <Compass size={18} />
-          <span className='text-[10px] font-medium'>Explore</span>
+          <Compass size={17} />
+          <span className='text-[10px]'>Explore</span>
         </button>
         <button
           onClick={() => setMobileTab('library')}
           className={`flex flex-col items-center gap-1 bg-transparent border-none cursor-pointer transition-colors ${
-            mobileTab === 'library' ? 'text-[#4de370]' : 'text-[#6e8a74] hover:text-[#c4d6c7]'
+            mobileTab === 'library' ? 'text-[#E8DDC8] font-bold' : 'text-[#789477] hover:text-[#F8F7F0]'
           }`}
         >
-          <BookOpen size={18} />
-          <span className='text-[10px] font-medium'>Library</span>
+          <BookOpen size={17} />
+          <span className='text-[10px]'>Library</span>
         </button>
         <button
           onClick={() => setMobileTab('profile')}
           className={`flex flex-col items-center gap-1 bg-transparent border-none cursor-pointer transition-colors ${
-            mobileTab === 'profile' ? 'text-[#4de370]' : 'text-[#6e8a74] hover:text-[#c4d6c7]'
+            mobileTab === 'profile' ? 'text-[#E8DDC8] font-bold' : 'text-[#789477] hover:text-[#F8F7F0]'
           }`}
         >
-          <UserIcon size={18} />
-          <span className='text-[10px] font-medium'>Profile</span>
+          <UserIcon size={17} />
+          <span className='text-[10px]'>Account</span>
         </button>
       </div>
 
-      {/* Luxury Forest-Green & Champagne Gold Login Modal */}
+      {/* Luxury Frosted Liquid Glass Login Modal */}
       {!userData && (
-        <div className='fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-xl p-4'>
-          <div className='w-full max-w-[360px] aurora-glass-panel rounded-3xl p-8 flex flex-col gap-6 relative overflow-hidden shadow-2xl border border-[#2b4d36]'>
-            <div className='absolute -top-12 -right-12 w-32 h-32 bg-[#4de370]/15 rounded-full blur-2xl pointer-events-none'></div>
-            <div className='absolute -bottom-12 -left-12 w-32 h-32 bg-[#dfc499]/15 rounded-full blur-2xl pointer-events-none'></div>
+        <div className='fixed inset-0 z-50 flex items-center justify-center bg-black/65 backdrop-blur-md p-4'>
+          <div className='w-full max-w-[380px] glass-panel rounded-3xl p-7 flex flex-col gap-5 relative overflow-hidden shadow-2xl border border-white/15'>
+            
+            {/* Top Gloss Refraction highlight */}
+            <div className='absolute -top-16 -right-16 w-36 h-36 bg-[#C6A46A]/15 rounded-full blur-2xl pointer-events-none'></div>
 
+            {/* Header: Brand Mark + Name + Pro */}
             <div className='flex items-center gap-3'>
-              <div className='w-10 h-10 rounded-2xl bg-gradient-to-br from-[#1b3523] to-[#0c1f13] border border-[#3e6b4b] flex items-center justify-center shadow-lg shadow-[#4de370]/10'>
-                <span className='text-lg text-[#4de370]'>✦</span>
+              <div className='w-10 h-10 rounded-2xl bg-gradient-to-br from-[#263B2B] to-[#14291F] border border-white/20 flex items-center justify-center font-bold text-base text-[#E8DDC8] shadow-sm'>
+                A
               </div>
               <div>
                 <div className='flex items-center gap-2'>
-                  <h2 className='text-lg font-bold text-[#f5f8f5] tracking-tight'>Aurora AI</h2>
-                  <span className='bg-gradient-to-r from-[#ebd6b6] to-[#cca670] text-[#1b160e] font-bold text-[10px] px-2 py-0.5 rounded-full shadow-sm'>
+                  <h2 className='text-base font-bold text-[#F8F7F0] tracking-tight'>Aivora AI</h2>
+                  <span className='bg-gradient-to-r from-[#E8DDC8] to-[#C6A46A] text-[#14291F] font-extrabold text-[10px] px-2 py-0.5 rounded-full shadow-xs'>
                     Pro
                   </span>
                 </div>
-                <p className='text-xs text-[#7d9983]'>Next-Gen Multi-Agent Workspace</p>
+                <p className='text-xs text-[#789477] font-medium'>Luxury Multi-Agent Workspace</p>
               </div>
             </div>
 
-            <div className='flex flex-col gap-1.5'>
-              <p className='text-sm text-[#c7d9cb]'>Welcome to your intelligent workspace.</p>
-              <p className='text-xs text-[#7d9983] leading-relaxed'>
-                Sign in with Google to access your chats, documents, slides, and generated images.
+            {/* Description */}
+            <div className='flex flex-col gap-1 text-left'>
+              <p className='text-sm font-semibold text-[#F8F7F0]'>Welcome to your workspace</p>
+              <p className='text-xs text-[#E8DDC8]/70 leading-relaxed'>
+                Sign in to create high-impact documents, presentations, research summaries, and code with multi-agent orchestration.
               </p>
             </div>
 
+            {/* Sign in with Google Button */}
             <button 
               onClick={googleLogin}
-              className='w-full flex items-center justify-center gap-3 py-3 rounded-2xl text-sm font-semibold aurora-gold-btn border-none cursor-pointer'
+              className='w-full flex items-center justify-center gap-3 py-3 px-4 rounded-xl text-xs font-semibold btn-liquid-gold border-none cursor-pointer'
             >
               <FcGoogle size={18} />
-              Continue With Google
+              <span>Continue with Google</span>
             </button>
+
+            <p className='text-[10.5px] text-center text-[#789477]'>
+              Protected by multi-agent security & encrypted cloud storage.
+            </p>
           </div>
         </div>
       )}

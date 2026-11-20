@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { 
-  Search, Download, Maximize2, Menu, Sparkles, ChevronDown, Plus 
+  Search, Download, Maximize2, Menu, ChevronDown, Plus 
 } from 'lucide-react'
 import { useSelector, useDispatch } from 'react-redux'
 import { createConversation } from '../features/createConversation'
@@ -18,7 +18,7 @@ function Nav({ onOpenMobileMenu }) {
 
   const handleDownload = () => {
     if (!activeArtifact) {
-      alert("No artifact or generated image available to download yet.")
+      alert("No artifact or file available to download yet.")
       return
     }
 
@@ -29,7 +29,7 @@ function Nav({ onOpenMobileMenu }) {
         : `${serverUrl}${activeArtifact.url}?download=1`
       const a = document.createElement('a')
       a.href = fullUrl
-      a.download = activeArtifact.title || 'aivora-image.png'
+      a.download = activeArtifact.title || 'aivora-export'
       a.target = '_blank'
       document.body.appendChild(a)
       a.click()
@@ -51,16 +51,16 @@ function Nav({ onOpenMobileMenu }) {
   }
 
   return (
-    <div className='flex flex-col gap-2 pb-2'>
+    <header className='flex flex-col gap-2 pb-2 select-none'>
       
-      {/* Mobile Top Navigation (shown on mobile devices, matching reference image) */}
-      <div className='lg:hidden flex items-center justify-between px-2 py-2'>
+      {/* Mobile Top Navigation */}
+      <div className='lg:hidden flex items-center justify-between px-2 py-1.5'>
         <div className='flex items-center gap-2'>
-          <div className='w-7 h-7 rounded-lg bg-gradient-to-br from-[#1d3b26] to-[#0c1c11] border border-[#3e6b4b] flex items-center justify-center'>
-            <span className='text-[#4de370] text-sm font-bold'>✦</span>
+          <div className='w-7 h-7 rounded-xl bg-gradient-to-br from-[#263B2B] to-[#14291F] border border-white/20 text-[#E8DDC8] font-bold flex items-center justify-center text-xs shadow-xs'>
+            A
           </div>
-          <span className='text-base font-bold text-[#f5f8f5]'>Aurora AI</span>
-          <span className='bg-gradient-to-r from-[#ebd6b6] to-[#cca670] text-[#1b160e] font-extrabold text-[10px] px-2 py-0.5 rounded-full'>
+          <span className='text-sm font-bold text-[#F8F7F0]'>Aivora AI</span>
+          <span className='bg-gradient-to-r from-[#E8DDC8] to-[#C6A46A] text-[#14291F] font-extrabold text-[10px] px-2 py-0.5 rounded-full'>
             Pro
           </span>
         </div>
@@ -68,48 +68,49 @@ function Nav({ onOpenMobileMenu }) {
         <div className='flex items-center gap-2'>
           <button
             onClick={handleNewChat}
-            className='flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold aurora-gold-btn border-none cursor-pointer'
+            className='flex items-center gap-1 px-3 py-1.5 rounded-xl text-xs font-semibold btn-liquid-gold border-none cursor-pointer'
           >
             <Plus size={13} />
-            <span>New Chat</span>
+            <span>New</span>
           </button>
           
           <button
             onClick={onOpenMobileMenu}
-            className='p-2 rounded-xl text-[#9ab5a0] hover:text-white bg-[#122619]/60 border border-[#23422d] cursor-pointer'
+            className='p-2 rounded-xl text-[#E8DDC8] hover:text-white glass-card border border-white/10 cursor-pointer'
+            title="Open Conversations"
           >
-            <Menu size={18} />
+            <Menu size={16} />
           </button>
         </div>
       </div>
 
-      {/* Desktop Navigation Bar (Center + Right matching reference image) */}
+      {/* Desktop Workspace Top Bar */}
       <div className='hidden lg:flex items-center justify-between px-2 py-1 gap-3'>
         
-        {/* Left: Search Bar Pill with Ctrl + K */}
-        <div className='flex items-center gap-2.5 bg-[#09150d]/80 border border-[#23422d]/80 rounded-full px-4 py-2 text-xs text-[#8ca893] w-72 max-w-sm hover:border-[#386b47] transition-all cursor-text'>
-          <Search size={14} className='text-[#7a9681]' />
-          <span className='flex-1 truncate'>Search anything...</span>
-          <span className='text-[10px] font-mono bg-[#142e1d] text-[#9db5a3] px-2 py-0.5 rounded-md border border-[#284f33]'>
-            Ctrl + K
+        {/* Left: Minimal Search Bar Pill with Ctrl + K */}
+        <div className='flex items-center gap-2.5 glass-card rounded-full px-4 py-1.5 text-xs text-[#789477] w-72 hover:border-white/25 transition-all cursor-text'>
+          <Search size={13} className='text-[#789477]' />
+          <span className='flex-1 truncate text-[#E8DDC8]/70 text-[11px]'>Search anything...</span>
+          <span className='text-[10px] font-mono bg-white/5 text-[#E8DDC8]/90 px-1.5 py-0.2 rounded border border-white/10'>
+            Ctrl+K
           </span>
         </div>
 
-        {/* Right Controls: Dimension Selector + Champagne Download + Fullscreen */}
+        {/* Right Controls: Dimension Selector + Liquid Gold Download + Fullscreen */}
         <div className='flex items-center gap-2.5'>
           
           {/* Dimension Selector Pill */}
           <div className='relative'>
             <button
               onClick={() => setDropdownOpen(!dropdownOpen)}
-              className='flex items-center gap-1.5 bg-[#09150d]/80 border border-[#23422d]/80 rounded-full px-3.5 py-1.5 text-xs font-medium text-[#c4d6c7] hover:text-white hover:border-[#386b47] transition-all cursor-pointer'
+              className='flex items-center gap-1.5 glass-card rounded-full px-3.5 py-1.5 text-xs font-medium text-[#E8DDC8] hover:text-white hover:border-white/25 transition-all cursor-pointer'
             >
               <span>Generated Image ({aspectRatio})</span>
-              <ChevronDown size={13} className='text-[#8ca893]' />
+              <ChevronDown size={12} className='text-[#789477]' />
             </button>
 
             {dropdownOpen && (
-              <div className='absolute right-0 top-full mt-1.5 z-50 w-44 bg-[#0a180f] border border-[#2b4d36] rounded-xl py-1 shadow-2xl backdrop-blur-xl animate-in fade-in zoom-in-95'>
+              <div className='absolute right-0 top-full mt-1.5 z-50 w-44 glass-panel rounded-xl py-1 shadow-2xl backdrop-blur-2xl animate-fade-in'>
                 {['1:1 (Square)', '16:9 (Landscape)', '9:16 (Portrait)', '4:3 (Classic)'].map(ratio => {
                   const val = ratio.split(' ')[0]
                   return (
@@ -121,8 +122,8 @@ function Nav({ onOpenMobileMenu }) {
                       }}
                       className={`w-full text-left px-3 py-1.5 text-xs transition-colors cursor-pointer border-none ${
                         aspectRatio === val 
-                          ? 'bg-[#1b3d27] text-[#4de370] font-semibold' 
-                          : 'bg-transparent text-[#a3b8a8] hover:bg-[#12291a] hover:text-white'
+                          ? 'bg-[#263B2B] text-[#E8DDC8] font-bold' 
+                          : 'bg-transparent text-[#F8F7F0]/80 hover:bg-white/10 hover:text-white'
                       }`}
                     >
                       {ratio}
@@ -133,20 +134,20 @@ function Nav({ onOpenMobileMenu }) {
             )}
           </div>
 
-          {/* Champagne Gold Download Button */}
+          {/* Liquid Champagne Gold Download Button */}
           <button
             onClick={handleDownload}
-            className='flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-semibold aurora-gold-btn border-none cursor-pointer tracking-wide shadow-md shadow-[#c7a168]/20'
-            title="Download Artifact or Image"
+            className='flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-bold btn-liquid-gold border-none cursor-pointer tracking-wide shadow-md'
+            title="Download Generated Asset"
           >
-            <Download size={13} />
+            <Download size={13} className='stroke-[2.5]' />
             <span>Download</span>
           </button>
 
           {/* Fullscreen Expand Button */}
           <button
             onClick={() => dispatch(toggleMaximize())}
-            className='flex items-center justify-center w-8 h-8 rounded-full bg-[#09150d]/80 border border-[#23422d]/80 text-[#8ca893] hover:text-white hover:border-[#386b47] transition-all cursor-pointer'
+            className='flex items-center justify-center w-8 h-8 rounded-full glass-card text-[#789477] hover:text-white hover:border-white/25 transition-all cursor-pointer'
             title="Toggle Expanded View"
           >
             <Maximize2 size={13} />
@@ -156,7 +157,7 @@ function Nav({ onOpenMobileMenu }) {
 
       </div>
 
-    </div>
+    </header>
   )
 }
 

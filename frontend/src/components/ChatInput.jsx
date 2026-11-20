@@ -199,12 +199,12 @@ function ChatInput() {
     }
 
     const agentName = selectedAgent.toLowerCase()
-    if (agentName === "pdf") setStatusMessage("Designing & generating PDF document...")
-    else if (agentName === "ppt") setStatusMessage("Structuring presentation & building slides...")
-    else if (agentName === "image") setStatusMessage("Synthesizing image graphics...")
-    else if (agentName === "coding") setStatusMessage("Writing & organizing project code...")
-    else if (agentName === "search") setStatusMessage("Searching web & aggregating sources...")
-    else setStatusMessage("Aurora AI is thinking...")
+    if (agentName === "pdf") setStatusMessage("Designing & compiling PDF document...")
+    else if (agentName === "ppt") setStatusMessage("Structuring presentation slides...")
+    else if (agentName === "image") setStatusMessage("Synthesizing visual render...")
+    else if (agentName === "coding") setStatusMessage("Writing & organizing code...")
+    else if (agentName === "search") setStatusMessage("Searching sources & synthesizing...")
+    else setStatusMessage("Aivora AI is drafting a response...")
 
     const controller = new AbortController()
     abortControllerRef.current = controller
@@ -282,7 +282,7 @@ function ChatInput() {
   ]
 
   return (
-    <div className='w-full pt-1 pb-1'>
+    <div className='w-full pt-1 pb-1 select-none'>
       <input
         type="file"
         ref={fileInputRef}
@@ -292,15 +292,15 @@ function ChatInput() {
         className="hidden"
       />
 
-      {/* Floating Prompt Composer Dock */}
+      {/* Floating Liquid Glass Composer Dock */}
       <div 
         onPaste={handlePaste}
         onDragOver={handleDragOver}
         onDrop={handleDrop}
-        className='aurora-glass-card rounded-[24px] p-3 sm:p-3.5 flex flex-col gap-2.5 border border-[#284933]/70 shadow-2xl relative'
+        className='glass-composer rounded-[24px] p-3 sm:p-3.5 flex flex-col gap-2.5 relative'
       >
 
-        {/* Agent Chips Row (matching reference image) */}
+        {/* Mode Selector Chips */}
         <div className='flex items-center gap-1.5 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden py-0.5'>
           {agents.map((agent) => {
             const isActive = selectedAgent === agent.label
@@ -311,16 +311,14 @@ function ChatInput() {
                 type="button"
                 onClick={() => setSelectedAgent(agent.label)}
                 className={`
-                  flex-shrink-0 cursor-pointer inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-semibold transition-all duration-200 border-none
+                  shrink-0 cursor-pointer inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-semibold transition-all duration-200 border-none
                   ${isActive
-                    ? agent.label === 'Auto'
-                      ? "aurora-active-pill shadow-md shadow-[#4de370]/20"
-                      : "bg-gradient-to-r from-[#dfc499] to-[#c7a168] text-[#17140e] font-bold shadow-md shadow-[#dfc499]/20"
-                    : "bg-[#0b1b11]/80 text-[#8ca893] hover:text-[#e4efe6] hover:bg-[#122b1a]"
+                    ? "btn-liquid-gold shadow-md"
+                    : "bg-white/5 hover:bg-white/10 text-[#E8DDC8]/70 hover:text-white"
                   }
                 `}
               >
-                <Icon size={12} className={isActive ? (agent.label === 'Auto' ? 'text-[#051c0e]' : 'text-[#17140e]') : 'text-[#7d9984]'} />
+                <Icon size={12} className={isActive ? 'text-[#14291F]' : 'text-[#789477]'} />
                 <span>{agent.label}</span>
               </button>
             )
@@ -333,21 +331,21 @@ function ChatInput() {
             {attachments.map((att) => (
               <div
                 key={att.id}
-                className="relative flex items-center gap-2 bg-[#102416]/90 border border-[#2b5438] rounded-xl px-2.5 py-1 text-xs text-[#c4d6c7] shadow-sm"
+                className="relative flex items-center gap-2 bg-[#263B2B]/60 border border-white/15 rounded-xl px-2.5 py-1 text-xs text-[#E8DDC8] shadow-sm backdrop-blur-md"
               >
                 {att.kind === "image" && att.previewUrl ? (
                   <img src={att.previewUrl} alt="thumb" className="w-5 h-5 rounded object-cover" />
                 ) : (
-                  <FileText size={14} className="text-[#dfc499]" />
+                  <FileText size={13} className="text-[#C6A46A]" />
                 )}
                 <span className="max-w-[130px] truncate text-[11px]">{att.name}</span>
 
                 {att.uploading ? (
-                  <Loader2 size={12} className="animate-spin text-[#4de370] ml-1" />
+                  <Loader2 size={12} className="animate-spin text-[#789477] ml-1" />
                 ) : (
                   <button
                     onClick={() => handleRemoveAttachment(att.id)}
-                    className="text-[#7d9984] hover:text-red-400 transition-colors p-0.5 rounded cursor-pointer border-none bg-transparent"
+                    className="text-[#789477] hover:text-red-400 transition-colors p-0.5 rounded cursor-pointer border-none bg-transparent"
                   >
                     <X size={12} />
                   </button>
@@ -357,27 +355,27 @@ function ChatInput() {
           </div>
         )}
 
-        {/* Prompt Input Textarea */}
+        {/* Input Textarea */}
         <textarea
           placeholder="Ask anything, request a PDF resume, generate slides, create an image..."
           onChange={(e) => setValue(e.target.value)}
           value={value}
           onKeyDown={handleKeyDown}
           disabled={isLoading}
-          className="w-full bg-transparent outline-none resize-none text-[13.5px] text-[#f5f8f5] placeholder:text-[#6c8672] leading-relaxed [scrollbar-width:none] [&::-webkit-scrollbar]:hidden disabled:opacity-50 min-h-[38px] max-h-[110px]"
+          className="w-full bg-transparent outline-none resize-none text-[13.5px] text-[#F8F7F0] placeholder:text-[#789477]/80 leading-relaxed [scrollbar-width:none] [&::-webkit-scrollbar]:hidden disabled:opacity-50 min-h-[38px] max-h-[120px]"
           rows={1}
         />
 
         {/* Status Bubble while running */}
         {isLoading && statusMessage && (
-          <div className="flex items-center justify-between bg-[#122b1a]/90 border border-[#2e5e3d] rounded-xl px-3 py-1.5 text-xs text-[#9dfcb1]">
+          <div className="flex items-center justify-between bg-white/5 border border-white/10 rounded-xl px-3 py-1.5 text-xs text-[#E8DDC8] backdrop-blur-md">
             <div className="flex items-center gap-2">
-              <Loader2 size={12} className="animate-spin text-[#4de370]" />
-              <span className="text-[11.5px]">{statusMessage}</span>
+              <Loader2 size={12} className="animate-spin text-[#C6A46A]" />
+              <span className="text-[11.5px] font-medium">{statusMessage}</span>
             </div>
             <button
               onClick={handleStop}
-              className="flex items-center gap-1 text-[10.5px] font-semibold text-red-400 hover:text-red-300 bg-red-500/10 hover:bg-red-500/20 px-2 py-0.5 rounded-md border border-red-500/20 cursor-pointer transition-all"
+              className="flex items-center gap-1 text-[10.5px] font-bold text-red-400 hover:text-red-300 bg-red-500/10 hover:bg-red-500/20 px-2 py-0.5 rounded-md border border-red-500/20 cursor-pointer transition-all"
             >
               <StopCircle size={11} />
               Stop
@@ -385,13 +383,13 @@ function ChatInput() {
           </div>
         )}
 
-        {/* Bottom Actions Row (Paperclip, Mic, Globe on left; Circular Gold Send on right) */}
+        {/* Bottom Actions Row */}
         <div className='flex items-center justify-between pt-0.5'>
           <div className='flex items-center gap-1'>
             <button 
               type="button"
               onClick={() => fileInputRef.current?.click()}
-              className='flex items-center justify-center w-7 h-7 rounded-lg text-[#8ca893] hover:text-white hover:bg-[#142e1d] transition-all bg-transparent border-none cursor-pointer disabled:opacity-50'
+              className='flex items-center justify-center w-7 h-7 rounded-lg text-[#789477] hover:text-[#E8DDC8] hover:bg-white/10 transition-all bg-transparent border-none cursor-pointer disabled:opacity-50'
               disabled={isLoading || isUploading}
               title="Attach File or Image"
             >
@@ -399,7 +397,7 @@ function ChatInput() {
             </button>
             <button 
               type="button"
-              className='flex items-center justify-center w-7 h-7 rounded-lg text-[#8ca893] hover:text-white hover:bg-[#142e1d] transition-all bg-transparent border-none cursor-pointer disabled:opacity-50'
+              className='flex items-center justify-center w-7 h-7 rounded-lg text-[#789477] hover:text-[#E8DDC8] hover:bg-white/10 transition-all bg-transparent border-none cursor-pointer disabled:opacity-50'
               disabled={isLoading}
               title="Voice Input"
             >
@@ -409,26 +407,26 @@ function ChatInput() {
               type="button"
               onClick={() => setSelectedAgent("Search")}
               className={`flex items-center justify-center w-7 h-7 rounded-lg transition-all bg-transparent border-none cursor-pointer ${
-                selectedAgent === 'Search' ? 'text-[#4de370] bg-[#142e1d]' : 'text-[#8ca893] hover:text-white hover:bg-[#142e1d]'
+                selectedAgent === 'Search' ? 'text-[#E8DDC8] bg-white/15' : 'text-[#789477] hover:text-[#E8DDC8] hover:bg-white/10'
               }`}
-              title="Web Search"
+              title="Web Search Mode"
             >
               <Globe size={15}/>
             </button>
           </div>
           
-          {/* Circular Champagne Gold Send Button (exact match with reference image) */}
+          {/* Circular Liquid Champagne Gold Send Button */}
           <button
             disabled={(!value.trim() && attachments.length === 0) || isLoading || isUploading}
             onClick={handleSendMessage}
             className={`w-9 h-9 rounded-full flex items-center justify-center border-none cursor-pointer transition-all duration-200 ${
               (value.trim() || attachments.length > 0) && !isLoading && !isUploading
-                ? "aurora-gold-btn text-[#17140e] shadow-lg shadow-[#dfc499]/20 hover:scale-105 active:scale-95" 
-                : "bg-[#142e1d] text-[#55705a] cursor-not-allowed"
+                ? "btn-liquid-gold shadow-lg hover:scale-105 active:scale-95" 
+                : "bg-white/5 text-[#789477]/50 cursor-not-allowed"
             }`}
           >
             {isLoading ? (
-              <Loader2 size={15} className="animate-spin text-[#17140e]" />
+              <Loader2 size={15} className="animate-spin text-[#14291F]" />
             ) : (
               <Send size={14} className="translate-x-[1px]" />
             )}

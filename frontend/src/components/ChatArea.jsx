@@ -58,7 +58,7 @@ function ChatArea({ onOpenMobileMenu }) {
   }, [selectedConversation?._id, selectedConversation?.title])
 
   return (
-    <main className='flex-1 flex flex-col h-full min-w-0 aurora-glass-panel rounded-[26px] p-2.5 sm:p-3.5 relative overflow-hidden border border-[#2b4d36]/70 shadow-2xl'>
+    <main className='flex-1 flex flex-col h-full min-w-0 glass-panel rounded-[24px] p-2.5 sm:p-3.5 relative overflow-hidden'>
       <Nav onOpenMobileMenu={onOpenMobileMenu} />
       <div className='flex-1 min-h-0 flex flex-col overflow-hidden'>
         <MessageList />

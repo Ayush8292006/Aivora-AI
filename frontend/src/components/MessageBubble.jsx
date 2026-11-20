@@ -14,14 +14,12 @@ function MessageBubble({ role, content, images = [], artifacts = [], attachments
   const isUser = role === "user"
   const dispatch = useDispatch()
   const [lightboxImage, setLightboxImage] = useState(null)
-  const [currentIndex, setCurrentIndex] = useState(0)
   const [failedImages, setFailedImages] = useState(new Set())
   const [copiedCode, setCopiedCode] = useState(null)
   const [copiedMessage, setCopiedMessage] = useState(false)
 
   const serverUrl = import.meta.env.VITE_SERVER_URL || "http://localhost:8000"
 
-  // Extract and resolve image URLs safely
   const resolveImageUrl = (img) => {
     if (!img) return null
     let raw = typeof img === 'string' ? img : (img.url || img.src || img.image || null)
@@ -40,15 +38,13 @@ function MessageBubble({ role, content, images = [], artifacts = [], attachments
     .map(img => resolveImageUrl(img))
     .filter(Boolean)
 
-  const openLightbox = (url, index) => {
+  const openLightbox = (url) => {
     setLightboxImage(url)
-    setCurrentIndex(index)
     document.body.style.overflow = 'hidden'
   }
 
   const closeLightbox = () => {
     setLightboxImage(null)
-    setCurrentIndex(0)
     document.body.style.overflow = 'auto'
   }
 
@@ -89,16 +85,16 @@ function MessageBubble({ role, content, images = [], artifacts = [], attachments
 
   const getArtifactIcon = (type) => {
     switch (type) {
-      case 'pdf': return <FileText size={16} className="text-[#f87171]" />
-      case 'ppt': return <Presentation size={16} className="text-[#dfc499]" />
-      case 'image': return <ImageIcon size={16} className="text-[#4de370]" />
-      default: return <Code2 size={16} className="text-[#9dfcb1]" />
+      case 'pdf': return <FileText size={15} className="text-[#E57373]" />
+      case 'ppt': return <Presentation size={15} className="text-[#C6A46A]" />
+      case 'image': return <ImageIcon size={15} className="text-[#789477]" />
+      default: return <Code2 size={15} className="text-[#E8DDC8]" />
     }
   }
 
   return (
     <>
-      <div className={`flex flex-col ${isUser ? 'items-end' : 'items-start'} w-full group my-1`}>
+      <div className={`flex flex-col ${isUser ? 'items-end' : 'items-start'} w-full group my-1.5`}>
         
         {/* User Attachments Preview Chips */}
         {isUser && attachments.length > 0 && (
@@ -106,48 +102,59 @@ function MessageBubble({ role, content, images = [], artifacts = [], attachments
             {attachments.map((att, idx) => (
               <div 
                 key={idx}
-                className="flex items-center gap-2 bg-[#122b1a]/80 border border-[#2b5438] rounded-xl px-3 py-1.5 text-xs text-[#c4d6c7]"
+                className="flex items-center gap-1.5 bg-[#263B2B]/60 border border-white/15 rounded-xl px-2.5 py-1 text-xs text-[#E8DDC8] shadow-sm backdrop-blur-md"
               >
                 {att.kind === 'image' ? (
-                  <ImageIcon size={13} className="text-[#4de370]" />
+                  <ImageIcon size={12} className="text-[#789477]" />
                 ) : (
-                  <FileText size={13} className="text-[#dfc499]" />
+                  <FileText size={12} className="text-[#C6A46A]" />
                 )}
-                <span className="max-w-[160px] truncate">{att.name}</span>
+                <span className="max-w-[150px] truncate text-[11px] font-medium">{att.name}</span>
               </div>
             ))}
           </div>
         )}
 
-        {/* Message Bubble Container */}
+        {/* Liquid Glass Message Container */}
         <div className={`
-          relative max-w-[92%] sm:max-w-[85%] md:max-w-[78%] transition-all duration-300
+          relative max-w-[94%] sm:max-w-[88%] md:max-w-[82%] transition-all duration-200
           ${isUser 
-            ? 'bg-[#153120]/90 border border-[#2b593c] text-[#f5f8f5] rounded-2xl rounded-br-sm px-4 py-3 shadow-lg' 
+            ? 'bg-[#263B2B]/75 border border-white/20 text-[#F8F7F0] rounded-2xl rounded-br-sm px-4 py-3 shadow-lg backdrop-blur-xl' 
             : isError
-              ? 'bg-red-950/30 border border-red-500/30 text-red-200 rounded-2xl rounded-bl-sm px-4 py-3.5'
-              : 'bg-transparent text-[#e6ede7] px-1 py-1'
+              ? 'bg-red-950/35 border border-red-500/35 text-red-200 rounded-2xl rounded-bl-sm p-4 backdrop-blur-xl'
+              : 'glass-card text-[#F8F7F0] rounded-2xl rounded-bl-sm p-4 sm:p-5 shadow-xl'
           }
         `}>
           
-          {/* Assistant Header (ChatGPT + Green glowing dot as in reference image) */}
+          {/* Assistant Header in Liquid Glass Style */}
           {!isUser && (
-            <div className="flex items-center gap-2 mb-2.5">
-              <div className="w-6 h-6 rounded-full bg-[#173822] border border-[#3e6e4d] flex items-center justify-center shadow-sm">
-                <Sparkles size={12} className="text-[#4de370]" />
+            <div className="flex items-center justify-between pb-2.5 mb-2.5 border-b border-white/10">
+              <div className="flex items-center gap-2">
+                <div className="w-5 h-5 rounded-lg bg-gradient-to-br from-[#263B2B] to-[#14291F] border border-white/20 flex items-center justify-center text-[10px] font-bold text-[#E8DDC8] shadow-xs">
+                  A
+                </div>
+                <span className="text-xs font-bold text-[#F8F7F0] tracking-tight">Aivora AI</span>
+                <span className="w-1.5 h-1.5 rounded-full bg-[#789477] shadow-[0_0_6px_#789477]" />
               </div>
-              <span className="text-sm font-bold text-[#f5f8f5] tracking-tight">ChatGPT</span>
-              <span className="w-2 h-2 rounded-full bg-[#34d399] shadow-[0_0_8px_#34d399]" />
+
+              {/* Action: Copy Message */}
+              <button
+                onClick={copyFullMessage}
+                className="opacity-70 group-hover:opacity-100 p-1 rounded-md text-[#789477] hover:text-[#E8DDC8] hover:bg-white/10 transition-all border-none bg-transparent cursor-pointer"
+                title="Copy response"
+              >
+                {copiedMessage ? <Check size={12} className="text-[#789477]" /> : <Copy size={12} />}
+              </button>
             </div>
           )}
 
-          {/* Markdown Content (with gold bold highlights from reference image) */}
-          <div className="prose-aurora text-sm leading-relaxed break-words">
+          {/* Markdown Content with Liquid Glass Typography */}
+          <div className="prose-glass text-sm leading-relaxed break-words">
             <Markdown
               remarkPlugins={[remarkGfm]}
               components={{
                 strong({ children }) {
-                  return <strong className="text-[#dfc499] font-bold">{children}</strong>
+                  return <strong className="text-[#E8DDC8] font-bold">{children}</strong>
                 },
                 a({ href, children }) {
                   return (
@@ -155,7 +162,7 @@ function MessageBubble({ role, content, images = [], artifacts = [], attachments
                       href={href} 
                       target="_blank" 
                       rel="noreferrer" 
-                      className="text-[#9dfcb1] hover:text-[#dfc499] underline decoration-[#4de370]/40 transition-colors"
+                      className="text-[#C6A46A] hover:text-[#E8DDC8] underline decoration-[#C6A46A]/40 transition-colors"
                     >
                       {children}
                     </a>
@@ -167,14 +174,14 @@ function MessageBubble({ role, content, images = [], artifacts = [], attachments
                   const codeIndex = node?.position?.start?.line || 0
 
                   return !inline && match ? (
-                    <div className="relative my-3 rounded-xl overflow-hidden border border-[#2b4d36] bg-[#07120a]">
-                      <div className="flex items-center justify-between px-3.5 py-1.5 bg-[#0e2114] border-b border-[#23422d] text-xs text-[#8ca893]">
-                        <span className="font-mono text-[11px] text-[#4de370]">{match[1]}</span>
+                    <div className="relative my-3 rounded-xl overflow-hidden border border-white/12 bg-[#0C140E]/90 shadow-lg">
+                      <div className="flex items-center justify-between px-3.5 py-1.5 bg-[#14291F]/60 border-b border-white/10 text-xs text-[#789477]">
+                        <span className="font-mono text-[11px] text-[#C6A46A]">{match[1]}</span>
                         <button
                           onClick={() => copyToClipboard(codeString, codeIndex)}
-                          className="flex items-center gap-1.5 hover:text-white transition-colors bg-transparent border-none cursor-pointer py-0.5 text-[#8ca893]"
+                          className="flex items-center gap-1.5 hover:text-white transition-colors bg-transparent border-none cursor-pointer py-0.5 text-[#789477]"
                         >
-                          {copiedCode === codeIndex ? <Check size={12} className="text-[#4de370]" /> : <Copy size={12} />}
+                          {copiedCode === codeIndex ? <Check size={12} className="text-[#789477]" /> : <Copy size={12} />}
                           <span className="text-[11px]">{copiedCode === codeIndex ? 'Copied' : 'Copy'}</span>
                         </button>
                       </div>
@@ -189,7 +196,7 @@ function MessageBubble({ role, content, images = [], artifacts = [], attachments
                       </SyntaxHighlighter>
                     </div>
                   ) : (
-                    <code className="bg-[#12281a] text-[#dfc499] px-1.5 py-0.5 rounded text-xs font-mono border border-[#2b5438]/50" {...props}>
+                    <code className="bg-[#14291F]/80 text-[#E8DDC8] px-1.5 py-0.5 rounded-md text-xs font-mono border border-white/10" {...props}>
                       {children}
                     </code>
                   )
@@ -200,22 +207,22 @@ function MessageBubble({ role, content, images = [], artifacts = [], attachments
             </Markdown>
           </div>
 
-          {/* Generated / Retrieved Images Grid (as shown in reference image) */}
+          {/* Generated Images Grid in Translucent Glass Cards */}
           {validImages.length > 0 && (
             <div className={`mt-3.5 grid gap-2.5 ${validImages.length === 1 ? 'grid-cols-1 sm:grid-cols-2' : 'grid-cols-2 sm:grid-cols-3'}`}>
               {validImages.map((url, idx) => (
                 <div 
                   key={idx}
-                  onClick={() => openLightbox(url, idx)}
-                  className="group/img relative rounded-xl overflow-hidden border border-[#284933] bg-[#07120a] aspect-[4/3] cursor-pointer hover:border-[#4de370]/60 transition-all shadow-md"
+                  onClick={() => openLightbox(url)}
+                  className="group/img relative rounded-xl overflow-hidden border border-white/15 bg-black/30 aspect-[4/3] cursor-pointer hover:border-white/30 transition-all shadow-md"
                 >
                   <img
                     src={url}
-                    alt="campus/scene"
-                    className="w-full h-full object-cover group-hover/img:scale-105 transition-transform duration-300"
+                    alt="attachment"
+                    className="w-full h-full object-cover group-hover/img:scale-104 transition-transform duration-300"
                     onError={() => setFailedImages(prev => new Set(prev).add(idx))}
                   />
-                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover/img:opacity-100 flex items-center justify-center gap-2 transition-opacity">
+                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover/img:opacity-100 flex items-center justify-center transition-opacity">
                     <ZoomIn size={18} className="text-white drop-shadow" />
                   </div>
                 </div>
@@ -225,24 +232,24 @@ function MessageBubble({ role, content, images = [], artifacts = [], attachments
 
           {/* Artifact Cards (PDF, PPT, Image, Code) */}
           {!isUser && artifacts.length > 0 && (
-            <div className="mt-3.5 space-y-2 border-t border-[#23422d]/60 pt-3">
+            <div className="mt-3.5 space-y-2 border-t border-white/10 pt-3">
               {artifacts.map((art, aIdx) => (
                 <div
                   key={art.id || aIdx}
-                  className="flex items-center justify-between gap-3 p-3 rounded-xl bg-[#0d2114]/80 border border-[#284933] hover:border-[#4de370]/50 transition-all"
+                  className="flex items-center justify-between gap-3 p-3 rounded-xl bg-[#14291F]/45 border border-white/10 hover:border-white/25 transition-all shadow-xs"
                 >
                   <div className="flex items-center gap-2.5 min-w-0">
-                    <div className="p-2 rounded-lg bg-[#14301e] border border-[#2d573a]">
+                    <div className="p-2 rounded-lg bg-[#263B2B]/60 border border-white/15 shadow-xs">
                       {getArtifactIcon(art.type)}
                     </div>
                     <div className="min-w-0">
                       <div className="flex items-center gap-2">
-                        <p className="text-xs font-semibold text-[#f5f8f5] truncate">{art.title}</p>
-                        <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-[#163821] text-[#9dfcb1] border border-[#346b43]">
+                        <p className="text-xs font-bold text-[#F8F7F0] truncate">{art.title}</p>
+                        <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-white/5 text-[#E8DDC8] border border-white/10">
                           v{art.version || 1}
                         </span>
                       </div>
-                      <p className="text-[11px] text-[#7d9984] capitalize">{art.type} Artifact</p>
+                      <p className="text-[11px] text-[#789477] capitalize">{art.type} Artifact</p>
                     </div>
                   </div>
 
@@ -252,18 +259,18 @@ function MessageBubble({ role, content, images = [], artifacts = [], attachments
                         dispatch(setActiveArtifactId(art.id))
                         dispatch(setArtifactOpen(true))
                       }}
-                      className="flex items-center gap-1 px-3 py-1 rounded-lg text-xs font-semibold aurora-gold-btn border-none cursor-pointer"
+                      className="flex items-center gap-1 px-3 py-1 rounded-lg text-xs font-bold btn-liquid-gold border-none cursor-pointer"
                     >
-                      <ExternalLink size={12} />
+                      <ExternalLink size={11} />
                       Open
                     </button>
                     {art.url && (
                       <button
                         onClick={() => handleDownloadFile(art.url, art.title)}
-                        className="flex items-center gap-1 p-1.5 rounded-lg text-[#8ca893] hover:text-white hover:bg-[#163821] transition-colors border-none bg-transparent cursor-pointer"
+                        className="flex items-center gap-1 p-1.5 rounded-lg text-[#789477] hover:text-[#E8DDC8] hover:bg-white/10 transition-colors border-none bg-transparent cursor-pointer"
                         title="Download"
                       >
-                        <Download size={14} />
+                        <Download size={13} />
                       </button>
                     )}
                   </div>
@@ -272,42 +279,30 @@ function MessageBubble({ role, content, images = [], artifacts = [], attachments
             </div>
           )}
 
-          {/* Copy Message Button */}
-          {!isUser && (
-            <button
-              onClick={copyFullMessage}
-              className="opacity-0 group-hover:opacity-100 mt-2 p-1 rounded-md text-[#7d9984] hover:text-[#f4e5cb] hover:bg-[#122b1a] transition-all border-none bg-transparent cursor-pointer text-xs flex items-center gap-1"
-              title="Copy message"
-            >
-              {copiedMessage ? <Check size={12} className="text-[#4de370]" /> : <Copy size={12} />}
-              <span>{copiedMessage ? 'Copied' : 'Copy'}</span>
-            </button>
-          )}
-
         </div>
 
       </div>
 
-      {/* Lightbox Modal */}
+      {/* Lightbox Modal with Frosted Glass Controls */}
       {lightboxImage && (
         <div 
-          className="fixed inset-0 z-[999] bg-black/90 backdrop-blur-xl flex items-center justify-center p-4 animate-in fade-in duration-200"
+          className="fixed inset-0 z-[999] bg-black/85 backdrop-blur-2xl flex items-center justify-center p-4 animate-fade-in"
           onClick={closeLightbox}
         >
-          <div className="absolute top-6 right-6 flex items-center gap-3">
+          <div className="absolute top-6 right-6 flex items-center gap-2">
             <button
               onClick={(e) => {
                 e.stopPropagation()
                 handleDownloadFile(lightboxImage, 'image.png')
               }}
-              className="text-[#f4e5cb] hover:text-white bg-[#12281a] hover:bg-[#1b3d27] rounded-full p-2.5 transition-all border border-[#2b5438]"
+              className="text-[#E8DDC8] hover:text-white glass-card p-2 rounded-xl transition-all cursor-pointer"
               title="Download Image"
             >
               <Download size={18} />
             </button>
             <button
               onClick={closeLightbox}
-              className="text-[#9ab5a0] hover:text-white bg-[#12281a] hover:bg-[#1b3d27] rounded-full p-2.5 transition-all border border-[#2b5438]"
+              className="text-[#789477] hover:text-white glass-card p-2 rounded-xl transition-all cursor-pointer"
             >
               <X size={18} />
             </button>
@@ -320,7 +315,7 @@ function MessageBubble({ role, content, images = [], artifacts = [], attachments
             <img
               src={lightboxImage}
               alt="Lightbox"
-              className="max-w-full max-h-[85vh] object-contain rounded-2xl shadow-2xl border border-[#2b5438]"
+              className="max-w-full max-h-[85vh] object-contain rounded-2xl shadow-2xl border border-white/20"
             />
           </div>
         </div>
