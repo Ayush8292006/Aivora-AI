@@ -64,7 +64,7 @@ export default function ChatUsageModal() {
     ?? (currentChatUsage?.totalCreditsConsumed || currentChatUsage?.creditsConsumed) 
     ?? (fallbackCredits > 0 ? fallbackCredits : 0);
 
-  const modelUsed = usage?.lastModelUsed || currentChatUsage?.lastModelUsed || "Auto Multi-Agent Graph";
+  const modelUsed = usage?.lastModelUsed || currentChatUsage?.lastModelUsed || "Aivora Adaptive Engine";
   const requestCount = usage?.requestCount || currentChatUsage?.requestCount || aiMessages.length || 0;
 
   return (
@@ -148,9 +148,9 @@ export default function ChatUsageModal() {
             </span>
           </div>
           <div className="flex justify-between items-center text-[11px]">
-            <span className="text-[#7D7567]">Provider Accounting:</span>
+            <span className="text-[#7D7567]">Accounting Status:</span>
             <span className="text-[#2E7D32] font-semibold flex items-center gap-1">
-              <CheckCircle2 size={12} /> Real-time LangGraph usage
+              <CheckCircle2 size={12} /> Verified & Synchronized
             </span>
           </div>
         </div>
