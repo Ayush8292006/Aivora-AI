@@ -1,7 +1,7 @@
 import File from "../models/file.model.js";
 import storage from "../storage/storage.js";
 import path from "path";
-import pdfParse from "pdf-parse";
+import { parsePdfBuffer } from "../utils/pdfParser.js";
 
 // Magic bytes validation
 const checkMagicBytes = (buffer) => {
@@ -85,11 +85,11 @@ export const uploadFile = async (req, res) => {
         let pageCount = 1;
         if (verified.kind === "pdf") {
             try {
-                const pdfData = await pdfParse(buffer);
+                const pdfData = await parsePdfBuffer(buffer);
                 extractedText = (pdfData.text || "").trim();
                 pageCount = pdfData.numpages || 1;
             } catch (pdfErr) {
-                console.warn("⚠️ pdf-parse warning:", pdfErr.message);
+                console.warn("⚠️ pdf parse warning:", pdfErr.message);
             }
         }
 

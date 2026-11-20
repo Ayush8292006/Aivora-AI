@@ -2,7 +2,7 @@ import { getModel } from "../config/llmModels.js";
 import { renderHtmlToPdf, sanitizePdfHtml } from "../utils/pdfRenderer.js";
 import storage from "../storage/storage.js";
 import File from "../models/file.model.js";
-import pdfParse from "pdf-parse";
+import { parsePdfBuffer } from "../utils/pdfParser.js";
 import fs from "fs";
 
 /**
@@ -44,7 +44,7 @@ export const pdfAgent = async (state) => {
             if (!pdfText && pdfAttachment.path && fs.existsSync(pdfAttachment.path)) {
                 try {
                     const buf = await fs.promises.readFile(pdfAttachment.path);
-                    const parsed = await pdfParse(buf);
+                    const parsed = await parsePdfBuffer(buf);
                     pdfText = parsed.text;
                     pageCount = parsed.numpages || 1;
                 } catch (readErr) {
