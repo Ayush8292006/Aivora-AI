@@ -168,35 +168,12 @@ function Nav({
             <span className='text-sm font-bold tracking-tight text-[#1E1B18] group-hover:text-[#4A653C] transition-colors'>
               Aivora AI
             </span>
-            <span className='bg-[#24201C] text-[#E8DDC8] font-bold text-[10px] px-2 py-0.5 rounded-full uppercase tracking-wider'>
-              PRO
-            </span>
           </div>
 
           <div className="h-4 w-px bg-[#DDD3C1]" />
 
           {/* Quick Shortcuts */}
           <div className="flex items-center gap-2 text-xs">
-            {onGoToLanding && (
-              <button
-                onClick={onGoToLanding}
-                className="flex items-center gap-1 px-2.5 py-1 rounded-lg text-[#696256] hover:text-[#1E1B18] hover:bg-[#F2ECE0] transition-colors border-none bg-transparent cursor-pointer font-medium"
-              >
-                <Home size={13} />
-                <span>Landing</span>
-              </button>
-            )}
-
-            {onOpenExplore && (
-              <button
-                onClick={onOpenExplore}
-                className="flex items-center gap-1 px-2.5 py-1 rounded-lg text-[#4A653C] hover:text-[#1E2B1F] hover:bg-[#F2ECE0] transition-colors border-none bg-transparent cursor-pointer font-semibold"
-              >
-                <Sparkles size={13} />
-                <span>Explore Modes</span>
-              </button>
-            )}
-
             {/* Conversation Token Usage Button */}
             <button
               onClick={() => dispatch(openUsageModal())}

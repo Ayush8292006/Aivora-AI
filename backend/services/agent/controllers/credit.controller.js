@@ -1,4 +1,5 @@
 // backend/services/agent/controllers/credit.controller.js
+import axios from "axios";
 import UserWallet from "../models/UserWallet.js";
 import CreditTransaction from "../models/CreditTransaction.js";
 import CreditPackage from "../models/CreditPackage.js";
@@ -290,8 +291,93 @@ export const getChatUsage = async (req, res) => {
     const { conversationId } = req.params;
     const userId = req.headers["x-user-id"];
 
-    const usage = await ConversationUsage.findOne({ conversationId: String(conversationId) });
+    let usage = await ConversationUsage.findOne({ conversationId: String(conversationId) });
     const wallet = userId ? await ensureUserWallet(userId) : null;
+
+    // 1. If usage not recorded yet or has 0 tokens, aggregate from AIUsageRecord
+    if (!usage || (usage.totalTokens === 0 && usage.requestCount === 0)) {
+      const records = await AIUsageRecord.find({ conversationId: String(conversationId) });
+      if (records && records.length > 0) {
+        let totalInputTokens = 0;
+        let totalOutputTokens = 0;
+        let totalTokens = 0;
+        let totalCreditsConsumed = 0;
+        let lastModel = "Auto";
+
+        records.forEach(r => {
+          totalInputTokens += r.promptTokens || 0;
+          totalOutputTokens += r.completionTokens || 0;
+          totalTokens += r.totalTokens || 0;
+          totalCreditsConsumed += r.creditsConsumed || 0;
+          if (r.model) lastModel = r.model;
+        });
+
+        usage = await ConversationUsage.findOneAndUpdate(
+          { conversationId: String(conversationId) },
+          {
+            $set: {
+              userId: String(userId || records[0].userId),
+              totalInputTokens,
+              totalOutputTokens,
+              totalTokens,
+              totalCreditsConsumed,
+              requestCount: records.length,
+              lastModelUsed: lastModel
+            }
+          },
+          { upsert: true, new: true }
+        );
+      }
+    }
+
+    // 2. If still no usage in AIUsageRecord, check chatService messages for this conversation
+    if (!usage || (usage.totalTokens === 0 && usage.requestCount === 0)) {
+      try {
+        const chatServiceUrl = process.env.CHAT_SERVICE || "http://localhost:8002";
+        const msgRes = await axios.get(`${chatServiceUrl}/message/${conversationId}`, {
+          headers: userId ? { "x-user-id": String(userId) } : {},
+          timeout: 4000
+        });
+        const msgs = msgRes.data;
+        if (Array.isArray(msgs) && msgs.length > 0) {
+          let promptTokens = 0;
+          let completionTokens = 0;
+          let reqCount = 0;
+
+          msgs.forEach(m => {
+            const text = m.content || "";
+            const tokens = Math.max(1, Math.ceil(text.length / 4));
+            if (m.role === "user") {
+              promptTokens += tokens;
+              reqCount++;
+            } else if (m.role === "assistant") {
+              completionTokens += tokens;
+            }
+          });
+
+          const totalTokens = promptTokens + completionTokens;
+          const creditsConsumed = Math.max(1, Math.ceil((promptTokens / 1000) * 0.5 + (completionTokens / 1000) * 1.0));
+
+          usage = await ConversationUsage.findOneAndUpdate(
+            { conversationId: String(conversationId) },
+            {
+              $set: {
+                userId: String(userId || "user"),
+                totalInputTokens: promptTokens,
+                totalOutputTokens: completionTokens,
+                totalTokens,
+                totalCreditsConsumed: creditsConsumed,
+                requestCount: reqCount,
+                lastModelUsed: "Auto Multi-Agent Graph"
+              }
+            },
+            { upsert: true, new: true }
+          );
+        }
+      } catch (fetchErr) {
+        console.warn("⚠️ Could not backfill conversation usage from chatService:", fetchErr.message);
+      }
+    }
 
     return res.status(200).json({
       success: true,
@@ -302,7 +388,7 @@ export const getChatUsage = async (req, res) => {
         totalTokens: 0,
         totalCreditsConsumed: 0,
         requestCount: 0,
-        lastModelUsed: "Auto"
+        lastModelUsed: "Auto Multi-Agent Graph"
       },
       availableCredits: wallet ? wallet.availableCredits : 0
     });

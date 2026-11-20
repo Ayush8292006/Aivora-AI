@@ -17,6 +17,7 @@ import { deleteConversation } from '../features/deleteConversation'
 import { clearMessages } from '../redux/messageSlice.js'
 import logOut from '../features/logOut.js'
 import { setUserdata } from '../redux/userSlice.js'
+import { setWallet } from '../redux/creditSlice.js'
 
 function SideBar({ 
   mobileMenuOpen, 
@@ -312,7 +313,7 @@ function SideBar({
   const sidebarContent = (
     <div className='flex flex-col h-full w-full bg-[#1E2B1F]/95 backdrop-blur-xl rounded-none sm:rounded-2xl p-3.5 relative overflow-hidden border border-white/10 select-none text-[#CBD8CA] shadow-[inset_0_1px_1px_0_rgba(255,255,255,0.15),0_10px_25px_-5px_rgba(15,28,17,0.3)]'>
       
-      {/* Top Header: Brand Mark + Pro Badge + Actions */}
+      {/* Top Header: Brand Mark + Action Icons */}
       <div className='flex items-center justify-between px-2 pt-1 pb-3 border-b border-[#2C3E2B]/80'>
         <div 
           onClick={onGoToLanding}
@@ -324,9 +325,6 @@ function SideBar({
           </div>
           <span className='text-[15px] font-bold tracking-tight text-white group-hover:text-[#E8DDC8] transition-colors'>
             Aivora AI
-          </span>
-          <span className='bg-[#2B3C2A]/90 text-[#E8DDC8] border border-[#3E553D]/70 font-bold text-[10px] px-2 py-0.5 rounded-full uppercase tracking-wider'>
-            PRO
           </span>
         </div>
 
@@ -341,13 +339,6 @@ function SideBar({
             </button>
           )}
 
-          <button 
-            onClick={onGoToLanding}
-            className='flex items-center justify-center w-7 h-7 rounded-lg text-[#8EA58C] hover:text-white hover:bg-[#283A27]/80 transition-all border-none bg-transparent cursor-pointer'
-            title="Landing Page"
-          >
-            <Home size={13} />
-          </button>
           <button 
             onClick={handleCreateConversation}
             className='flex items-center justify-center w-7 h-7 rounded-lg text-[#8EA58C] hover:text-white hover:bg-[#283A27]/80 transition-all border-none bg-transparent cursor-pointer'
@@ -479,22 +470,34 @@ function SideBar({
               </div>
 
               <div className='min-w-0'>
-                <p className='text-xs font-semibold text-white truncate leading-tight'>
-                  {userData?.name || "Ayush Kumar"}
-                </p>
-                <p className='text-[10px] text-[#8EA58C] truncate max-w-[85px] leading-tight mt-0.5'>
-                  {userData?.email?.split('@')[0] || "viterkerkaai0475"}
+                <div className='flex items-center gap-1.5'>
+                  <p className='text-xs font-semibold text-white truncate leading-tight'>
+                    {userData?.name || "User"}
+                  </p>
+                  <span className='bg-[#2B3C2A] text-[#E8DDC8] border border-[#3E553D]/70 font-bold text-[9px] px-1.5 py-0.5 rounded-full uppercase tracking-wider shrink-0'>
+                    PRO
+                  </span>
+                </div>
+                <p className='text-[10px] text-[#8EA58C] truncate max-w-[95px] leading-tight mt-0.5'>
+                  {userData?.email?.split('@')[0] || "user"}
                 </p>
               </div>
             </div>
 
-            <div className='flex items-center gap-1 shrink-0'>
+            <div className='flex items-center gap-0.5 shrink-0'>
+              <button
+                onClick={onGoToLanding}
+                className='p-1.5 rounded-lg text-[#8EA58C] hover:text-white hover:bg-[#283A27]/80 transition-colors border-none bg-transparent cursor-pointer'
+                title="Return to Landing Page"
+              >
+                <Home size={14} />
+              </button>
               <button
                 onClick={onOpenSettings}
-                className='p-1 rounded-lg text-[#8EA58C] hover:text-white hover:bg-[#283A27]/80 transition-colors border-none bg-transparent cursor-pointer'
+                className='p-1.5 rounded-lg text-[#8EA58C] hover:text-white hover:bg-[#283A27]/80 transition-colors border-none bg-transparent cursor-pointer'
                 title="Settings"
               >
-                <Settings size={13} />
+                <Settings size={14} />
               </button>
               <button 
                 onClick={async () => {
@@ -505,22 +508,36 @@ function SideBar({
                   dispatch(clearMessages())
                   dispatch(setWallet({ availableCredits: 0 }))
                 }}
-                className='p-1 rounded-lg text-[#8EA58C] hover:text-white hover:bg-[#283A27]/80 transition-colors border-none bg-transparent cursor-pointer'
+                className='p-1.5 rounded-lg text-[#8EA58C] hover:text-white hover:bg-[#283A27]/80 transition-colors border-none bg-transparent cursor-pointer'
                 title="Log Out"
               >
-                <LogOut size={13} />
+                <LogOut size={14} />
               </button>
             </div>
           </div>
         ) : (
           <div className='p-2 flex items-center justify-between text-xs text-[#8EA58C] bg-[#162117]/60 rounded-xl'>
-            <span>Guest Session</span>
-            <button
-              onClick={onOpenSettings}
-              className="text-[#E8DDC8] hover:underline bg-transparent border-none cursor-pointer text-xs"
-            >
-              Settings
-            </button>
+            <div className='flex items-center gap-1.5'>
+              <span className='text-white font-medium'>Guest</span>
+              <span className='bg-[#2B3C2A] text-[#8EA58C] border border-[#3E553D]/50 text-[9px] px-1.5 py-0.5 rounded-full uppercase'>
+                FREE
+              </span>
+            </div>
+            <div className='flex items-center gap-1'>
+              <button
+                onClick={onGoToLanding}
+                className='p-1 rounded-lg text-[#8EA58C] hover:text-white hover:bg-[#283A27]/80 transition-colors border-none bg-transparent cursor-pointer'
+                title="Return to Landing Page"
+              >
+                <Home size={13} />
+              </button>
+              <button
+                onClick={onOpenSettings}
+                className="text-[#E8DDC8] hover:underline bg-transparent border-none cursor-pointer text-xs"
+              >
+                Settings
+              </button>
+            </div>
           </div>
         )}
       </div>

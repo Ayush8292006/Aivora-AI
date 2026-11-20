@@ -9,6 +9,7 @@ export default function ChatUsageModal() {
   const dispatch = useDispatch();
   const { isUsageModalOpen, availableCredits, currentChatUsage } = useSelector(state => state.credit);
   const { selectedConversation } = useSelector(state => state.conversation);
+  const { messages } = useSelector(state => state.message);
 
   const [usage, setUsage] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -30,12 +31,41 @@ export default function ChatUsageModal() {
 
   if (!isUsageModalOpen) return null;
 
-  const inputTokens = usage?.totalInputTokens ?? currentChatUsage?.totalInputTokens ?? 0;
-  const outputTokens = usage?.totalOutputTokens ?? currentChatUsage?.totalOutputTokens ?? 0;
-  const totalTokens = usage?.totalTokens ?? currentChatUsage?.totalTokens ?? 0;
-  const creditsConsumed = usage?.totalCreditsConsumed ?? currentChatUsage?.totalCreditsConsumed ?? 0;
+  // Real-time calculation from active conversation messages if backend aggregation hasn't run yet
+  const userMessages = (messages || []).filter(m => m.role === 'user');
+  const aiMessages = (messages || []).filter(m => m.role === 'assistant');
+
+  let fallbackInputTokens = 0;
+  userMessages.forEach(m => {
+    fallbackInputTokens += Math.max(1, Math.ceil((m.content || "").length / 4));
+  });
+
+  let fallbackOutputTokens = 0;
+  aiMessages.forEach(m => {
+    fallbackOutputTokens += Math.max(1, Math.ceil((m.content || "").length / 4));
+  });
+
+  const fallbackTotalTokens = fallbackInputTokens + fallbackOutputTokens;
+  const fallbackCredits = Math.max(aiMessages.length, Math.ceil((fallbackInputTokens / 1000) * 0.5 + (fallbackOutputTokens / 1000) * 1.0));
+
+  const inputTokens = (usage?.totalInputTokens || usage?.promptTokens) 
+    ?? (currentChatUsage?.totalInputTokens || currentChatUsage?.promptTokens) 
+    ?? (fallbackInputTokens > 0 ? fallbackInputTokens : 0);
+
+  const outputTokens = (usage?.totalOutputTokens || usage?.completionTokens) 
+    ?? (currentChatUsage?.totalOutputTokens || currentChatUsage?.completionTokens) 
+    ?? (fallbackOutputTokens > 0 ? fallbackOutputTokens : 0);
+
+  const totalTokens = (usage?.totalTokens) 
+    ?? (currentChatUsage?.totalTokens) 
+    ?? (fallbackTotalTokens > 0 ? fallbackTotalTokens : 0);
+
+  const creditsConsumed = (usage?.totalCreditsConsumed || usage?.creditsConsumed) 
+    ?? (currentChatUsage?.totalCreditsConsumed || currentChatUsage?.creditsConsumed) 
+    ?? (fallbackCredits > 0 ? fallbackCredits : 0);
+
   const modelUsed = usage?.lastModelUsed || currentChatUsage?.lastModelUsed || "Auto Multi-Agent Graph";
-  const requestCount = usage?.requestCount || 0;
+  const requestCount = usage?.requestCount || currentChatUsage?.requestCount || aiMessages.length || 0;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-in fade-in duration-150">

@@ -190,11 +190,16 @@ export async function settleAIUsage({
 
   return {
     promptTokens,
+    totalInputTokens: promptTokens,
     completionTokens,
+    totalOutputTokens: completionTokens,
     totalTokens,
     creditsConsumed: actualDeduction,
+    totalCreditsConsumed: actualDeduction,
     availableCredits: balanceAfter,
     isEstimated,
+    model,
+    lastModelUsed: model,
     transactionId: transaction._id
   };
 }

@@ -300,7 +300,14 @@ function ChatInput() {
 
       // Update credit balance & usage
       if (response?.usage) {
-        dispatch(setCurrentChatUsage(response.usage))
+        dispatch(setCurrentChatUsage({
+          totalInputTokens: response.usage.totalInputTokens || response.usage.promptTokens || 0,
+          totalOutputTokens: response.usage.totalOutputTokens || response.usage.completionTokens || 0,
+          totalTokens: response.usage.totalTokens || 0,
+          totalCreditsConsumed: response.usage.totalCreditsConsumed || response.usage.creditsConsumed || 0,
+          lastModelUsed: response.usage.lastModelUsed || response.usage.model || "Auto Multi-Agent Graph",
+          availableCredits: response.usage.availableCredits
+        }))
         if (response.usage.availableCredits !== undefined) {
           dispatch(setWallet({ availableCredits: response.usage.availableCredits }))
         }
