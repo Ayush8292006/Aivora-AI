@@ -64,11 +64,11 @@ function Nav({ onOpenMobileMenu }) {
       {/* Mobile Top Navigation */}
       <div className='lg:hidden flex items-center justify-between px-2 py-1.5'>
         <div className='flex items-center gap-2'>
-          <div className='w-7 h-7 rounded-full bg-[#24201C] text-[#D8D0BF] font-bold flex items-center justify-center text-xs shadow-xs'>
+          <div className='w-7 h-7 rounded-full bg-[#24201C] text-[#E8DDC8] font-bold flex items-center justify-center text-xs shadow-xs'>
             A
           </div>
           <span className='text-sm font-bold text-[#1E1B18]'>Aivora AI</span>
-          <span className='bg-[#24201C] text-[#D8D0BF] font-bold text-[10px] px-2 py-0.5 rounded-full'>
+          <span className='bg-[#24201C] text-[#E8DDC8] font-bold text-[10px] px-2 py-0.5 rounded-full'>
             PRO
           </span>
         </div>
@@ -84,7 +84,7 @@ function Nav({ onOpenMobileMenu }) {
           
           <button
             onClick={onOpenMobileMenu}
-            className='p-2 rounded-xl text-[#1E1B18] bg-[#F4F1EA] border border-[#E2DDD2] cursor-pointer'
+            className='p-2 rounded-xl text-[#1E1B18] bg-[#F2ECE0] border border-[#DDD3C1] cursor-pointer'
             title="Open Conversations"
           >
             <Menu size={16} />
@@ -93,17 +93,17 @@ function Nav({ onOpenMobileMenu }) {
       </div>
 
       {/* Desktop Workspace Top Bar */}
-      <div className='hidden lg:flex items-center justify-between px-3 py-1.5 border-b border-[#EAE6DF]'>
+      <div className='hidden lg:flex items-center justify-between px-3 py-1.5 border-b border-[#E8DEC9]'>
         
         {/* Left: Brand Badge + Aivora AI + PRO Pill */}
         <div className='flex items-center gap-2.5'>
-          <div className='w-7 h-7 rounded-full bg-[#24201C] text-[#D8D0BF] font-bold flex items-center justify-center text-xs shadow-xs'>
+          <div className='w-7 h-7 rounded-full bg-[#24201C] text-[#E8DDC8] font-bold flex items-center justify-center text-xs shadow-xs'>
             A
           </div>
           <span className='text-sm font-semibold tracking-tight text-[#1E1B18]'>
             Aivora AI
           </span>
-          <span className='bg-[#24201C] text-[#D8D0BF] font-bold text-[10px] px-2 py-0.5 rounded-full uppercase tracking-wider'>
+          <span className='bg-[#24201C] text-[#E8DDC8] font-bold text-[10px] px-2 py-0.5 rounded-full uppercase tracking-wider'>
             PRO
           </span>
         </div>
@@ -114,14 +114,14 @@ function Nav({ onOpenMobileMenu }) {
             <div className='relative'>
               <button
                 onClick={() => setDropdownOpen(!dropdownOpen)}
-                className='flex items-center gap-1.5 bg-[#F4F1EA] border border-[#E2DDD2] hover:border-[#9BB091] rounded-lg px-2.5 py-1 text-xs font-medium text-[#1E1B18] transition-all cursor-pointer'
+                className='flex items-center gap-1.5 bg-[#F2ECE0] border border-[#DDD3C1] hover:border-[#9BB091] rounded-lg px-2.5 py-1 text-xs font-medium text-[#1E1B18] transition-all cursor-pointer'
               >
                 <span>Format ({aspectRatio})</span>
                 <ChevronDown size={12} className='text-[#696256]' />
               </button>
 
               {dropdownOpen && (
-                <div className='absolute right-0 top-full mt-1.5 z-50 w-40 bg-white border border-[#DFD9CC] rounded-xl py-1 shadow-md'>
+                <div className='absolute right-0 top-full mt-1.5 z-50 w-40 bg-[#FAF8F3] border border-[#DDD3C1] rounded-xl py-1 shadow-md'>
                   {['1:1 (Square)', '16:9 (Landscape)', '9:16 (Portrait)', '4:3 (Classic)'].map(ratio => {
                     const val = ratio.split(' ')[0]
                     return (
@@ -133,8 +133,8 @@ function Nav({ onOpenMobileMenu }) {
                         }}
                         className={`w-full text-left px-3 py-1.5 text-xs transition-colors cursor-pointer border-none ${
                           aspectRatio === val 
-                            ? 'bg-[#F4F1EA] text-[#243223] font-bold' 
-                            : 'bg-transparent text-[#1E1B18] hover:bg-[#F4F1EA]'
+                            ? 'bg-[#F2ECE0] text-[#243223] font-bold' 
+                            : 'bg-transparent text-[#1E1B18] hover:bg-[#F2ECE0]'
                         }`}
                       >
                         {ratio}
@@ -148,7 +148,7 @@ function Nav({ onOpenMobileMenu }) {
 
           <button
             onClick={copyConversationLink}
-            className='p-1.5 rounded-lg text-[#696256] hover:text-[#1E1B18] hover:bg-[#F4F1EA] transition-colors border-none bg-transparent cursor-pointer'
+            className='p-1.5 rounded-lg text-[#696256] hover:text-[#1E1B18] hover:bg-[#F2ECE0] transition-colors border-none bg-transparent cursor-pointer'
             title="Share Workspace Link"
           >
             {copiedTitle ? <Check size={14} className='text-[#243223]' /> : <Copy size={14} />}
@@ -156,7 +156,7 @@ function Nav({ onOpenMobileMenu }) {
 
           <button
             onClick={() => dispatch(toggleMaximize())}
-            className='p-1.5 rounded-lg text-[#696256] hover:text-[#1E1B18] hover:bg-[#F4F1EA] transition-colors border-none bg-transparent cursor-pointer'
+            className='p-1.5 rounded-lg text-[#696256] hover:text-[#1E1B18] hover:bg-[#F2ECE0] transition-colors border-none bg-transparent cursor-pointer'
             title="Toggle Expanded View"
           >
             <Maximize2 size={14} />

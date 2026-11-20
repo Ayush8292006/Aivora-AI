@@ -2,32 +2,36 @@
 
 @layer base {
   :root {
-    --bg-outer: #C7BEAD;
-    --sidebar-bg: #1E2B1F;
-    --sidebar-border: #2F432E;
-    --chat-bg: #FFFFFF;
-    --chat-border: #DFD9CC;
-    --preview-bg: #141413;
-    --preview-border: #2A2825;
-    --olive-btn: #243223;
-    --olive-active: #2F3D2E;
-    --olive-dot: #4A653C;
+    --bg-outer: #D8CDBA;
+    --sidebar-bg: rgba(30, 43, 31, 0.92);
+    --sidebar-border: rgba(255, 255, 255, 0.12);
+    --chat-bg: #FAF8F3;
+    --chat-border: #DDD3C1;
+    --preview-bg: rgba(20, 20, 19, 0.92);
+    --preview-border: rgba(255, 255, 255, 0.1);
+    --olive-btn: #E8DDC8;
+    --olive-active: #2D402C;
+    --olive-dot: #4ADE80;
     --sage-active-bg: #B6C6AE;
     --sage-active-border: #9BB091;
     --espresso-btn: #241F1A;
-    --ai-card-bg: #F8F7F4;
-    --ai-card-border: #E8E4DA;
-    --artifact-bg: #FFFFFF;
-    --artifact-border: #E2DDD2;
-    --user-bubble: #2F3D2E;
+    --ai-card-bg: #F2ECE0;
+    --ai-card-border: #DDD3C1;
+    --artifact-bg: #FAF8F3;
+    --artifact-border: #DDD3C1;
+    --user-bubble: #243223;
     --text-primary: #1E1B18;
     --text-secondary: #696256;
-    --stone-pill: #F3EFE6;
+    --stone-pill: #ECE5D6;
     --stone-pill-text: #2A2621;
   }
 
   body {
-    background-color: #C7BEAD;
+    background: radial-gradient(circle at 15% 20%, #E6D9C4 0%, transparent 45%),
+                radial-gradient(circle at 85% 15%, #E2D4BF 0%, transparent 50%),
+                radial-gradient(circle at 50% 85%, #CFC1AA 0%, transparent 60%),
+                linear-gradient(135deg, #D8CDBA 0%, #CFC1AA 50%, #D5C8B4 100%);
+    background-attachment: fixed;
     color: #1E1B18;
     font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
     -webkit-font-smoothing: antialiased;

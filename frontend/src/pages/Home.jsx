@@ -36,7 +36,7 @@ function Home() {
   }
 
   return (
-    <div className='relative h-screen w-screen bg-[#C7BEAD] text-[#1E1B18] overflow-hidden flex flex-col font-["Plus_Jakarta_Sans",sans-serif]'>
+    <div className='relative h-screen w-screen bg-[#D8CDBA] bg-[radial-gradient(circle_at_15%_20%,#E6D9C4_0%,transparent_45%),radial-gradient(circle_at_85%_15%,#E2D4BF_0%,transparent_50%),radial-gradient(circle_at_50%_85%,#CFC1AA_0%,transparent_60%),linear-gradient(135deg,#D8CDBA_0%,#CFC1AA_50%,#D5C8B4_100%)] text-[#1E1B18] overflow-hidden flex flex-col font-["Plus_Jakarta_Sans",sans-serif]'>
       
       {/* Main 3-Column Desktop Layout (Left Sidebar, Center Chat Area, Right Code/Preview Panel) */}
       <div className='relative z-10 flex-1 flex p-2.5 sm:p-3.5 lg:p-4 gap-2.5 sm:gap-3.5 lg:gap-4 overflow-hidden max-w-[1850px] w-full mx-auto'>
@@ -51,7 +51,7 @@ function Home() {
       </div>
 
       {/* Mobile Bottom Navigation Bar in Matching Olive Green */}
-      <div className='relative z-20 lg:hidden flex items-center justify-around py-2.5 px-6 bg-[#1E2B1F] border-t border-[#2F432E]'>
+      <div className='relative z-20 lg:hidden flex items-center justify-around py-2.5 px-6 bg-[#1E2B1F]/90 backdrop-blur-md border-t border-[#2F432E]'>
         <button
           onClick={() => setMobileTab('home')}
           className={`flex flex-col items-center gap-1 bg-transparent border-none cursor-pointer transition-colors ${
@@ -93,17 +93,17 @@ function Home() {
       {/* Editorial Login Modal */}
       {!userData && (
         <div className='fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-xs p-4'>
-          <div className='w-full max-w-[380px] bg-[#D8D0BF] rounded-2xl p-7 flex flex-col gap-5 relative overflow-hidden shadow-xl border border-[#BEB49F]'>
+          <div className='w-full max-w-[380px] bg-[#FAF8F3] rounded-2xl p-7 flex flex-col gap-5 relative overflow-hidden shadow-2xl border border-[#DDD3C1]'>
             
             {/* Header: Brand Mark + Name + Pro */}
             <div className='flex items-center gap-3'>
-              <div className='w-9 h-9 rounded-xl bg-[#24201C] text-[#D8D0BF] flex items-center justify-center font-bold text-sm shadow-xs'>
+              <div className='w-9 h-9 rounded-xl bg-[#24201C] text-[#E8DDC8] flex items-center justify-center font-bold text-sm shadow-xs'>
                 A
               </div>
               <div>
                 <div className='flex items-center gap-2'>
                   <h2 className='text-base font-bold text-[#1E1B18] tracking-tight'>Aivora AI</h2>
-                  <span className='bg-[#24201C] text-[#D8D0BF] font-bold text-[10px] px-2 py-0.5 rounded-full'>
+                  <span className='bg-[#24201C] text-[#E8DDC8] font-bold text-[10px] px-2 py-0.5 rounded-full'>
                     PRO
                   </span>
                 </div>

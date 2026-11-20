@@ -121,12 +121,12 @@ ${htmlFile?.content || ''}
       }}
       transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
       className={`
-        fixed lg:relative inset-y-0 right-0 z-40 flex flex-col h-full bg-[#141413] rounded-2xl p-3.5 border border-[#2A2825] shadow-xl overflow-hidden select-none text-[#E8E3D9]
+        fixed lg:relative inset-y-0 right-0 z-40 flex flex-col h-full bg-[#141413]/92 backdrop-blur-xl rounded-2xl p-3.5 border border-white/10 shadow-[inset_0_1px_1px_0_rgba(255,255,255,0.08),0_12px_32px_-6px_rgba(0,0,0,0.45)] overflow-hidden select-none text-[#E8E3D9]
         ${isMaximized ? 'w-full lg:w-[80vw]' : 'w-full lg:w-[420px]'}
       `}
     >
-      {/* Panel Header (Exact Match to Reference Image) */}
-      <div className="flex items-center justify-between pb-3 px-1 border-b border-[#2A2825]">
+      {/* Panel Header */}
+      <div className="flex items-center justify-between pb-3 px-1 border-b border-[#2A2825]/80">
         <div className="flex items-center gap-2.5 min-w-0">
           <div className="w-7 h-7 rounded-lg bg-[#23211E] border border-[#36322C] flex items-center justify-center shrink-0 shadow-2xs">
             {(!activeArtifact || activeArtifact?.type === 'Project') && <span className="font-mono text-xs font-bold text-[#E8E3D9]">&lt;/&gt;</span>}

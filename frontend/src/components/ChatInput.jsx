@@ -292,12 +292,12 @@ function ChatInput() {
         className="hidden"
       />
 
-      {/* Chat Input Container: Clean Crisp White, Compact Height */}
+      {/* Chat Input Container: Warm Ivory, Compact Height */}
       <div 
         onPaste={handlePaste}
         onDragOver={handleDragOver}
         onDrop={handleDrop}
-        className='bg-white border border-[#DFD9CC] rounded-2xl px-3.5 py-2 sm:py-2.5 flex flex-col gap-1.5 relative shadow-xs'
+        className='bg-[#FAF8F3] border border-[#DDD3C1] rounded-2xl px-3.5 py-2 sm:py-2.5 flex flex-col gap-1.5 relative shadow-[inset_0_1px_0_rgba(255,255,255,0.8),0_1px_3px_rgba(0,0,0,0.04)]'
       >
 
         {/* Mode Selector Chips Row (Compact) */}
@@ -314,7 +314,7 @@ function ChatInput() {
                   shrink-0 cursor-pointer inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-medium transition-all duration-150 border-none
                   ${isActive
                     ? "bg-[#243223] text-white shadow-2xs font-semibold"
-                    : "bg-[#F4F1EA] hover:bg-[#EAE4D8] text-[#3A3630]"
+                    : "bg-[#ECE5D6] hover:bg-[#E4DBC8] text-[#3A3630]"
                   }
                 `}
               >
@@ -331,7 +331,7 @@ function ChatInput() {
             {attachments.map((att) => (
               <div
                 key={att.id}
-                className="relative flex items-center gap-1.5 bg-[#F8F7F4] border border-[#E8E4DA] rounded-xl px-2 py-0.5 text-xs text-[#1E1B18] shadow-2xs"
+                className="relative flex items-center gap-1.5 bg-[#ECE5D6] border border-[#DDD3C1] rounded-xl px-2 py-0.5 text-xs text-[#1E1B18] shadow-2xs"
               >
                 {att.kind === "image" && att.previewUrl ? (
                   <img src={att.previewUrl} alt="thumb" className="w-4 h-4 rounded object-cover" />
@@ -368,7 +368,7 @@ function ChatInput() {
 
         {/* Status Bubble while running */}
         {isLoading && statusMessage && (
-          <div className="flex items-center justify-between bg-[#F8F7F4] border border-[#E8E4DA] rounded-xl px-2.5 py-1 text-xs text-[#1E1B18]">
+          <div className="flex items-center justify-between bg-[#ECE5D6] border border-[#DDD3C1] rounded-xl px-2.5 py-1 text-xs text-[#1E1B18]">
             <div className="flex items-center gap-2">
               <Loader2 size={11} className="animate-spin text-[#4A653C]" />
               <span className="text-[11px] font-medium">{statusMessage}</span>
@@ -389,7 +389,7 @@ function ChatInput() {
             <button 
               type="button"
               onClick={() => fileInputRef.current?.click()}
-              className='flex items-center justify-center w-6 h-6 rounded-md text-[#696256] hover:text-[#1E1B18] hover:bg-[#F4F1EA] transition-all bg-transparent border-none cursor-pointer disabled:opacity-50'
+              className='flex items-center justify-center w-6 h-6 rounded-md text-[#696256] hover:text-[#1E1B18] hover:bg-[#ECE5D6] transition-all bg-transparent border-none cursor-pointer disabled:opacity-50'
               disabled={isLoading || isUploading}
               title="Attach File or Image"
             >
@@ -397,7 +397,7 @@ function ChatInput() {
             </button>
             <button 
               type="button"
-              className='flex items-center justify-center w-6 h-6 rounded-md text-[#696256] hover:text-[#1E1B18] hover:bg-[#F4F1EA] transition-all bg-transparent border-none cursor-pointer disabled:opacity-50'
+              className='flex items-center justify-center w-6 h-6 rounded-md text-[#696256] hover:text-[#1E1B18] hover:bg-[#ECE5D6] transition-all bg-transparent border-none cursor-pointer disabled:opacity-50'
               disabled={isLoading}
               title="Voice Input"
             >
@@ -407,7 +407,7 @@ function ChatInput() {
               type="button"
               onClick={() => setSelectedAgent("Search")}
               className={`flex items-center justify-center w-6 h-6 rounded-md transition-all bg-transparent border-none cursor-pointer ${
-                selectedAgent === 'Search' ? 'text-[#1E1B18] bg-[#F4F1EA]' : 'text-[#696256] hover:text-[#1E1B18] hover:bg-[#F4F1EA]'
+                selectedAgent === 'Search' ? 'text-[#1E1B18] bg-[#ECE5D6]' : 'text-[#696256] hover:text-[#1E1B18] hover:bg-[#ECE5D6]'
               }`}
               title="Web Search Mode"
             >
@@ -422,7 +422,7 @@ function ChatInput() {
             className={`w-7 h-7 rounded-full flex items-center justify-center border-none cursor-pointer transition-all duration-150 ${
               (value.trim() || attachments.length > 0) && !isLoading && !isUploading
                 ? "bg-[#241F1A] hover:bg-[#181410] text-white shadow-xs hover:scale-105 active:scale-95" 
-                : "bg-[#EAE6DF] text-[#A69E90] cursor-not-allowed"
+                : "bg-[#E2D8C6] text-[#9E9484] cursor-not-allowed"
             }`}
           >
             {isLoading ? (

@@ -30,7 +30,7 @@ function MessageList() {
         <div className='h-full flex flex-col items-center justify-center gap-5 text-center py-8 px-4'>
           
           <div className='flex flex-col items-center gap-3'>
-            <div className='w-12 h-12 rounded-full bg-[#24201C] text-[#D8D0BF] flex items-center justify-center font-bold text-lg shadow-xs'>
+            <div className='w-12 h-12 rounded-full bg-[#24201C] text-[#E8DDC8] flex items-center justify-center font-bold text-lg shadow-xs'>
               A
             </div>
             
@@ -51,10 +51,10 @@ function MessageList() {
               return (
                 <div 
                   key={index}
-                  className='bg-[#F7F5F0] hover:bg-[#EFECE4] border border-[#E5E0D6] p-3 rounded-xl flex items-center justify-between gap-3 text-left cursor-pointer transition-colors shadow-2xs group'
+                  className='bg-[#F2ECE0] hover:bg-[#EAE2D2] border border-[#DDD3C1] p-3 rounded-xl flex items-center justify-between gap-3 text-left cursor-pointer transition-colors shadow-2xs group'
                 >
                   <div className='flex items-center gap-2.5 min-w-0'>
-                    <div className='w-7 h-7 rounded-lg bg-white flex items-center justify-center text-[#1E1B18] shrink-0 border border-[#E2DDD2]'>
+                    <div className='w-7 h-7 rounded-lg bg-[#FAF8F3] flex items-center justify-center text-[#1E1B18] shrink-0 border border-[#DDD3C1]'>
                       <Icon size={13} />
                     </div>
                     <div className='min-w-0'>
