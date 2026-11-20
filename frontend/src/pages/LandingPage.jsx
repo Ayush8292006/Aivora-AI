@@ -10,7 +10,7 @@ import {
 } from 'lucide-react'
 
 // Dynamic Typewriter Component
-function TypewriterText({ words = [], speed = 55, deleteSpeed = 30, pause = 1800 }) {
+function TypewriterText({ words = [], speed = 45, deleteSpeed = 25, pause = 2200 }) {
   const [index, setIndex] = useState(0)
   const [subIndex, setSubIndex] = useState(0)
   const [reverse, setReverse] = useState(false)
@@ -37,11 +37,9 @@ function TypewriterText({ words = [], speed = 55, deleteSpeed = 30, pause = 1800
   }, [subIndex, index, reverse, words, speed, deleteSpeed, pause])
 
   return (
-    <span className="inline-flex items-baseline text-[#1E2B1F] font-bold">
-      <span className="underline decoration-[#789477]/60 underline-offset-6">
-        {words[index]?.substring(0, subIndex)}
-      </span>
-      <span className="w-[2.5px] h-[0.9em] bg-[#1E2B1F] ml-1 inline-block animate-pulse align-middle" />
+    <span className="inline-flex items-baseline font-semibold text-[#1E2B1F]">
+      <span>{words[index]?.substring(0, subIndex)}</span>
+      <span className="w-[2px] h-[1em] bg-[#1E2B1F] ml-1 inline-block animate-pulse align-middle rounded-full" />
     </span>
   )
 }
@@ -361,32 +359,48 @@ export default function LandingPage({ onStartChat, onOpenLogin, onOpenExplore })
             <span className="text-[11px] text-[#554E43] font-medium">Domain-Expert Intelligence</span>
           </motion.div>
 
-          {/* Main Headline (Refined, Proportional, Editorial Typography) */}
+          {/* Main Headline (Refined, Proportional, Editorial SaaS Typography) */}
           <motion.div 
             initial={{ y: 25, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.6, delay: 0.1 }}
-            className="space-y-3"
+            className="space-y-4"
           >
-            <h1 className="font-display text-4xl sm:text-6xl lg:text-7xl font-bold tracking-tight text-[#1E1B18] leading-[1.08] sm:leading-[1.1]">
+            <h1 className="font-display text-4xl sm:text-6xl lg:text-[76px] font-extrabold tracking-[-0.035em] text-[#141413] leading-[1.05] sm:leading-[1.06]">
               One AI Workspace.<br />
-              <span className="text-[#1E2B1F] font-extrabold">Endless Possibilities.</span>
+              <span className="bg-gradient-to-r from-[#1E2B1F] via-[#2D452E] to-[#99793E] bg-clip-text text-transparent">
+                Endless Possibilities.
+              </span>
             </h1>
 
-            {/* Dynamic Real-Time Typewriter Subtitle */}
-            <div className="text-base sm:text-xl lg:text-2xl text-[#554E43] min-h-[36px] flex items-center justify-center font-medium">
-              <span>Ask Aivora to&nbsp;</span>
-              <TypewriterText words={typewriterPhrases} />
+            {/* Floating Luxury Prompt Capsule */}
+            <div className="pt-1 pb-1">
+              <div className="inline-flex items-center gap-2.5 sm:gap-3.5 px-4 sm:px-6 py-2.5 sm:py-3 rounded-2xl bg-[#FAF8F3]/95 border border-[#D5C9B4] shadow-[0_8px_28px_rgba(40,32,20,0.06),inset_0_1px_0_rgba(255,255,255,0.9)] backdrop-blur-md max-w-2xl mx-auto transition-all hover:border-[#BFAF98] hover:shadow-md">
+                <div className="w-7 h-7 rounded-xl bg-[#1E2B1F] text-[#E8DDC8] flex items-center justify-center shrink-0 shadow-2xs">
+                  <Sparkles size={14} className="text-[#C9A875]" />
+                </div>
+                <div className="text-xs sm:text-sm text-left truncate flex items-center gap-1.5">
+                  <span className="text-[#7D7567] font-medium shrink-0">Ask Aivora to</span>
+                  <TypewriterText words={typewriterPhrases} />
+                </div>
+                <span className="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-[10px] font-mono font-bold bg-[#EAE2D2] text-[#554E43] ml-auto border border-[#DDD3C1] shrink-0">
+                  Auto ↵
+                </span>
+              </div>
             </div>
 
-            {/* Elegant Accent Indicator (Minimal, Proportional) */}
-            <div className="w-full max-w-xs sm:max-w-md mx-auto pt-2 space-y-1.5">
-              <div className="w-full h-1 bg-[#2E2822]/15 rounded-full overflow-hidden relative">
-                <div className="h-full bg-gradient-to-r from-[#C9A875] via-[#E8A338] to-[#4ADE80] w-[82%] rounded-full shadow-xs" />
-              </div>
-              <div className="flex justify-between items-center text-[10px] font-mono text-[#696256] font-semibold">
-                <span className="uppercase tracking-wider">Multi-Agent Graph 2026</span>
-                <span className="text-[#1E2B1F] font-bold">8 Autonomous Models • Active</span>
+            {/* Sleek Multi-Agent Telemetry Status Pill */}
+            <div className="flex items-center justify-center gap-3 text-[11px] font-mono text-[#696256] pt-1">
+              <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-[#FAF8F3]/85 border border-[#D5C9B4]/80 shadow-2xs">
+                <span className="flex items-center gap-1.5 font-bold text-[#1E2B1F] uppercase tracking-wider text-[10px]">
+                  <span className="w-2 h-2 rounded-full bg-[#4ADE80] animate-pulse" />
+                  Multi-Agent Graph 2026
+                </span>
+                <span className="text-[#C8BEAC]">•</span>
+                <span className="text-[10.5px] text-[#554E43] font-semibold">8 Autonomous Models Active</span>
+                <div className="w-14 h-1.5 bg-[#DDD3C1] rounded-full overflow-hidden hidden sm:block">
+                  <div className="h-full bg-gradient-to-r from-[#C9A875] via-[#E8A338] to-[#4ADE80] w-[88%] rounded-full animate-pulse" />
+                </div>
               </div>
             </div>
           </motion.div>
