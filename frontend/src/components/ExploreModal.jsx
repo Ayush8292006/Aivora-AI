@@ -52,7 +52,7 @@ export default function ExploreModal({ isOpen, onClose, onSelectCapability }) {
     {
       id: 'ppt',
       title: 'Presentation Generator',
-      badge: 'McKinsey Specialist',
+      badge: 'Executive Specialist',
       desc: 'Craft structured, high-impact PowerPoint pitch decks with punchy takeaways, key statistics, and full speaker notes.',
       icon: Presentation,
       color: 'bg-[#372E15] text-[#FBBF24]',

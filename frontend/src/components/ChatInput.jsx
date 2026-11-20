@@ -367,7 +367,7 @@ function ChatInput() {
   ]
 
   return (
-    <div className='w-full pt-1 pb-1 select-none'>
+    <div className='w-full px-2 sm:px-4 pt-1 pb-[max(0.6rem,env(safe-area-inset-bottom))] select-none'>
       <input
         type="file"
         ref={fileInputRef}
@@ -377,16 +377,16 @@ function ChatInput() {
         className="hidden"
       />
 
-      {/* Chat Input Container: Warm Ivory, Compact Height */}
+      {/* Chat Input Container: ChatGPT Mobile Style Floating Dock */}
       <div 
         onPaste={handlePaste}
         onDragOver={handleDragOver}
         onDrop={handleDrop}
-        className='bg-[#FAF8F3] border border-[#DDD3C1] rounded-2xl px-3.5 py-2 sm:py-2.5 flex flex-col gap-1.5 relative shadow-[inset_0_1px_0_rgba(255,255,255,0.8),0_1px_3px_rgba(0,0,0,0.04)]'
+        className='bg-[#FAF8F3] border border-[#DDD3C1] rounded-2xl sm:rounded-2xl px-3 sm:px-3.5 py-2 sm:py-2.5 flex flex-col gap-1.5 relative shadow-[0_4px_16px_rgba(0,0,0,0.04),inset_0_1px_0_rgba(255,255,255,0.8)]'
       >
 
-        {/* Mode Selector Chips Row (Compact) */}
-        <div className='flex items-center gap-1 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden py-0.5'>
+        {/* Mode Selector Chips Row (Smooth Swipeable Mobile Carousel) */}
+        <div className='flex items-center gap-1.5 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden py-0.5 px-0.5'>
           {agents.map((agent) => {
             const isActive = selectedAgent === agent.label
             const Icon = agent.icon
@@ -396,9 +396,9 @@ function ChatInput() {
                 type="button"
                 onClick={() => setSelectedAgent(agent.label)}
                 className={`
-                  shrink-0 cursor-pointer inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-medium transition-all duration-150 border-none
+                  shrink-0 cursor-pointer inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold transition-all duration-150 border-none active:scale-95
                   ${isActive
-                    ? "bg-[#243223] text-white shadow-2xs font-semibold"
+                    ? "bg-[#1E2B1F] text-white shadow-xs font-bold"
                     : "bg-[#ECE5D6] hover:bg-[#E4DBC8] text-[#3A3630]"
                   }
                 `}
@@ -416,7 +416,7 @@ function ChatInput() {
             {attachments.map((att) => (
               <div
                 key={att.id}
-                className="relative flex items-center gap-1.5 bg-[#ECE5D6] border border-[#DDD3C1] rounded-xl px-2 py-0.5 text-xs text-[#1E1B18] shadow-2xs"
+                className="relative flex items-center gap-1.5 bg-[#ECE5D6] border border-[#DDD3C1] rounded-xl px-2.5 py-1 text-xs text-[#1E1B18] shadow-2xs"
               >
                 {att.kind === "image" && att.previewUrl ? (
                   <img src={att.previewUrl} alt="thumb" className="w-4 h-4 rounded object-cover" />
@@ -440,14 +440,14 @@ function ChatInput() {
           </div>
         )}
 
-        {/* Input Textarea (Compact) */}
+        {/* Input Textarea (Auto-growth responsive) */}
         <textarea
-          placeholder="Ask anything, request a PDF resume, generate slides, create an image..."
+          placeholder="Message Aivora..."
           onChange={(e) => setValue(e.target.value)}
           value={value}
           onKeyDown={handleKeyDown}
           disabled={isLoading}
-          className="w-full bg-transparent outline-none resize-none text-[13px] text-[#1E1B18] placeholder:text-[#8E877B] leading-snug [scrollbar-width:none] [&::-webkit-scrollbar]:hidden disabled:opacity-50 min-h-[26px] max-h-[100px] py-0.5"
+          className="w-full bg-transparent outline-none resize-none text-[13.5px] text-[#1E1B18] placeholder:text-[#8E877B] leading-snug [scrollbar-width:none] [&::-webkit-scrollbar]:hidden disabled:opacity-50 min-h-[28px] max-h-[120px] py-1"
           rows={1}
         />
 
@@ -468,69 +468,69 @@ function ChatInput() {
           </div>
         )}
 
-        {/* Bottom Actions Row: Paperclip, Mic, Settings on left; Circular Send Button on right */}
+        {/* Bottom Actions Row: Paperclip, Mic, Search on left; Circular Dark Espresso Send Button on right */}
         <div className='flex items-center justify-between pt-0.5'>
           <div className='flex items-center gap-1'>
             <button 
               type="button"
               onClick={() => fileInputRef.current?.click()}
-              className='flex items-center justify-center w-6 h-6 rounded-md text-[#696256] hover:text-[#1E1B18] hover:bg-[#ECE5D6] transition-all bg-transparent border-none cursor-pointer disabled:opacity-50'
+              className='flex items-center justify-center w-8 h-8 rounded-xl text-[#696256] hover:text-[#1E1B18] hover:bg-[#ECE5D6] active:scale-95 transition-all bg-transparent border-none cursor-pointer disabled:opacity-50'
               disabled={isLoading || isUploading}
               title="Attach File or Image"
             >
-              <Paperclip size={14}/>
+              <Paperclip size={16}/>
             </button>
             <button 
               type="button"
-              className='flex items-center justify-center w-6 h-6 rounded-md text-[#696256] hover:text-[#1E1B18] hover:bg-[#ECE5D6] transition-all bg-transparent border-none cursor-pointer disabled:opacity-50'
+              className='flex items-center justify-center w-8 h-8 rounded-xl text-[#696256] hover:text-[#1E1B18] hover:bg-[#ECE5D6] active:scale-95 transition-all bg-transparent border-none cursor-pointer disabled:opacity-50'
               disabled={isLoading}
               title="Voice Input"
             >
-              <Mic size={14}/>
+              <Mic size={16}/>
             </button>
             <button 
               type="button"
               onClick={() => setSelectedAgent("Search")}
-              className={`flex items-center justify-center w-6 h-6 rounded-md transition-all bg-transparent border-none cursor-pointer ${
-                selectedAgent === 'Search' ? 'text-[#1E1B18] bg-[#ECE5D6]' : 'text-[#696256] hover:text-[#1E1B18] hover:bg-[#ECE5D6]'
+              className={`flex items-center justify-center w-8 h-8 rounded-xl active:scale-95 transition-all border-none cursor-pointer ${
+                selectedAgent === 'Search' ? 'text-[#1E1B18] bg-[#ECE5D6]' : 'text-[#696256] hover:text-[#1E1B18] hover:bg-[#ECE5D6] bg-transparent'
               }`}
               title="Web Search Mode"
             >
-              <Globe size={14}/>
+              <Globe size={16}/>
             </button>
           </div>
           
-          {/* Circular Dark Espresso Send Button (Compact) */}
+          {/* Circular Dark Espresso Send Button (Touch-Friendly Native Style) */}
           <button
             disabled={(!value.trim() && attachments.length === 0) || isLoading || isUploading}
             onClick={handleSendMessage}
-            className={`w-7 h-7 rounded-full flex items-center justify-center border-none cursor-pointer transition-all duration-150 ${
+            className={`w-8 h-8 rounded-full flex items-center justify-center border-none cursor-pointer transition-all duration-150 ${
               (value.trim() || attachments.length > 0) && !isLoading && !isUploading
-                ? "bg-[#241F1A] hover:bg-[#181410] text-white shadow-xs hover:scale-105 active:scale-95" 
+                ? "bg-[#1E2B1F] hover:bg-[#283A27] text-white shadow-xs hover:scale-105 active:scale-95" 
                 : "bg-[#E2D8C6] text-[#9E9484] cursor-not-allowed"
             }`}
           >
             {isLoading ? (
-              <Loader2 size={12} className="animate-spin text-white" />
+              <Loader2 size={13} className="animate-spin text-white" />
             ) : (
-              <Send size={12} className="translate-x-[0.5px]" />
+              <Send size={13} className="translate-x-[0.5px]" />
             )}
           </button>
         </div>
 
         {/* Guest Mode Free Usage Indicator */}
         {(!userData || userData.isGuest) && (
-          <div className="flex items-center justify-between px-1 pt-1 text-[10.5px] text-[#7D7567]">
-            <span className="flex items-center gap-1 font-medium">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#4ADE80]" />
-              Guest Free Mode: {guestSession?.questionsRemaining ?? 4}/4 questions remaining
+          <div className="flex items-center justify-between px-1 pt-1 text-[10.5px] text-[#7D7567] border-t border-[#DDD3C1]/60 mt-0.5">
+            <span className="flex items-center gap-1 font-medium truncate">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#4ADE80] shrink-0" />
+              <span className="truncate">Guest: {guestSession?.questionsRemaining ?? 4}/4 questions free</span>
             </span>
             <button
               type="button"
               onClick={() => dispatch(openGuestLimitModal())}
-              className="text-[#1E2B1F] font-bold hover:underline bg-transparent border-none cursor-pointer p-0"
+              className="text-[#1E2B1F] font-bold hover:underline bg-transparent border-none cursor-pointer p-0 shrink-0 ml-2"
             >
-              Sign up for 100 bonus credits &rarr;
+              Sign up &rarr;
             </button>
           </div>
         )}

@@ -177,9 +177,9 @@ function Home() {
 
   // 2. MAIN AI CHAT WORKSPACE
   return (
-    <div className='relative h-screen w-screen bg-[#D8CDBA] bg-[radial-gradient(circle_at_15%_20%,#E6D9C4_0%,transparent_45%),radial-gradient(circle_at_85%_15%,#E2D4BF_0%,transparent_50%),radial-gradient(circle_at_50%_85%,#CFC1AA_0%,transparent_60%),linear-gradient(135deg,#D8CDBA_0%,#CFC1AA_50%,#D5C8B4_100%)] text-[#1E1B18] overflow-hidden flex flex-col font-["Plus_Jakarta_Sans",sans-serif]'>
+    <div className='relative h-[100dvh] min-h-[100dvh] w-screen bg-[#D8CDBA] bg-[radial-gradient(circle_at_15%_20%,#E6D9C4_0%,transparent_45%),radial-gradient(circle_at_85%_15%,#E2D4BF_0%,transparent_50%),radial-gradient(circle_at_50%_85%,#CFC1AA_0%,transparent_60%),linear-gradient(135deg,#D8CDBA_0%,#CFC1AA_50%,#D5C8B4_100%)] text-[#1E1B18] overflow-hidden flex flex-col font-["Plus_Jakarta_Sans",sans-serif]'>
       
-      <div className='relative z-10 flex-1 flex h-screen p-0 sm:p-2 lg:p-3 gap-0 lg:gap-3 overflow-hidden max-w-[1920px] w-full mx-auto animate-in fade-in duration-200'>
+      <div className='relative z-10 flex-1 flex h-[100dvh] p-0 sm:p-2 lg:p-3 gap-0 lg:gap-3 overflow-hidden max-w-[1920px] w-full mx-auto animate-in fade-in duration-200'>
         <SideBar 
           mobileMenuOpen={mobileMenuOpen} 
           setMobileMenuOpen={setMobileMenuOpen}

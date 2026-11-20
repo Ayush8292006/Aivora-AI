@@ -36,7 +36,7 @@ export default function WelcomeOnboarding({ onSelectPrompt, onNewChat, onSelectM
     },
     {
       title: "Create a presentation",
-      subtitle: "McKinsey-grade slide deck",
+      subtitle: "Executive slide deck",
       prompt: "Create an 8-slide investor pitch deck for an Autonomous AI Agent startup",
       agent: "ppt",
       icon: Presentation,
@@ -71,20 +71,20 @@ export default function WelcomeOnboarding({ onSelectPrompt, onNewChat, onSelectM
   ]
 
   return (
-    <div className="w-full max-w-3xl mx-auto flex flex-col items-center py-6 sm:py-10 px-3 sm:px-6 my-auto text-center">
+    <div className="w-full max-w-3xl mx-auto flex flex-col items-center py-4 sm:py-8 px-2 sm:px-6 my-auto text-center">
       
       {/* Brand Icon & Heading */}
-      <div className="flex flex-col items-center gap-3 mb-6">
-        <div className="w-13 h-13 rounded-2xl bg-[#1E2B1F] text-[#E8DDC8] flex items-center justify-center font-bold text-lg shadow-sm border border-[#3E553D]/50">
+      <div className="flex flex-col items-center gap-2 sm:gap-3 mb-4 sm:mb-6">
+        <div className="w-11 h-11 sm:w-13 sm:h-13 rounded-2xl bg-[#1E2B1F] text-[#E8DDC8] flex items-center justify-center font-bold text-base sm:text-lg shadow-sm border border-[#3E553D]/50">
           A
         </div>
 
         <div className="space-y-1">
           <div className="flex items-center justify-center gap-2">
-            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-[#1E1B18]">
+            <h1 className="text-xl sm:text-3xl font-bold tracking-tight text-[#1E1B18]">
               Welcome to Aivora AI{userData?.name ? `, ${userData.name.split(' ')[0]}` : ''}
             </h1>
-            <span className="bg-[#1E2B1F] text-[#E8DDC8] text-[9.5px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">
+            <span className="bg-[#1E2B1F] text-[#E8DDC8] text-[9px] sm:text-[9.5px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">
               PRO
             </span>
           </div>
@@ -95,12 +95,12 @@ export default function WelcomeOnboarding({ onSelectPrompt, onNewChat, onSelectM
         </div>
 
         {/* Quick Mode Filter Bar */}
-        <div className="flex flex-wrap items-center justify-center gap-1.5 pt-1">
+        <div className="flex flex-wrap items-center justify-center gap-1 sm:gap-1.5 pt-1">
           {quickModes.map((m) => (
             <button
               key={m.mode}
               onClick={() => onSelectMode && onSelectMode(m.mode)}
-              className="px-3 py-1 rounded-full text-xs font-semibold bg-[#F2ECE0] hover:bg-[#EAE2D2] text-[#1E1B18] border border-[#DDD3C1] transition-colors cursor-pointer"
+              className="px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-full text-[11px] sm:text-xs font-semibold bg-[#F2ECE0] hover:bg-[#EAE2D2] text-[#1E1B18] border border-[#DDD3C1] transition-colors cursor-pointer"
             >
               {m.label}
             </button>
@@ -109,19 +109,19 @@ export default function WelcomeOnboarding({ onSelectPrompt, onNewChat, onSelectM
       </div>
 
       {/* Suggested Prompt Cards (Clean 2-Column Responsive Grid) */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full text-left mb-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3 w-full text-left mb-4 sm:mb-6">
         {promptCards.map((card, idx) => {
           const Icon = card.icon
           return (
             <div
               key={idx}
               onClick={() => onSelectPrompt && onSelectPrompt(card.prompt, card.agent)}
-              className="group bg-[#F2ECE0] hover:bg-[#EAE2D2] border border-[#DDD3C1] hover:border-[#BFAF98] rounded-2xl p-4 transition-all duration-150 cursor-pointer flex flex-col justify-between shadow-2xs hover:shadow-xs"
+              className="group bg-[#F2ECE0] hover:bg-[#EAE2D2] border border-[#DDD3C1] hover:border-[#BFAF98] rounded-xl sm:rounded-2xl p-3 sm:p-4 transition-all duration-150 cursor-pointer flex flex-col justify-between shadow-2xs hover:shadow-xs active:scale-[0.99]"
             >
-              <div className="flex items-start justify-between gap-2 mb-2.5">
-                <div className="flex items-center gap-2.5 min-w-0">
-                  <div className={`w-8 h-8 rounded-xl flex items-center justify-center ${card.color} shrink-0 shadow-2xs`}>
-                    <Icon size={15} />
+              <div className="flex items-start justify-between gap-2 mb-2">
+                <div className="flex items-center gap-2 sm:gap-2.5 min-w-0">
+                  <div className={`w-7 h-7 sm:w-8 sm:h-8 rounded-lg sm:rounded-xl flex items-center justify-center ${card.color} shrink-0 shadow-2xs`}>
+                    <Icon size={14} />
                   </div>
                   <div className="min-w-0">
                     <h3 className="text-xs font-bold text-[#1E1B18] group-hover:text-black truncate">
@@ -132,10 +132,10 @@ export default function WelcomeOnboarding({ onSelectPrompt, onNewChat, onSelectM
                     </p>
                   </div>
                 </div>
-                <ArrowUpRight size={14} className="text-[#8B8476] group-hover:text-[#1E1B18] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all shrink-0" />
+                <ArrowUpRight size={13} className="text-[#8B8476] group-hover:text-[#1E1B18] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all shrink-0" />
               </div>
 
-              <p className="text-xs text-[#554E43] line-clamp-2 leading-relaxed bg-[#FAF8F3]/80 p-2.5 rounded-xl border border-[#DDD3C1]/60 font-medium">
+              <p className="text-[11px] sm:text-xs text-[#554E43] line-clamp-2 leading-relaxed bg-[#FAF8F3]/80 p-2 sm:p-2.5 rounded-lg sm:rounded-xl border border-[#DDD3C1]/60 font-medium">
                 "{card.prompt}"
               </p>
             </div>

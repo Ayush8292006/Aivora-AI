@@ -1,5 +1,5 @@
 // src/pages/LandingPage.jsx
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence, useScroll, useSpring } from 'framer-motion'
 import { useDispatch } from 'react-redux'
 import { openPricingModal } from '../redux/creditSlice.js'
@@ -8,7 +8,8 @@ import {
   Presentation, Globe, Mic, LayoutDashboard, ArrowRight, 
   CheckCircle2, Download, ExternalLink, Layers, 
   ShieldCheck, Zap, Menu, X, ArrowUpRight, Play,
-  ChevronDown, Terminal, Check, CreditCard, Award, ArrowUp
+  ChevronDown, Terminal, Check, CreditCard, Award, ArrowUp,
+  ChevronLeft, ChevronRight
 } from 'lucide-react'
 
 // Dynamic Typewriter Component
@@ -50,8 +51,17 @@ export default function LandingPage({ onStartChat, onOpenLogin, onOpenExplore })
   const dispatch = useDispatch()
   const [mobileNavOpen, setMobileNavOpen] = useState(false)
   const [heroActiveTab, setHeroActiveTab] = useState('code')
+  const [heroMobileView, setHeroMobileView] = useState('output') // 'output' | 'chat'
   const [calculatorInput, setCalculatorInput] = useState('2,048')
   const [showScrollTop, setShowScrollTop] = useState(false)
+  const capabilitiesScrollRef = useRef(null)
+
+  const scrollCapabilities = (direction) => {
+    if (capabilitiesScrollRef.current) {
+      const offset = direction === 'left' ? -320 : 320
+      capabilitiesScrollRef.current.scrollBy({ left: offset, behavior: 'smooth' })
+    }
+  }
 
   const { scrollYProgress } = useScroll()
   const scaleX = useSpring(scrollYProgress, {
@@ -220,7 +230,7 @@ export default function LandingPage({ onStartChat, onOpenLogin, onOpenExplore })
   ]
 
   return (
-    <div className="w-full bg-[#D8CDBA] bg-[radial-gradient(circle_at_15%_15%,#E6D9C4_0%,transparent_40%),radial-gradient(circle_at_85%_10%,#E2D4BF_0%,transparent_45%),radial-gradient(circle_at_50%_80%,#CFC1AA_0%,transparent_50%),linear-gradient(135deg,#D8CDBA_0%,#CFC1AA_50%,#D5C8B4_100%)] text-[#1E1B18] selection:bg-[#1E2B1F] selection:text-[#E8DDC8] relative">
+    <div className="w-full overflow-x-hidden bg-[#D8CDBA] bg-[radial-gradient(circle_at_15%_15%,#E6D9C4_0%,transparent_40%),radial-gradient(circle_at_85%_10%,#E2D4BF_0%,transparent_45%),radial-gradient(circle_at_50%_80%,#CFC1AA_0%,transparent_50%),linear-gradient(135deg,#D8CDBA_0%,#CFC1AA_50%,#D5C8B4_100%)] text-[#1E1B18] selection:bg-[#1E2B1F] selection:text-[#E8DDC8] relative">
       
       {/* Top Scroll Reading Progress Indicator */}
       <motion.div
@@ -435,13 +445,13 @@ export default function LandingPage({ onStartChat, onOpenLogin, onOpenExplore })
               initial={{ y: 15, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{ duration: 0.5, delay: 0.2 }}
-              className="flex flex-wrap items-center gap-3 pt-1"
+              className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-1"
             >
               <motion.button
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 onClick={() => onStartChat && onStartChat()}
-                className="px-7 py-3.5 rounded-xl text-sm font-bold bg-[#1E2B1F] hover:bg-[#283A27] text-white shadow-[0_6px_20px_rgba(25,45,32,0.22)] hover:shadow-xl transition-all border-none cursor-pointer flex items-center justify-center gap-2 group"
+                className="w-full sm:w-auto px-7 py-3.5 rounded-xl text-sm font-bold bg-[#1E2B1F] hover:bg-[#283A27] text-white shadow-[0_6px_20px_rgba(25,45,32,0.22)] hover:shadow-xl transition-all border-none cursor-pointer flex items-center justify-center gap-2 group"
               >
                 <span>Start Free with 100 Credits</span>
                 <ArrowRight size={16} className="group-hover:translate-x-0.5 transition-transform" />
@@ -449,7 +459,7 @@ export default function LandingPage({ onStartChat, onOpenLogin, onOpenExplore })
 
               <button
                 onClick={() => scrollTo('features')}
-                className="px-5 py-3.5 rounded-xl text-sm font-semibold bg-[#FAF8F3] hover:bg-[#F2ECE0] text-[#1E1B18] border border-[#DDD3C1] shadow-2xs transition-all cursor-pointer flex items-center justify-center gap-2"
+                className="w-full sm:w-auto px-5 py-3.5 rounded-xl text-sm font-semibold bg-[#FAF8F3] hover:bg-[#F2ECE0] text-[#1E1B18] border border-[#DDD3C1] shadow-2xs transition-all cursor-pointer flex items-center justify-center gap-2"
               >
                 <span>Explore Features</span>
               </button>
@@ -460,16 +470,16 @@ export default function LandingPage({ onStartChat, onOpenLogin, onOpenExplore })
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.5, delay: 0.25 }}
-              className="flex items-center gap-3.5 pt-1 text-xs text-[#696256]"
+              className="flex flex-wrap items-center gap-2.5 sm:gap-3.5 pt-1 text-xs text-[#696256]"
             >
               <span className="flex items-center gap-1.5 font-medium">
                 <CheckCircle2 size={13} className="text-[#4A653C]" /> 100 free bonus credits
               </span>
-              <span className="text-[#DDD3C1]">•</span>
+              <span className="text-[#DDD3C1] hidden sm:inline">•</span>
               <span className="flex items-center gap-1.5 font-medium">
                 <CheckCircle2 size={13} className="text-[#4A653C]" /> Live code runner
               </span>
-              <span className="text-[#DDD3C1]">•</span>
+              <span className="text-[#DDD3C1] hidden sm:inline">•</span>
               <span className="flex items-center gap-1.5 font-medium">
                 <CheckCircle2 size={13} className="text-[#4A653C]" /> Private wallet
               </span>
@@ -487,17 +497,18 @@ export default function LandingPage({ onStartChat, onOpenLogin, onOpenExplore })
             {/* Glass Window Outer Frame */}
             <div className="rounded-3xl bg-[#C5BBA8]/80 p-2 sm:p-2.5 border border-[#DDD3C1] shadow-[0_25px_60px_-15px_rgba(30,43,31,0.28),0_0_0_1px_rgba(255,255,255,0.5)] backdrop-blur-xl">
               
-              {/* Window Top Bar with Interactive Mode Switcher */}
-              <div className="bg-[#FAF8F3] rounded-t-2xl px-3.5 py-2 border-b border-[#DDD3C1] flex flex-wrap items-center justify-between gap-2">
+              {/* Window Top Bar with Interactive Mode Switcher & Mobile View Toggle */}
+              <div className="bg-[#FAF8F3] rounded-t-2xl px-3 sm:px-3.5 py-2 border-b border-[#DDD3C1] flex flex-wrap items-center justify-between gap-2">
                 <div className="flex items-center gap-1.5">
                   <span className="w-2.5 h-2.5 rounded-full bg-[#FF5F56] border border-[#E0443E]" />
                   <span className="w-2.5 h-2.5 rounded-full bg-[#FFBD2E] border border-[#DEA123]" />
                   <span className="w-2.5 h-2.5 rounded-full bg-[#27C93F] border border-[#1AAB29]" />
-                  <span className="font-mono text-[10px] font-semibold text-[#8B8476] ml-2">
+                  <span className="font-mono text-[10px] font-semibold text-[#8B8476] ml-2 hidden sm:inline">
                     aivora-workspace.app
                   </span>
                 </div>
 
+                {/* Mode Tabs */}
                 <div className="flex items-center gap-1 bg-[#F2ECE0] p-0.5 rounded-xl border border-[#DDD3C1]">
                   {heroTabs.map((t) => {
                     const Icon = t.icon
@@ -506,17 +517,37 @@ export default function LandingPage({ onStartChat, onOpenLogin, onOpenExplore })
                       <button
                         key={t.id}
                         onClick={() => setHeroActiveTab(t.id)}
-                        className={`flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-bold transition-all border cursor-pointer ${
+                        className={`flex items-center gap-1 px-2 sm:px-2.5 py-1 rounded-lg text-[11px] font-bold transition-all border cursor-pointer ${
                           isActive 
                             ? 'bg-[#1E2B1F] text-white border-[#1E2B1F] shadow-xs' 
                             : 'bg-transparent text-[#696256] border-transparent hover:text-[#1E1B18]'
                         }`}
                       >
                         <Icon size={11} />
-                        <span className="hidden sm:inline">{t.shortLabel || t.label}</span>
+                        <span className="inline">{t.shortLabel || t.label}</span>
                       </button>
                     )
                   })}
+                </div>
+
+                {/* Mobile-Only Output vs Prompt View Toggle */}
+                <div className="flex sm:hidden items-center gap-0.5 bg-[#EAE2D2] p-0.5 rounded-lg border border-[#DDD3C1]">
+                  <button
+                    onClick={() => setHeroMobileView('output')}
+                    className={`px-2 py-0.5 rounded-md text-[10px] font-bold transition-all border-none cursor-pointer ${
+                      heroMobileView === 'output' ? 'bg-[#1E2B1F] text-white shadow-xs' : 'text-[#696256] bg-transparent'
+                    }`}
+                  >
+                    Output
+                  </button>
+                  <button
+                    onClick={() => setHeroMobileView('chat')}
+                    className={`px-2 py-0.5 rounded-md text-[10px] font-bold transition-all border-none cursor-pointer ${
+                      heroMobileView === 'chat' ? 'bg-[#1E2B1F] text-white shadow-xs' : 'text-[#696256] bg-transparent'
+                    }`}
+                  >
+                    Chat
+                  </button>
                 </div>
 
                 <div className="hidden sm:flex items-center gap-1.5 text-[10px] text-[#4A653C] font-bold">
@@ -525,11 +556,14 @@ export default function LandingPage({ onStartChat, onOpenLogin, onOpenExplore })
                 </div>
               </div>
 
-              {/* 2-Column Split inside Right Window */}
-              <div className="grid grid-cols-12 h-[380px] sm:h-[420px] bg-[#D8CDBA] rounded-b-2xl overflow-hidden">
+              {/* Responsive Canvas: Side-by-Side on Desktop, Full-Panel on Mobile */}
+              <div className="grid grid-cols-1 sm:grid-cols-12 min-h-[360px] sm:h-[420px] bg-[#D8CDBA] rounded-b-2xl overflow-hidden">
                 
                 {/* Center Chat Canvas */}
-                <div className="col-span-12 sm:col-span-6 bg-[#FAF8F3] p-3 sm:p-3.5 flex flex-col justify-between border-r border-[#DDD3C1] overflow-hidden">
+                <div className={`
+                  ${heroMobileView === 'chat' ? 'flex' : 'hidden'} sm:flex
+                  col-span-12 sm:col-span-6 bg-[#FAF8F3] p-3 sm:p-3.5 flex-col justify-between border-b sm:border-b-0 sm:border-r border-[#DDD3C1] overflow-hidden min-h-[350px] sm:min-h-0
+                `}>
                   <div className="flex items-center justify-between border-b border-[#DDD3C1]/80 pb-2">
                     <div className="flex items-center gap-1.5">
                       <div className="w-4 h-4 rounded-full bg-[#1E2B1F] text-[#E8DDC8] flex items-center justify-center text-[8px] font-bold">A</div>
@@ -577,7 +611,10 @@ export default function LandingPage({ onStartChat, onOpenLogin, onOpenExplore })
                 </div>
 
                 {/* Right Interactive Runner (Calculator / Document / Deck / Image) */}
-                <div className="col-span-12 sm:col-span-6 bg-[#181715] p-3 sm:p-3.5 flex flex-col justify-between text-white overflow-hidden">
+                <div className={`
+                  ${heroMobileView === 'output' ? 'flex' : 'hidden'} sm:flex
+                  col-span-12 sm:col-span-6 bg-[#181715] p-3 sm:p-3.5 flex-col justify-between text-white overflow-hidden min-h-[350px] sm:min-h-0
+                `}>
                   <div className="flex items-center justify-between border-b border-white/10 pb-1.5 text-xs">
                     <span className="font-mono text-[#4ADE80] font-bold text-[11px] truncate">Interactive Runner</span>
                     <span className="text-[9px] font-mono text-[#8E8A82] px-1.5 py-0.5 rounded bg-white/5 shrink-0">LIVE</span>
@@ -678,77 +715,104 @@ export default function LandingPage({ onStartChat, onOpenLogin, onOpenExplore })
       </section>
 
       {/* ========================================================
-          3. SCROLL-ANIMATED CAPABILITIES (LEFT/RIGHT FLY-IN CARDS)
+          3. 8 SPECIALIZED ENGINES (HORIZONTAL SCROLLING SLIDER)
       ======================================================== */}
-      <section id="features" className="py-20 lg:py-28 bg-[#FAF8F3]/90 border-y border-[#DDD3C1] relative z-10">
+      <section id="features" className="py-16 sm:py-20 lg:py-24 bg-[#FAF8F3]/90 border-y border-[#DDD3C1] relative z-10 overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           
-          <div className="text-center max-w-3xl mx-auto space-y-3 mb-16">
-            <span className="text-xs font-bold text-[#4A653C] uppercase tracking-wider">
-              Autonomous Intelligence
-            </span>
-            <h2 className="font-display text-3xl sm:text-5xl font-bold tracking-tight text-[#1E1B18]">
-              8 Specialized Agents.<br />One Contextual Canvas.
-            </h2>
-            <p className="text-sm sm:text-base text-[#554E43] leading-relaxed">
-              Every agent executes with specialized domain heuristics. Notice how each card glides into view with dedicated tools and artifact outputs.
-            </p>
+          {/* Header with Title and Left/Right Navigation Controls */}
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8 sm:mb-12">
+            <div className="space-y-2 max-w-2xl text-left">
+              <span className="text-xs font-bold text-[#4A653C] uppercase tracking-wider">
+                Autonomous Intelligence
+              </span>
+              <h2 className="font-display text-2xl sm:text-4xl font-bold tracking-tight text-[#1E1B18]">
+                8 Specialized Engines.<br className="hidden sm:inline" /> One Contextual Canvas.
+              </h2>
+              <p className="text-xs sm:text-sm text-[#554E43] leading-relaxed">
+                Swipe horizontally to browse all 8 specialized engines. Each runs dedicated domain heuristics and real-time artifact compilation.
+              </p>
+            </div>
+
+            {/* Slider Navigation Arrows */}
+            <div className="flex items-center gap-2 self-start sm:self-auto">
+              <button
+                onClick={() => scrollCapabilities('left')}
+                className="w-9 h-9 rounded-xl bg-[#F2ECE0] hover:bg-[#EAE2D2] text-[#1E1B18] border border-[#DDD3C1] flex items-center justify-center cursor-pointer active:scale-95 transition-all shadow-2xs"
+                title="Scroll Left"
+              >
+                <ChevronLeft size={16} />
+              </button>
+              <button
+                onClick={() => scrollCapabilities('right')}
+                className="w-9 h-9 rounded-xl bg-[#1E2B1F] hover:bg-[#283A27] text-white border-none flex items-center justify-center cursor-pointer active:scale-95 transition-all shadow-xs"
+                title="Scroll Right"
+              >
+                <ChevronRight size={16} />
+              </button>
+            </div>
           </div>
 
-          {/* Cards Flying In from Left and Right */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {capabilities.map((cap, idx) => {
+          {/* Horizontal Scrolling Track (Compact Width & Height) */}
+          <div 
+            ref={capabilitiesScrollRef}
+            className="flex items-stretch gap-4 overflow-x-auto pb-4 pt-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden snap-x snap-mandatory scroll-smooth"
+          >
+            {capabilities.map((cap) => {
               const Icon = cap.icon
-              const isEven = idx % 2 === 0 // Even index flies from Left, Odd index flies from Right!
 
               return (
-                <motion.div
+                <div
                   key={cap.id}
-                  initial={{ opacity: 0, x: isEven ? -60 : 60, y: 30 }}
-                  whileInView={{ opacity: 1, x: 0, y: 0 }}
-                  viewport={{ once: true, margin: "-80px" }}
-                  transition={{ duration: 0.6, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-                  whileHover={{ y: -4, transition: { duration: 0.15 } }}
                   onClick={() => onStartChat && onStartChat(cap.id)}
-                  className="bg-[#F4EEE2] hover:bg-[#EAE2D2] border border-[#DDD3C1] hover:border-[#BFAF98] rounded-3xl p-6 sm:p-7 transition-all duration-200 cursor-pointer flex flex-col justify-between shadow-2xs hover:shadow-md group"
+                  className="w-[275px] sm:w-[310px] shrink-0 snap-start bg-[#F4EEE2] hover:bg-[#EAE2D2] border border-[#DDD3C1] hover:border-[#BFAF98] rounded-2xl p-4 sm:p-5 transition-all duration-200 cursor-pointer flex flex-col justify-between shadow-2xs hover:shadow-md group active:scale-[0.99]"
                 >
-                  <div className="space-y-4">
+                  <div className="space-y-3">
                     <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        <div className={`w-11 h-11 rounded-2xl ${cap.color} flex items-center justify-center shadow-xs group-hover:scale-105 transition-transform`}>
-                          <Icon size={22} />
+                      <div className="flex items-center gap-2.5">
+                        <div className={`w-9 h-9 rounded-xl ${cap.color} flex items-center justify-center shadow-xs group-hover:scale-105 transition-transform shrink-0`}>
+                          <Icon size={18} />
                         </div>
-                        <div>
-                          <h3 className="font-display text-lg font-bold text-[#1E1B18] tracking-tight group-hover:text-black">
+                        <div className="min-w-0">
+                          <h3 className="font-display text-sm sm:text-base font-bold text-[#1E1B18] tracking-tight group-hover:text-black truncate">
                             {cap.title}
                           </h3>
-                          <span className="text-[10.5px] font-semibold text-[#696256] block">
+                          <span className="text-[10px] font-semibold text-[#696256] block truncate">
                             {cap.category}
                           </span>
                         </div>
                       </div>
-                      <span className="text-[10px] font-bold text-[#4A653C] bg-[#E8DDC8] px-2.5 py-1 rounded-full uppercase tracking-wider">
-                        {cap.badge}
-                      </span>
                     </div>
 
-                    <p className="text-xs sm:text-sm text-[#554E43] leading-relaxed">
+                    <span className="inline-block text-[9.5px] font-bold text-[#4A653C] bg-[#E8DDC8] px-2 py-0.5 rounded-full uppercase tracking-wider">
+                      {cap.badge}
+                    </span>
+
+                    <p className="text-[11.5px] sm:text-xs text-[#554E43] leading-relaxed line-clamp-3 min-h-[48px]">
                       {cap.desc}
                     </p>
 
-                    <div className="p-3 bg-[#FAF8F3] rounded-xl border border-[#DDD3C1]/80 text-xs text-[#696256]">
-                      <span className="text-[10px] font-bold text-[#4A653C] uppercase tracking-wider block mb-0.5">Prompt Example</span>
+                    <div className="p-2.5 bg-[#FAF8F3] rounded-xl border border-[#DDD3C1]/80 text-[11px] text-[#696256]">
+                      <span className="text-[9.5px] font-bold text-[#4A653C] uppercase tracking-wider block mb-0.5">Prompt Example</span>
                       <p className="text-[#1E1B18] font-medium truncate">"{cap.sample}"</p>
                     </div>
                   </div>
 
-                  <div className="pt-4 mt-4 border-t border-[#DDD3C1] flex items-center justify-between text-xs font-bold text-[#1E2B1F]">
+                  <div className="pt-3 mt-3 border-t border-[#DDD3C1] flex items-center justify-between text-xs font-bold text-[#1E2B1F]">
                     <span>Launch in Workspace</span>
-                    <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
+                    <ArrowRight size={13} className="group-hover:translate-x-1 transition-transform" />
                   </div>
-                </motion.div>
+                </div>
               )
             })}
+          </div>
+
+          {/* Swipe Indicator Footer */}
+          <div className="mt-4 flex items-center justify-between text-xs text-[#7A7469] px-1">
+            <span className="text-[11px] font-medium">← Swipe horizontally to explore all 8 models →</span>
+            <span className="text-[11px] font-bold text-[#1E2B1F] bg-[#EAE2D2] px-2 py-0.5 rounded-full">
+              8 Models Active
+            </span>
           </div>
 
         </div>
