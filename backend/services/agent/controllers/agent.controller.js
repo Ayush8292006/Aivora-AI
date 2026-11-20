@@ -76,14 +76,30 @@ export const agent = async (req, res) => {
             try {
                 const chatServiceUrl = process.env.CHAT_SERVICE || "http://localhost:8002";
                 const convRes = await axios.get(`${chatServiceUrl}/conversation/${conversationId}`, {
+                    headers: { "x-user-id": String(userId) },
                     timeout: 5000
                 });
                 const conv = convRes.data;
-                if (conv && conv.userId && String(conv.userId) !== String(userId)) {
-                    return res.status(403).json({
-                        success: false,
-                        message: "Forbidden: You do not have access to this conversation"
-                    });
+                if (conv) {
+                    const convUserId = conv.userId ? String(conv.userId) : "";
+                    const currentUserId = String(userId);
+
+                    // If conversation was created in guest mode or is unowned, auto-adopt it for this logged-in user!
+                    if (!convUserId || convUserId.startsWith("guest_") || convUserId === "undefined") {
+                        try {
+                            await axios.post(`${chatServiceUrl}/conversation/adopt`, {
+                                conversationId,
+                                userId: currentUserId
+                            });
+                        } catch (adoptErr) {
+                            console.warn("⚠️ Could not adopt guest conversation:", adoptErr.message);
+                        }
+                    } else if (convUserId !== currentUserId) {
+                        return res.status(403).json({
+                            success: false,
+                            message: "Forbidden: You do not have access to this conversation"
+                        });
+                    }
                 }
             } catch (convErr) {
                 if (convErr.response?.status === 404) {

@@ -51,14 +51,43 @@ export const getConversationById = async (req, res) => {
     if (!conversation) {
       return res.status(404).json({ message: "Conversation not found" });
     }
-    // Strict isolation: verify ownership
-    if (conversation.userId && userId && String(conversation.userId) !== String(userId)) {
+    
+    // Strict isolation: if owned by a registered user, prevent other users from accessing it
+    const convUserId = conversation.userId ? String(conversation.userId) : "";
+    if (userId && convUserId && !convUserId.startsWith("guest_") && convUserId !== String(userId)) {
       return res.status(403).json({ message: "Forbidden: You do not have access to this conversation" });
     }
     return res.status(200).json(conversation);
   } catch (error) {
     console.error("Get Conversation By Id Error:", error);
     return res.status(500).json({ message: error.message });
+  }
+};
+
+export const adoptConversation = async (req, res) => {
+  try {
+    const { conversationId, userId } = req.body;
+    if (!conversationId || !userId) {
+      return res.status(400).json({ success: false, message: "Missing conversationId or userId" });
+    }
+
+    const conversation = await Conversation.findById(conversationId);
+    if (!conversation) {
+      return res.status(404).json({ success: false, message: "Conversation not found" });
+    }
+
+    const convUserId = conversation.userId ? String(conversation.userId) : "";
+    // Allow adopting guest or unowned conversations
+    if (!convUserId || convUserId.startsWith("guest_") || convUserId === "undefined" || convUserId === String(userId)) {
+      conversation.userId = String(userId);
+      await conversation.save();
+      return res.status(200).json({ success: true, conversation });
+    }
+
+    return res.status(403).json({ success: false, message: "Cannot adopt another user's conversation" });
+  } catch (err) {
+    console.error("Adopt Conversation Error:", err);
+    return res.status(500).json({ success: false, message: err.message });
   }
 };
 
@@ -71,10 +100,16 @@ export const updateConversation = async (req, res) => {
     if (!conversation) {
       return res.status(404).json({ message: "Conversation not found" });
     }
-    if (conversation.userId && userId && String(conversation.userId) !== String(userId)) {
+
+    const convUserId = conversation.userId ? String(conversation.userId) : "";
+    // If guest conversation, allow logged-in user to claim it
+    if (convUserId && !convUserId.startsWith("guest_") && userId && convUserId !== String(userId)) {
       return res.status(403).json({ message: "Forbidden: You cannot modify another user's conversation" });
     }
 
+    if (userId && (!convUserId || convUserId.startsWith("guest_"))) {
+      conversation.userId = String(userId);
+    }
     conversation.title = title;
     await conversation.save();
 
@@ -96,7 +131,9 @@ export const deleteConversation = async (req, res) => {
     if (!conversation) {
       return res.status(404).json({ message: "Conversation not found" });
     }
-    if (conversation.userId && userId && String(conversation.userId) !== String(userId)) {
+
+    const convUserId = conversation.userId ? String(conversation.userId) : "";
+    if (convUserId && !convUserId.startsWith("guest_") && userId && convUserId !== String(userId)) {
       return res.status(403).json({ message: "Forbidden: You cannot delete another user's conversation" });
     }
 
@@ -117,8 +154,14 @@ export const saveMesaage = async (req, res) => {
     const { conversationId, role, content, images, artifacts, attachments } = req.body;
 
     const conversation = await Conversation.findById(conversationId);
-    if (conversation && conversation.userId && userId && String(conversation.userId) !== String(userId)) {
-      return res.status(403).json({ message: "Forbidden: You cannot send messages in another user's conversation" });
+    if (conversation) {
+      const convUserId = conversation.userId ? String(conversation.userId) : "";
+      if (convUserId && !convUserId.startsWith("guest_") && userId && convUserId !== String(userId)) {
+        return res.status(403).json({ message: "Forbidden: You cannot send messages in another user's conversation" });
+      }
+      if (userId && (!convUserId || convUserId.startsWith("guest_"))) {
+        conversation.userId = String(userId);
+      }
     }
 
     const message = await Message.create({
@@ -154,8 +197,9 @@ export const getMesaage = async (req, res) => {
       return res.status(404).json({ message: "Conversation not found" });
     }
 
-    // Strict conversation isolation: Disallow viewing other users' messages
-    if (conversation.userId && userId && String(conversation.userId) !== String(userId)) {
+    // Strict conversation isolation: Disallow viewing another registered user's messages
+    const convUserId = conversation.userId ? String(conversation.userId) : "";
+    if (convUserId && !convUserId.startsWith("guest_") && userId && convUserId !== String(userId)) {
       return res.status(403).json({ message: "Forbidden: You do not have access to view this conversation's messages" });
     }
 
@@ -175,15 +219,21 @@ export const getMesaage = async (req, res) => {
 export const linkGuestConversations = async (req, res) => {
   try {
     const userId = req.headers["x-user-id"];
-    const { guestUserId } = req.body;
-    if (userId && guestUserId && String(guestUserId).startsWith("guest_") && String(userId) !== String(guestUserId)) {
-      await Conversation.updateMany(
-        { userId: String(guestUserId) },
-        { userId: String(userId) }
-      );
+    const { guestUserId, conversationId } = req.body;
+    if (userId) {
+      if (conversationId) {
+        await Conversation.findByIdAndUpdate(conversationId, { userId: String(userId) });
+      }
+      if (guestUserId && String(userId) !== String(guestUserId)) {
+        await Conversation.updateMany(
+          { $or: [{ userId: String(guestUserId) }, { userId: { $exists: false } }, { userId: null }, { userId: "undefined" }] },
+          { userId: String(userId) }
+        );
+      }
     }
     return res.status(200).json({ success: true });
   } catch (err) {
+    console.error("Link Guest Conversations Error:", err);
     return res.status(500).json({ success: false, message: err.message });
   }
 };

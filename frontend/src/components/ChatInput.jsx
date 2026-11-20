@@ -254,7 +254,7 @@ function ChatInput() {
         attachments: readyAttachments
       }
 
-      const response = await sendMessage(payload, controller.signal)
+      let response = await sendMessage(payload, controller.signal)
 
       if (response?.canceled) {
         dispatch(addMessage({
@@ -273,6 +273,25 @@ function ChatInput() {
       if (response?.creditExhausted) {
         dispatch(openExhaustedModal())
         return
+      }
+
+      if (!response || response.success === false) {
+        const errMsg = response?.error || response?.message || ''
+        if (errMsg.includes("Forbidden") || errMsg.includes("access to this conversation")) {
+          // Auto-heal: If an old conversation was owned by another session, create a fresh chat for this user
+          try {
+            const freshConv = await createConversation()
+            if (freshConv && freshConv._id) {
+              dispatch(addConversation(freshConv))
+              dispatch(setSelectedConversation(freshConv))
+              payload.conversationId = freshConv._id
+              conversationId = freshConv._id
+              response = await sendMessage(payload, controller.signal)
+            }
+          } catch (retryErr) {
+            console.warn("Auto-heal conversation error:", retryErr.message)
+          }
+        }
       }
 
       if (!response || response.success === false) {
