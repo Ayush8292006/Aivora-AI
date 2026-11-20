@@ -33,6 +33,30 @@ function ChatInput() {
     }
   }, [selectedConversation?._id, selectedConversation?.title])
 
+  useEffect(() => {
+    const handleSetPrompt = (e) => {
+      if (e.detail?.prompt) {
+        setValue(e.detail.prompt)
+      }
+      if (e.detail?.agent) {
+        const agentMap = {
+          chat: "Chat",
+          coding: "Coding",
+          pdf: "PDF",
+          ppt: "PPT",
+          image: "Image",
+          search: "Search",
+          auto: "Auto"
+        }
+        const mapped = agentMap[e.detail.agent.toLowerCase()] || e.detail.agent
+        setSelectedAgent(mapped)
+      }
+    }
+
+    window.addEventListener('aivora:set-prompt', handleSetPrompt)
+    return () => window.removeEventListener('aivora:set-prompt', handleSetPrompt)
+  }, [])
+
   const handleFileUpload = async (files) => {
     if (!files || files.length === 0) return
 

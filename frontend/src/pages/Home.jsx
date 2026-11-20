@@ -1,98 +1,137 @@
-import { signInWithPopup } from 'firebase/auth'
-import React, { useState } from 'react'
-import api from '../../utils/axios.js'
-import { auth, googleProvider } from '../../utils/firebase.js'
-import { FcGoogle } from "react-icons/fc"
+import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { setUserdata } from '../redux/userSlice.js'
 import SideBar from '../components/SideBar.jsx'
 import ChatArea from '../components/ChatArea.jsx'
 import Artifact from '../components/Artifact.jsx'
-import { User as UserIcon } from 'lucide-react'
+import LandingPage from './LandingPage.jsx'
+import SettingsModal from '../components/SettingsModal.jsx'
+import ExploreModal from '../components/ExploreModal.jsx'
+import LoginModal from '../components/LoginModal.jsx'
 
 function Home() {
-  const dispatch = useDispatch()
   const { userData } = useSelector(state => state.user)
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const dispatch = useDispatch()
 
-  const handleLogin = async (token) => {
-    try {
-      const { data } = await api.post("/api/auth/login", { token })
-      dispatch(setUserdata(data))
-    } catch (error) {
-      console.error('Login error:', error)
+  // Routing State: 'landing' or 'app'
+  const [currentView, setCurrentView] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const hash = window.location.hash
+      if (hash === '#app' || hash === '#chat' || hash === '#workspace') {
+        return 'app'
+      }
+      const saved = localStorage.getItem('aivora_last_view')
+      if (saved === 'app') return 'app'
+    }
+    return 'landing'
+  })
+
+  // Modals
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [settingsModalOpen, setSettingsModalOpen] = useState(false)
+  const [exploreModalOpen, setExploreModalOpen] = useState(false)
+  const [loginModalOpen, setLoginModalOpen] = useState(false)
+
+  // Listen to hash changes for browser back/forward
+  useEffect(() => {
+    const handleHashChange = () => {
+      const hash = window.location.hash
+      if (hash === '#app' || hash === '#chat' || hash === '#workspace') {
+        setCurrentView('app')
+      } else if (hash === '#landing' || hash === '#home' || !hash) {
+        // keep current view unless explicitly #landing
+        if (hash === '#landing' || hash === '#home') {
+          setCurrentView('landing')
+        }
+      }
+    }
+
+    window.addEventListener('hashchange', handleHashChange)
+    return () => window.removeEventListener('hashchange', handleHashChange)
+  }, [])
+
+  const navigateToApp = (agentMode) => {
+    setCurrentView('app')
+    localStorage.setItem('aivora_last_view', 'app')
+    window.location.hash = 'app'
+    if (agentMode && typeof agentMode === 'string') {
+      setTimeout(() => {
+        window.dispatchEvent(new CustomEvent('aivora:set-prompt', {
+          detail: { agent: agentMode }
+        }))
+      }, 100)
     }
   }
 
-  const googleLogin = async () => {
-    try {
-      const data = await signInWithPopup(auth, googleProvider)
-      const token = await data.user.getIdToken()
-      await handleLogin(token)
-    } catch (err) {
-      console.error('Google login popup error:', err)
-    }
+  const navigateToLanding = () => {
+    setCurrentView('landing')
+    localStorage.setItem('aivora_last_view', 'landing')
+    window.location.hash = 'landing'
+  }
+
+  const handleLaunchCapability = (prompt, agent) => {
+    navigateToApp(agent)
+    setTimeout(() => {
+      window.dispatchEvent(new CustomEvent('aivora:set-prompt', {
+        detail: { prompt, agent }
+      }))
+    }, 150)
   }
 
   return (
-    <div className='relative h-screen w-screen bg-[#D8CDBA] bg-[radial-gradient(circle_at_15%_20%,#E6D9C4_0%,transparent_45%),radial-gradient(circle_at_85%_15%,#E2D4BF_0%,transparent_50%),radial-gradient(circle_at_50%_85%,#CFC1AA_0%,transparent_60%),linear-gradient(135deg,#D8CDBA_0%,#CFC1AA_50%,#D5C8B4_100%)] text-[#1E1B18] overflow-hidden flex flex-col font-["Plus_Jakarta_Sans",sans-serif]'>
+    <div className='relative min-h-screen w-screen bg-[#D8CDBA] bg-[radial-gradient(circle_at_15%_20%,#E6D9C4_0%,transparent_45%),radial-gradient(circle_at_85%_15%,#E2D4BF_0%,transparent_50%),radial-gradient(circle_at_50%_85%,#CFC1AA_0%,transparent_60%),linear-gradient(135deg,#D8CDBA_0%,#CFC1AA_50%,#D5C8B4_100%)] text-[#1E1B18] overflow-hidden flex flex-col font-["Plus_Jakarta_Sans",sans-serif]'>
       
-      {/* Main 3-Column Desktop Layout (Full Native View on Mobile, 3-Column on Desktop) */}
-      <div className='relative z-10 flex-1 flex p-0 sm:p-2 lg:p-4 gap-0 lg:gap-4 overflow-hidden max-w-[1850px] w-full mx-auto'>
-        <SideBar 
-          mobileMenuOpen={mobileMenuOpen} 
-          setMobileMenuOpen={setMobileMenuOpen} 
-        />
-        <ChatArea 
-          onOpenMobileMenu={() => setMobileMenuOpen(true)} 
-        />
-        <Artifact />
-      </div>
-
-      {/* Editorial Login Modal */}
-      {!userData && (
-        <div className='fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-xs p-4'>
-          <div className='w-full max-w-[380px] bg-[#FAF8F3] rounded-2xl p-7 flex flex-col gap-5 relative overflow-hidden shadow-2xl border border-[#DDD3C1]'>
-            
-            {/* Header: Brand Mark + Name + Pro */}
-            <div className='flex items-center gap-3'>
-              <div className='w-9 h-9 rounded-xl bg-[#24201C] text-[#E8DDC8] flex items-center justify-center font-bold text-sm shadow-xs'>
-                A
-              </div>
-              <div>
-                <div className='flex items-center gap-2'>
-                  <h2 className='text-base font-bold text-[#1E1B18] tracking-tight'>Aivora AI</h2>
-                  <span className='bg-[#24201C] text-[#E8DDC8] font-bold text-[10px] px-2 py-0.5 rounded-full'>
-                    PRO
-                  </span>
-                </div>
-                <p className='text-xs text-[#696256] font-medium'>Multi-Agent Workspace</p>
-              </div>
-            </div>
-
-            {/* Description */}
-            <div className='flex flex-col gap-1 text-left'>
-              <p className='text-sm font-semibold text-[#1E1B18]'>Sign in to your workspace</p>
-              <p className='text-xs text-[#696256] leading-relaxed'>
-                Access your conversations, documents, slide decks, and code synthesis.
-              </p>
-            </div>
-
-            {/* Sign in with Google Button */}
-            <button 
-              onClick={googleLogin}
-              className='w-full flex items-center justify-center gap-3 py-2.5 px-4 rounded-xl text-xs font-semibold bg-[#241F1A] hover:bg-[#181410] text-white border-none cursor-pointer transition-all shadow-xs'
-            >
-              <FcGoogle size={18} />
-              <span>Continue with Google</span>
-            </button>
-
-            <p className='text-[10.5px] text-center text-[#696256]'>
-              Encrypted cloud storage & secure session management.
-            </p>
-          </div>
+      {/* VIEW 1: LANDING PAGE */}
+      {currentView === 'landing' ? (
+        <div className="flex-1 w-full overflow-y-auto">
+          <LandingPage
+            onStartChat={navigateToApp}
+            onOpenLogin={() => setLoginModalOpen(true)}
+            onOpenExplore={() => setExploreModalOpen(true)}
+          />
+        </div>
+      ) : (
+        /* VIEW 2: MAIN AI CHAT WORKSPACE (3-Panel Desktop Layout, Full Native View on Mobile) */
+        <div className='relative z-10 flex-1 flex h-screen p-0 sm:p-2 lg:p-4 gap-0 lg:gap-4 overflow-hidden max-w-[1850px] w-full mx-auto animate-in fade-in duration-200'>
+          <SideBar 
+            mobileMenuOpen={mobileMenuOpen} 
+            setMobileMenuOpen={setMobileMenuOpen}
+            onOpenSettings={() => setSettingsModalOpen(true)}
+            onOpenExplore={() => setExploreModalOpen(true)}
+            onGoToLanding={navigateToLanding}
+          />
+          <ChatArea 
+            onOpenMobileMenu={() => setMobileMenuOpen(true)} 
+            onGoToLanding={navigateToLanding}
+            onOpenExplore={() => setExploreModalOpen(true)}
+            onOpenSettings={() => setSettingsModalOpen(true)}
+          />
+          <Artifact />
         </div>
       )}
+
+      {/* MODAL 1: Settings & User Profile */}
+      <SettingsModal
+        isOpen={settingsModalOpen}
+        onClose={() => setSettingsModalOpen(false)}
+        onOpenLogin={() => setLoginModalOpen(true)}
+      />
+
+      {/* MODAL 2: Explore 8 AI Modes */}
+      <ExploreModal
+        isOpen={exploreModalOpen}
+        onClose={() => setExploreModalOpen(false)}
+        onSelectCapability={handleLaunchCapability}
+      />
+
+      {/* MODAL 3: Login & Signup Authentication */}
+      <LoginModal
+        isOpen={loginModalOpen}
+        onClose={() => setLoginModalOpen(false)}
+        onSuccess={() => {
+          setLoginModalOpen(false)
+          navigateToApp()
+        }}
+      />
 
     </div>
   )

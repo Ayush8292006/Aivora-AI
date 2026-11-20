@@ -71,6 +71,20 @@ export const updateConversation = async (req, res) => {
   }
 };
 
+export const deleteConversation = async (req, res) => {
+  try {
+    const { id } = req.params;
+    await Conversation.findByIdAndDelete(id);
+    await Message.deleteMany({ conversationId: id });
+    return res.status(200).json({ success: true, message: "Conversation deleted successfully" });
+  } catch (error) {
+    console.error("Delete Conversation Error:", error);
+    return res.status(500).json({
+      message: `Delete conversation error: ${error.message}`,
+    });
+  }
+};
+
 export const saveMesaage = async (req, res) => {
   try {
     const { conversationId, role, content, images, artifacts, attachments } = req.body;

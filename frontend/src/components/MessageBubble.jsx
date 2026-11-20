@@ -119,10 +119,10 @@ function MessageBubble({ role, content, images = [], artifacts = [], attachments
         <div className={`
           relative max-w-[94%] sm:max-w-[88%] md:max-w-[82%] transition-all
           ${isUser 
-            ? 'bg-[#243223] text-[#FFFFFF] rounded-2xl px-4 py-2.5 shadow-2xs text-sm font-medium' 
+            ? 'bg-[#243223] text-[#FFFFFF] rounded-2xl px-4.5 py-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.15),0_2px_6px_rgba(36,50,35,0.18)] text-[14px] leading-relaxed font-medium' 
             : isError
               ? 'bg-[#FDF2F2] border border-[#F8B4B4] text-[#9B1C1C] rounded-2xl p-4'
-              : 'bg-[#F2ECE0] border border-[#DDD3C1] text-[#1E1B18] rounded-2xl p-4 sm:p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.7),0_1px_3px_rgba(0,0,0,0.03)]'
+              : 'bg-[#F2ECE0] border border-[#DDD3C1] text-[#1E1B18] rounded-2xl p-4.5 sm:p-5.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.7),0_2px_5px_rgba(30,27,24,0.04)]'
           }
         `}>
           

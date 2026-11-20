@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { setArtifacts, setMessages } from '../redux/messageSlice.js'
 import getMessages from '../features/getMessages.js'
 
-function ChatArea({ onOpenMobileMenu }) {
+function ChatArea({ onOpenMobileMenu, onGoToLanding, onOpenExplore, onOpenSettings }) {
   const { selectedConversation } = useSelector(state => state.conversation)
   const { messages } = useSelector(state => state.message)
   const dispatch = useDispatch()
@@ -59,7 +59,12 @@ function ChatArea({ onOpenMobileMenu }) {
 
   return (
     <main className='flex-1 flex flex-col h-full min-w-0 bg-[#FAF8F3] rounded-none sm:rounded-2xl p-2 sm:p-3 relative overflow-hidden border-0 sm:border border-[#DDD3C1] shadow-none sm:shadow-[inset_0_1px_0_0_rgba(255,255,255,0.8),0_10px_30px_-8px_rgba(60,50,30,0.08)]'>
-      <Nav onOpenMobileMenu={onOpenMobileMenu} />
+      <Nav 
+        onOpenMobileMenu={onOpenMobileMenu} 
+        onGoToLanding={onGoToLanding}
+        onOpenExplore={onOpenExplore}
+        onOpenSettings={onOpenSettings}
+      />
       <div className='flex-1 min-h-0 flex flex-col overflow-hidden'>
         <MessageList />
       </div>
