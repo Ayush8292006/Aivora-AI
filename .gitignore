@@ -5,5 +5,7 @@ node_modules/
 serviceAccountKey.json
 dist/
 build/
+storage/
+**/storage/
 .DS_Store
 *.log

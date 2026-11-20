@@ -1,99 +1,61 @@
 // backend/services/agent/graph/router.js
-import { getModel } from "../config/llmModels.js"
+import { getModel } from "../config/llmModels.js";
 
 export const router = async (state) => {
   try {
-    console.log("🔄 Router received state:", state)
-    
-    const userPrompt = state.prompt
-    
-    if (!userPrompt) {
-      console.warn("⚠️ No prompt found in state, defaulting to chat")
-      return {
-        ...state,
-        agent: "chat"
-      }
-    }
+    const userPrompt = (state.prompt || "").trim();
+    const lowerPrompt = userPrompt.toLowerCase();
+    const attachments = state.attachments || [];
 
-    // ✅ If agent is specified and not "auto", use it directly
-    if (state.agent && state.agent !== "auto") {
-      let mappedAgent = state.agent.toLowerCase().trim()
-      if (mappedAgent === "vision") mappedAgent = "image"
-      console.log(`🎯 Using selected agent: ${mappedAgent}`)
+    // 1. If agent is explicitly picked by user (not "auto")
+    if (state.agent && state.agent.toLowerCase() !== "auto") {
+      let mappedAgent = state.agent.toLowerCase().trim();
+      if (mappedAgent === "vision") mappedAgent = "image";
+      console.log(`🎯 Explicitly selected agent: ${mappedAgent}`);
       return {
         ...state,
         agent: mappedAgent
+      };
+    }
+
+    // 2. Deterministic routing by attachments
+    if (attachments.length > 0) {
+      const hasPdf = attachments.some(a => a.kind === "pdf" || a.mimeType === "application/pdf");
+      const hasImage = attachments.some(a => a.kind === "image" || a.mimeType?.startsWith("image/"));
+
+      if (hasPdf && !/\b(image|draw|ppt|slides)\b/i.test(lowerPrompt)) {
+        console.log("🎯 Attachment detected (PDF) -> Routing to pdf agent");
+        return { ...state, agent: "pdf" };
+      }
+
+      if (hasImage && !/\b(pdf|resume|ppt|slides)\b/i.test(lowerPrompt)) {
+        console.log("🎯 Attachment detected (Image) -> Routing to image agent");
+        return { ...state, agent: "image" };
       }
     }
 
-    // ✅ If agent is "auto" or not specified, use router
-    const llm = await getModel("router")
-    
-    const prompt = `You are an agent router.
+    // 3. Keyword rules (English + Hindi / Hinglish)
+    // PPT keywords
+    if (/\b(ppt|powerpoint|slides?|presentation|slide\s*deck|slides?\s*banao|presentation\s*banao|deck)\b/i.test(lowerPrompt)) {
+      console.log("🎯 Keyword match -> Routing to ppt agent");
+      return { ...state, agent: "ppt" };
+    }
 
-Available agents:
+    // PDF keywords
+    if (/\b(pdf|resume|cv|biodata|invoice|report\s*banao|document\s*banao|bill\s*banao|pdf\s*banao|pdf\s*bana\s*do)\b/i.test(lowerPrompt)) {
+      console.log("🎯 Keyword match -> Routing to pdf agent");
+      return { ...state, agent: "pdf" };
+    }
 
-- chat
-- search
-- coding
-- pdf
-- ppt
-- image
+    // Image keywords
+    if (/\b(image|photo|picture|draw|logo|poster|wallpaper|tasveer|generate\s*image|draw\s*karo|chitra|photo\s*banao)\b/i.test(lowerPrompt)) {
+      console.log("🎯 Keyword match -> Routing to image agent");
+      return { ...state, agent: "image" };
+    }
 
-Rules:
-
-chat:
-General conversation,
-explanations,
-learning,
-questions.
-ANY question about:
-- "what is", "who is", "why", "how" (general knowledge)
-- definitions, concepts, ideas
-
-search:
-Current events,
-latest information,
-news,
-recent developments,
-internet lookup.
-ANY question about:
-- time, date, current time, today, now
-- weather, temperature, forecast
-- news, headlines, latest updates
-- sports, match scores, cricket, football
-- stock prices, market, crypto
-- "what is the current...", "what is today's..."
-- real-time information
-
-coding:
-Generate code,
-debug code,
-build projects,
-architecture,
-API design.
-ANY question about:
-- code, function, class, programming
-- react, javascript, python, html, css
-- "write a function", "create a component"
-- "how to code", "debug this"
-
-pdf:
-Questions about generate PDFs
-or document context.
-
-ppt:
-Questions about generate ppts
-or ppt context.
-
-image:
-Generate image,
-create image
-ANY question about:
-- "generate image", "create image", "draw"
-- "picture of", "photo of"
-
-Return ONLY one word:
+    // 4. Fallback to LLM classification
+    const llm = await getModel("router");
+    const prompt = `You are an agent router. Classify the user query into ONE of these agents:
 
 chat
 search
@@ -102,35 +64,42 @@ pdf
 ppt
 image
 
+Rules:
+- ppt: Presentations, slides, deck, slide summaries.
+- pdf: Reports, resumes, documents, invoices, letters to download as PDF.
+- image: Generating images, photos, illustrations, wallpapers, logos, drawings.
+- coding: Web projects, HTML/CSS/JS, algorithms, software development.
+- search: Real-time news, current weather, scores, live stock prices.
+- chat: General discussions, advice, questions, greetings.
+
 User Query:
 ${userPrompt}
-`
 
-    console.log("📝 Router prompt:", prompt)
+Return ONLY the single agent word:`;
 
-    const response = await llm.invoke(prompt)
-    
-    console.log("✅ Router response:", response)
-    
-    let agent = response.content.trim().toLowerCase()
-    if (agent === "vision") agent = "image"
-    
-    // ✅ Validate the agent
-    const validAgents = ["chat", "search", "coding", "pdf", "ppt", "image"]
-    const selectedAgent = validAgents.includes(agent) ? agent : "chat"
-    
-    console.log(`🎯 Router selected agent: ${selectedAgent}`)
+    const response = await Promise.race([
+      llm.invoke(prompt),
+      new Promise((_, reject) => setTimeout(() => reject(new Error("Router LLM timeout")), 10000))
+    ]);
+
+    let agent = (response.content || "").toString().trim().toLowerCase();
+    if (agent === "vision") agent = "image";
+
+    const validAgents = ["chat", "search", "coding", "pdf", "ppt", "image"];
+    const selectedAgent = validAgents.includes(agent) ? agent : "chat";
+
+    console.log(`🎯 Router classified agent: ${selectedAgent}`);
 
     return {
       ...state,
       agent: selectedAgent
-    }
+    };
 
   } catch (error) {
-    console.error("❌ Router error:", error)
+    console.error("❌ Router error, defaulting to chat:", error.message);
     return {
       ...state,
       agent: "chat"
-    }
+    };
   }
-}
+};

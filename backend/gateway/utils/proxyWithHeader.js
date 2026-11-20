@@ -1,22 +1,20 @@
 import proxy from "express-http-proxy";
 
-export const proxyWithHeader = (serviceUrl) => {
+export const proxyWithHeader = (serviceUrl, customOptions = {}) => {
     return proxy(serviceUrl, {
+        ...customOptions,
         proxyReqOptDecorator: (proxyReqOpts, srcReq) => {
-            // Get user ID from the correct location
-            const userId = srcReq.user?.userId ||    // From user object
-                          srcReq.userId ||           // Direct property
-                          srcReq.headers?.['x-user-id']; // From headers
+            // Get user ID strictly from the verified session (never trust client header)
+            const userId = srcReq.user?.userId || srcReq.user?._id;
 
-            // Only set if we have a valid value
-            if (userId && typeof userId === 'string' && userId.trim()) {
-                proxyReqOpts.headers["x-user-id"] = userId;
+            if (userId) {
+                proxyReqOpts.headers["x-user-id"] = String(userId);
             } else {
-                // Remove the header to prevent undefined values
                 delete proxyReqOpts.headers["x-user-id"];
-                
-                // Optional: log for debugging
-                // console.log('No valid user ID found for request');
+            }
+
+            if (customOptions.proxyReqOptDecorator) {
+                return customOptions.proxyReqOptDecorator(proxyReqOpts, srcReq);
             }
 
             return proxyReqOpts;

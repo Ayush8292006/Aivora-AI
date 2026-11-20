@@ -10,9 +10,11 @@ import morgan from 'morgan'
 
 const port = process.env.PORT || 8000
 const app = express()
+
 app.use(cors({
     origin: process.env.FRONTEND_URL || "http://localhost:5173",
-    credentials: true
+    credentials: true,
+    exposedHeaders: ["Content-Disposition"]
 }))
 app.use(morgan("dev"))
 
@@ -20,6 +22,12 @@ app.use(cookieParser())
 app.use("/api/auth", proxy(process.env.AUTH_SERVICE || "http://localhost:8001"))
 app.use("/api/chat", protect, proxyWithHeader(process.env.CHAT_SERVICE || "http://localhost:8002"))
 app.use("/api/agent", protect, proxyWithHeader(process.env.AGENT_SERVICE || "http://localhost:8003"))
+app.use("/api/files", protect, proxyWithHeader(process.env.AGENT_SERVICE || "http://localhost:8003", {
+    proxyReqPathResolver: (req) => {
+        return "/files" + req.url;
+    },
+    parseReqBody: false
+}))
 app.get("/api/me", protect, getCurrentUser)
 
 app.get("/", (req, res) => {

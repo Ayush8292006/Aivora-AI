@@ -1,85 +1,162 @@
-import axios from "axios"
-import { graph } from "../graph/graph.js"
-import { addMessage } from "../config/memory.js"
+import axios from "axios";
+import { graph } from "../graph/graph.js";
+import { addMessage } from "../config/memory.js";
+import File from "../models/file.model.js";
 
 export const agent = async (req, res) => {
     try {
-        const { prompt, conversationId, agent } = req.body
+        const userId = req.headers["x-user-id"];
+        if (!userId) {
+            return res.status(401).json({
+                success: false,
+                message: "Unauthorized: Missing user identity"
+            });
+        }
 
-        // ✅ Check if prompt exists
+        const { prompt, conversationId, agent, attachments } = req.body;
+
+        // Check if prompt exists
         if (!prompt || typeof prompt !== "string" || !prompt.trim()) {
             return res.status(400).json({
                 success: false,
                 message: "Prompt is required"
-            })
+            });
         }
 
-        // ✅ Check if conversationId exists
+        // Check if conversationId exists
         if (!conversationId) {
             return res.status(400).json({
                 success: false,
                 message: "Conversation ID is required"
-            })
+            });
         }
 
-        const trimmedPrompt = prompt.trim()
-
-        // ✅ Save user message in DB
+        // Verify conversation ownership
         try {
-            await axios.post(`${process.env.CHAT_SERVICE}/save-message`, {
+            const chatServiceUrl = process.env.CHAT_SERVICE || "http://localhost:8002";
+            const convRes = await axios.get(`${chatServiceUrl}/conversation/${conversationId}`, {
+                timeout: 5000
+            });
+            const conv = convRes.data;
+            if (conv && conv.userId && String(conv.userId) !== String(userId)) {
+                return res.status(403).json({
+                    success: false,
+                    message: "Forbidden: You do not have access to this conversation"
+                });
+            }
+        } catch (convErr) {
+            if (convErr.response?.status === 404) {
+                return res.status(404).json({
+                    success: false,
+                    message: "Conversation not found"
+                });
+            }
+            console.warn("⚠️ Conversation ownership check warning:", convErr.message);
+        }
+
+        // Validate attachments against ownership
+        let validatedAttachments = [];
+        if (Array.isArray(attachments) && attachments.length > 0) {
+            const fileIds = attachments.map(a => a.fileId || a.id).filter(Boolean);
+            if (fileIds.length > 0) {
+                const ownedFiles = await File.find({
+                    _id: { $in: fileIds },
+                    userId: String(userId)
+                });
+
+                const ownedMap = new Map(ownedFiles.map(f => [String(f._id), f]));
+                validatedAttachments = fileIds
+                    .map(id => ownedMap.get(String(id)))
+                    .filter(Boolean)
+                    .map(f => ({
+                        fileId: String(f._id),
+                        name: f.name,
+                        kind: f.kind,
+                        mimeType: f.mimeType,
+                        size: f.size,
+                        path: f.path,
+                        text: f.text || "",
+                        pages: f.pages || 1,
+                        url: `/api/files/${f._id}`
+                    }));
+            }
+        }
+
+        const trimmedPrompt = prompt.trim();
+
+        // Save user message in DB with attachments
+        try {
+            const chatServiceUrl = process.env.CHAT_SERVICE || "http://localhost:8002";
+            await axios.post(`${chatServiceUrl}/save-message`, {
                 conversationId,
                 role: "user",
-                content: trimmedPrompt
-            })
+                content: trimmedPrompt,
+                attachments: validatedAttachments.map(a => ({
+                    fileId: a.fileId,
+                    name: a.name,
+                    kind: a.kind,
+                    mimeType: a.mimeType,
+                    size: a.size
+                }))
+            });
         } catch (saveError) {
-            console.warn('⚠️ Save message error:', saveError.message)
+            console.warn('⚠️ Save message error:', saveError.message);
         }
 
-        // ✅ Invoke graph with proper state
+        // Prepare LangGraph state
         const state = {
             prompt: trimmedPrompt,
             conversationId: conversationId,
+            userId: String(userId),
             agent: agent || "auto",
+            attachments: validatedAttachments,
             searchResults: [],
             images: [],
             artifacts: []
-        }
+        };
 
-        let result
+        let result;
         try {
-            result = await graph.invoke(state)
+            // 120s timeout for generation calls
+            result = await Promise.race([
+                graph.invoke(state),
+                new Promise((_, reject) => 
+                    setTimeout(() => reject(new Error('Agent generation timed out after 120 seconds')), 120000)
+                )
+            ]);
         } catch (graphError) {
-            console.error('❌ Graph error:', graphError.message)
+            console.error('❌ Graph error:', graphError.message);
             return res.status(500).json({
                 success: false,
                 message: "AI service error: " + (graphError.message || 'Unknown error')
-            })
+            });
         }
 
-        // ✅ Get response from result
-        let response = result.aiResponse || result.response || ""
-        const images = result.images || []
-        const searchResults = result.searchResults || []
-        const artifacts = result.artifacts || []
+        // Extract response details
+        let response = result.aiResponse || result.response || "";
+        const images = result.images || [];
+        const searchResults = result.searchResults || [];
+        const artifacts = result.artifacts || [];
 
         if (!response || response.trim().length === 0) {
-            response = "I don't have enough information to answer that. Could you please rephrase your question?"
+            response = "I've processed your request.";
         }
 
-        // ✅ Save AI response in DB and update memory cache with both user + assistant turns
+        // Save AI response in DB and update memory cache
         try {
-            await axios.post(`${process.env.CHAT_SERVICE}/save-message`, {
+            const chatServiceUrl = process.env.CHAT_SERVICE || "http://localhost:8002";
+            await axios.post(`${chatServiceUrl}/save-message`, {
                 conversationId,
                 role: "assistant",
                 content: response,
                 images: images,
                 artifacts: artifacts
-            })
+            });
 
-            await addMessage(conversationId, "user", trimmedPrompt)
-            await addMessage(conversationId, "assistant", response)
+            await addMessage(conversationId, "user", trimmedPrompt);
+            await addMessage(conversationId, "assistant", response);
         } catch (saveError) {
-            console.warn('⚠️ Save AI response error:', saveError.message)
+            console.warn('⚠️ Save AI response error:', saveError.message);
         }
 
         return res.status(200).json({
@@ -89,21 +166,13 @@ export const agent = async (req, res) => {
             images: images,
             searchResults: searchResults,
             artifacts: artifacts
-        })
+        });
 
     } catch (error) {
-        console.error('❌ Agent controller error:', error.message)
-        
-        let errorMessage = "I'm having trouble processing your request. Please try again."
-        if (error.message?.includes('timeout')) {
-            errorMessage = "The AI is taking too long to respond. Please try again."
-        } else if (error.message?.includes('ECONNREFUSED')) {
-            errorMessage = "I'm having connection issues. Please check your connection and try again."
-        }
-
+        console.error('❌ Agent controller error:', error.message);
         return res.status(500).json({
             success: false,
-            message: errorMessage
-        })
+            message: error.message || "Failed to process request"
+        });
     }
-}
+};

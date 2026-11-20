@@ -1,54 +1,56 @@
 # Aivora AI — Changelog
 
 ## Phase 0: Critical Bug Fixes
-
-### 1. Cookie Name Mismatch
 - Standardized session cookie name to `sessionId` across all services.
-- Updated `backend/gateway/middleware/auth.middleware.js` to read `req.cookies?.sessionId` instead of `req.cookies?.session`.
-- Changed status response from `400` to `401` for missing sessionId (`"unauthorized"`) and expired session (`"session expired"`).
-- Updated `backend/services/auth/controllers/auth.controller.js` to clear `sessionId` with matching cookie attributes (`httpOnly: true, secure: isProd, sameSite: isProd ? 'none' : 'lax'`).
+- Updated `backend/gateway/middleware/auth.middleware.js` to read `req.cookies?.sessionId` and return 401.
+- Registered `cookie-parser` in `auth` service and implemented clean session deletion on logout.
+- Unified image agent ID to `"image"` across frontend chips, router prompt, and graph edges.
+- Added placeholders for empty agents to prevent LangGraph crashing.
+- Removed duplicate `protect` middleware on `/api/agent` in gateway and attached `proxyWithHeader`.
+- Raised LLM max tokens to 8,192 and added robust JSON parsing for coding projects.
+- Removed duplicate user turn in LLM context and fixed Redis memory caching.
+- Removed artificial server-time override in chat agent and injected real-time context.
+- Fixed `dotenv/config` loading order across services.
 
-### 2. Logout Crash Fix
-- Registered `cookie-parser` in `backend/services/auth/index.js` so `req.cookies` is properly populated.
-- Updated `logOut` controller in `backend/services/auth/controllers/auth.controller.js` to safely delete the session key in Redis (`session-${sessionId}`) and clear cookie with matching options.
+---
 
-### 3. Agent ID Mismatch
-- Unified agent ID to `"image"` across frontend and backend.
-- Updated `backend/services/agent/graph/router.js` prompt, classification rules, and `validAgents` array to use `"image"`.
-- Added automatic mapping of legacy `"vision"` agent values to `"image"`.
-- Updated `backend/services/agent/graph/graph.js` nodes and conditional edges to use `"image"`.
+## PDF, PPT & Image Agents Implementation (Complete End-to-End)
 
-### 4. Empty Agent Crash Fix
-- Fixed `pdfAgent` in `backend/services/agent/agents/pdf.agent.js` to return `{ ...state, aiResponse: "This feature is coming soon." }`.
-- Fixed `pptAgent` in `backend/services/agent/agents/ppt.agent.js` to return `{ ...state, aiResponse: "This feature is coming soon." }`.
-- Fixed `imageAgent` in `backend/services/agent/agents/vision.agent.js` to return `{ ...state, aiResponse: "This feature is coming soon." }`.
+### 1. Storage & File Management
+- Created MongoDB `File` model in `backend/services/agent/models/file.model.js` tracking uploaded and generated files (`userId`, `conversationId`, `origin`, `kind`, `name`, `mimeType`, `size`, `path`, `text`, `pages`, `meta`).
+- Created `storage.js` disk adapter storing files securely under `backend/services/agent/storage/<userId>/<uuid>.<ext>` with path traversal guards.
+- Implemented file endpoints under `/files`:
+  - `POST /files/upload`: Multer upload with magic bytes detection (`checkMagicBytes`) and size limits (images ≤ 8 MB, PDFs ≤ 20 MB).
+  - `GET /files/:id`: Secure streaming with ownership verification (`File.userId === x-user-id`) and `Content-Disposition`.
+  - `DELETE /files/:id`: Deletes disk file and database record with ownership verification.
+- Gateway mounts `/api/files` with `proxyWithHeader` and `parseReqBody: false` for multipart streaming.
 
-### 5. Duplicate Protect Middleware
-- Removed redundant duplicate `protect` middleware on `/api/agent` in `backend/gateway/index.js`.
-- Attached `proxyWithHeader` to forward `x-user-id` to the agent service.
+### 2. PDF Agent (`pdf.agent.js`)
+- **GENERATE mode**: LLM generates clean HTML document tailored to requested document type (`resume`, `report`, `invoice`, `letter`, `notes`).
+- Puppeteer renders HTML to high-resolution A4 PDF with native font fallbacks supporting Hindi / Devanagari text (`Nirmala UI`, `Mangal`, `Segoe UI`).
+- Hardened Puppeteer security: disabled JavaScript in page, blocked all network requests except `data:` URIs, sanitized HTML via `sanitize-html`.
+- Follow-up edits: loads latest conversation PDF source HTML, applies edits via LLM, and creates `v2` with `parentId`.
+- **READ mode**: Extracts text using `pdf-parse` (with Gemini multimodal OCR fallback for scanned documents), answers queries citing page numbers (`Page X`).
 
-### 6. Coding Agent Truncation & Parsing
-- Increased `maxTokens` on OpenRouter DeepSeek configuration from 2,500 to 8,192 in `backend/services/agent/config/llmModels.js`.
-- Added 60-second execution timeout via `Promise.race`.
-- Updated intent classification to use `.trim().toUpperCase()` and `includes("CODE_GENERATION")` instead of strict equality.
-- Implemented robust `parseProjectJSON` helper that trims output, strips markdown fences, extracts outermost JSON bounds, and retries once with the LLM upon initial parse failure before fallback.
+### 3. PPT Agent (`ppt.agent.js`)
+- LLM generates structured presentation JSON outline (titles, layouts, bullets capped at 6 per slide, stats, comparison tables, speaker notes).
+- Generates 16:9 `.pptx` presentations using `pptxgenjs` with customizable themes (`modern`, `dark`, `minimal`, `corporate`, `vibrant`).
+- Returns artifact with `meta.slides` enabling live interactive preview in the frontend.
+- Follow-up edits: updates existing presentation slides, rebuilds `.pptx`, and tracks version history (`v1` -> `v2`).
 
-### 7. Duplicate User Message in LLM Context
-- Stripped Mongo fields from history in `backend/services/agent/config/memory.js` so only `{ role, content }` are stored and passed.
-- Filtered out the trailing user message from retrieved history in `backend/services/agent/agents/chat.agent.js` when it matches the current user prompt, preventing the prompt from being sent twice in context.
-- Capped conversational memory history to the last 20 messages.
+### 4. Image Agent (`vision.agent.js` -> `imageAgent`)
+- **GENERATE mode**: Rewrites prompt into an expanded English prompt, calls image provider abstraction (`gemini` Imagen, `openrouter`, or Tavily image search fallback), saves output file, returns inline image URL and artifact.
+- Supports aspect ratios (`1:1`, `16:9`, `9:16`) and multi-image variations.
+- **UNDERSTAND mode**: Multi-modal Gemini analysis for user-uploaded images (screenshots, charts, OCR, object analysis).
+- **REGENERATE mode**: Reuses previous image prompt for style variations.
 
-### 8. Memory Cache Logic
-- Removed premature `redis.del("messages-${conversationId}")` call from `backend/services/agent/controllers/agent.controller.js`.
-- In `agent.controller.js`, cached both the user prompt and the assistant response in Redis (`addMessage` for user and assistant) after saving to MongoDB.
-- Made `getMemory` consistently return an array (never `null` or `undefined`).
-- Fixed typo in `backend/services/agent/utils/getMessages.js` (`converstationId` -> `conversationId`) and safeguarded error returns to empty array.
-
-### 9. Chat Agent "No Access" Override Removal
-- Removed the hardcoded override in `backend/services/agent/agents/chat.agent.js` that replaced assistant answers containing phrases like "real-time" or "not able to" with server time.
-- Injected the current date & time formatted in `Asia/Kolkata` timezone directly into the system prompt.
-- Refined system prompt instructions so the model leverages search results accurately without claiming lack of access.
-
-### 10. Environment Variable Loading Order
-- Added `import "dotenv/config"` as the first line of `backend/shared/redis/redis.js` and added lazy connection / retry strategy with error logging.
-- Placed `import "dotenv/config"` at the top of each microservice entry point (`gateway/index.js`, `auth/index.js`, `chat/index.js`, `agent/index.js`).
+### 5. Frontend Enhancements
+- **Paperclip Attachments**: File picker in `ChatInput.jsx` supporting PDF and images with drag-and-drop, clipboard image paste, upload progress, and preview chips with removal.
+- **Message Rendering**: `MessageBubble.jsx` renders artifact cards (icon by type, title, version badge, "Open" and "Download" buttons) and displays user attachments.
+- **Artifact Panel Multi-Type Switcher**:
+  - `Project`: Monaco code editor + multi-device preview.
+  - `pdf`: Inline PDF viewer via blob stream, page count, and download button.
+  - `ppt`: 16:9 interactive slide deck previewer rendered from `meta.slides`, speaker notes drawer, thumbnail strip, and `.pptx` download.
+  - `image`: Zoomable image viewer with download and copy prompt.
+  - Universal download button for all artifact types.
+- **Progress UX**: Status bubble with live agent state ("Designing PDF...", "Building slides...", "Synthesizing image...") and working Stop button (`AbortController`).

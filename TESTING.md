@@ -1,40 +1,66 @@
 # Aivora AI — Testing Guide
 
-## Phase 0: Acceptance Verification Checklist
+## Automated Tests
 
-### Test Case 1: Session & Authentication
-1. **Login Flow**:
-   - Navigate to `http://localhost:5173`.
-   - Click "Continue With Google". Complete popup sign-in.
-   - Verify HTTP Response from `/api/auth/login` sets `Set-Cookie: sessionId=<UUID>; HttpOnly; SameSite=Lax`.
-2. **Session Persistence**:
-   - Refresh the page (`F5`).
-   - Verify that `/api/me` returns HTTP 200 with user profile.
-   - User remains logged in and conversation sidebar loads without returning to login screen.
-3. **Invalid/Missing Session Protection**:
-   - Send `GET /api/me` without cookies -> returns HTTP `401 Unauthorized` (not 400).
-   - Send `GET /api/chat/get-conversation` without cookies -> returns HTTP `401 Unauthorized`.
-4. **Logout Flow**:
-   - Click the logout icon in the sidebar profile card.
-   - Verify that `/api/auth/logout` deletes the Redis session key and clears the `sessionId` cookie.
-   - Page redirects to unauthenticated state. Refreshing keeps user unauthenticated.
+Run the backend agent test suite:
+```bash
+node backend/services/agent/test/agents.test.js
+node backend/services/agent/test/router.test.js
+```
 
-### Test Case 2: Agent Dispatch & Graph Execution
-1. **Auto Agent**:
-   - Send "Hello, what is Aivora AI?"
-   - Verify router classifies to `chat` and returns conversational response.
-2. **Chat Agent**:
-   - Select "Chat" agent chip. Send "Explain JavaScript event loop in 2 paragraphs."
-   - Verify response is returned without duplicated user prompt in LLM context.
-3. **Search Agent**:
-   - Select "Search" agent chip. Send "Who won the latest cricket match?"
-   - Verify Tavily search is executed, results passed to chat synthesizer, and response generated without falling back to hardcoded server time string.
-4. **Coding Agent**:
-   - Select "Coding" agent chip. Send "Create a simple modern stopwatch with HTML, CSS, and JS".
-   - Verify DeepSeek generates valid JSON with `index.html`, `style.css`, `script.js` files.
-   - Verify Monaco preview / artifact panel renders code without JSON truncation error ("Error loading content").
-5. **Placeholders (Image / PDF / PPT)**:
-   - Select "Image" agent chip and send "Draw a futuristic city".
-   - Select "PDF" agent chip and send "Create a resume for software engineer".
-   - Select "PPT" agent chip and send "Create a pitch deck".
-   - Verify each returns friendly response: `"This feature is coming soon."` without crashing the graph or throwing 500 error.
+Both suites verify:
+- Storage adapter (save, read, delete, path traversal protection).
+- PPTX deck builder (builds valid 16:9 `.pptx` buffer with slides, stats, tables, and notes).
+- PDF HTML sanitizer (strips script tags, external scripts, preserves inline styling).
+- Router deterministic decisions (explicit agent selection, attachment routing, keyword rules in English & Hindi).
+
+---
+
+## Manual Test Cases
+
+### 1. PDF Agent
+- **Resume Generation**:
+  - Prompt: `"Mera resume banao: Ayush, React developer, 2 projects"`
+  - Verify artifact card appears with Red PDF icon. Click **Open** to inspect the PDF layout in the Artifact panel.
+  - Click **Download** and verify the file opens in Adobe Acrobat / browser with clean formatting.
+- **Hindi Document**:
+  - Prompt: `"Solar energy par 2 page ka report banao Hindi mein"`
+  - Verify Hindi Devanagari text renders properly without missing character boxes.
+- **Follow-up Edit**:
+  - Prompt: `"skills section add karo"`
+  - Verify new version `v2` is generated while preserving earlier context.
+- **Read & Q&A**:
+  - Click **Paperclip**, upload a PDF document, and type: `"Summary do aur page 2 par kya likha hai?"`
+  - Verify the response accurately cites the page content with page numbers (`Page 2`).
+- **File Validation**:
+  - Try uploading a file > 20 MB or non-PDF/image format. Verify immediate client rejection and backend 400 response.
+
+### 2. PPT Agent
+- **Deck Generation**:
+  - Prompt: `"AI in healthcare par 8 slide ka PPT banao"`
+  - Verify 8 slides generated with title slide and closing slide.
+  - In Artifact panel, navigate slides using Next/Prev and thumbnail numbers.
+  - Toggle **Speaker Notes** and verify notes match the slide content.
+  - Click **Download** and open the `.pptx` file in Microsoft PowerPoint / LibreOffice to verify real editable text boxes.
+- **Follow-up Edit**:
+  - Prompt: `"slide 3 mein pricing table add karo aur theme dark kar do"`
+  - Verify slide deck updates with `dark` theme palette and new table, generating `v2`.
+
+### 3. Image Agent
+- **Image Generation**:
+  - Prompt: `"Ek sunset wala wallpaper generate karo"`
+  - Verify image appears inline in chat with lightbox support and in the Artifact panel.
+  - Click **Download** and verify the PNG/WebP file saves locally.
+- **Image Understanding**:
+  - Click **Paperclip**, upload a screenshot or chart, and ask: `"Isme kya error hai?"`
+  - Verify Gemini multimodal model analyzes the image and explains the error in conversational Hindi/English.
+- **Regenerate / Variations**:
+  - Prompt: `"Dusra bana do with blue night theme"`
+  - Verify image agent reuses the previous prompt context with the new style adjustment.
+
+### 4. Cross-Cutting & Security
+- **Ownership Guard**:
+  - Ensure User B receives HTTP 404/403 when trying to access `/api/files/:id` belonging to User A.
+- **Mobile Responsive (375px)**:
+  - Open DevTools mobile viewport (375px width).
+  - Open Artifact panel and verify it expands as a drawer, allowing preview and downloading.
