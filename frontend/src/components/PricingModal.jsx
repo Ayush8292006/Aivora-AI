@@ -287,7 +287,8 @@ export default function PricingModal() {
               <p className="text-xs font-medium">Loading credit packages...</p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <>
+              <div className="flex sm:grid sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 overflow-x-auto sm:overflow-visible pb-3 sm:pb-0 snap-x snap-mandatory [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
               {packages.map((pkg) => {
                 const isPro = pkg.isRecommended || pkg.code === 'pro';
                 const isProcessing = processingCode === pkg.code;
@@ -295,9 +296,9 @@ export default function PricingModal() {
                 return (
                   <div 
                     key={pkg.code}
-                    className={`rounded-2xl p-5 flex flex-col justify-between transition-all duration-200 relative ${
+                    className={`w-[260px] sm:w-auto shrink-0 snap-start rounded-2xl p-4 sm:p-5 flex flex-col justify-between transition-all duration-200 relative ${
                       isPro 
-                        ? 'bg-[#1E2B1F] text-white shadow-xl border-2 border-[#C9A875] scale-[1.02]' 
+                        ? 'bg-[#1E2B1F] text-white shadow-xl border-2 border-[#C9A875] sm:scale-[1.02]' 
                         : 'bg-[#F4EEE2] hover:bg-[#EAE2D2] text-[#1E1B18] border border-[#DDD3C1] shadow-2xs hover:shadow-md'
                     }`}
                   >
@@ -371,7 +372,13 @@ export default function PricingModal() {
                 );
               })}
             </div>
-          )}
+
+            {/* Mobile Swipe Hint */}
+            <div className="sm:hidden text-center text-[10.5px] text-[#7D7567] pt-2">
+              ← Swipe horizontally to compare all packages →
+            </div>
+          </>
+        )}
         </div>
 
         {/* Footer Security Badges */}

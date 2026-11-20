@@ -55,11 +55,27 @@ export default function LandingPage({ onStartChat, onOpenLogin, onOpenExplore })
   const [calculatorInput, setCalculatorInput] = useState('2,048')
   const [showScrollTop, setShowScrollTop] = useState(false)
   const capabilitiesScrollRef = useRef(null)
+  const workflowScrollRef = useRef(null)
+  const pricingScrollRef = useRef(null)
 
   const scrollCapabilities = (direction) => {
     if (capabilitiesScrollRef.current) {
       const offset = direction === 'left' ? -320 : 320
       capabilitiesScrollRef.current.scrollBy({ left: offset, behavior: 'smooth' })
+    }
+  }
+
+  const scrollWorkflow = (direction) => {
+    if (workflowScrollRef.current) {
+      const offset = direction === 'left' ? -290 : 290
+      workflowScrollRef.current.scrollBy({ left: offset, behavior: 'smooth' })
+    }
+  }
+
+  const scrollPricing = (direction) => {
+    if (pricingScrollRef.current) {
+      const offset = direction === 'left' ? -300 : 300
+      pricingScrollRef.current.scrollBy({ left: offset, behavior: 'smooth' })
     }
   }
 
@@ -819,22 +835,48 @@ export default function LandingPage({ onStartChat, onOpenLogin, onOpenExplore })
       </section>
 
       {/* ========================================================
-          4. HOW IT WORKS (STAGGERED PIPELINE ANIMATIONS)
+          4. HOW IT WORKS (HORIZONTAL SCROLLING PIPELINE)
       ======================================================== */}
-      <section id="how-it-works" className="py-20 lg:py-28 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <div className="text-center max-w-2xl mx-auto space-y-3 mb-16">
-          <span className="text-xs font-bold text-[#4A653C] uppercase tracking-wider">
-            Execution Flow
-          </span>
-          <h2 className="font-display text-3xl sm:text-5xl font-bold tracking-tight text-[#1E1B18]">
-            From Natural Thought to Production Artifact
-          </h2>
-          <p className="text-sm text-[#554E43]">
-            How Aivora's intelligent engine coordinates complex creation workflows seamlessly.
-          </p>
+      <section id="how-it-works" className="py-16 sm:py-20 lg:py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 overflow-hidden">
+        
+        {/* Header with Title and Left/Right Navigation Controls */}
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8 sm:mb-10">
+          <div className="space-y-2 max-w-2xl text-left">
+            <span className="text-xs font-bold text-[#4A653C] uppercase tracking-wider">
+              Execution Flow
+            </span>
+            <h2 className="font-display text-2xl sm:text-4xl font-bold tracking-tight text-[#1E1B18]">
+              From Natural Thought to Production Artifact
+            </h2>
+            <p className="text-xs sm:text-sm text-[#554E43]">
+              Swipe horizontally to see how Aivora coordinates multi-modal requests seamlessly.
+            </p>
+          </div>
+
+          {/* Slider Navigation Arrows */}
+          <div className="flex items-center gap-2 self-start sm:self-auto">
+            <button
+              onClick={() => scrollWorkflow('left')}
+              className="w-9 h-9 rounded-xl bg-[#F2ECE0] hover:bg-[#EAE2D2] text-[#1E1B18] border border-[#DDD3C1] flex items-center justify-center cursor-pointer active:scale-95 transition-all shadow-2xs"
+              title="Scroll Left"
+            >
+              <ChevronLeft size={16} />
+            </button>
+            <button
+              onClick={() => scrollWorkflow('right')}
+              className="w-9 h-9 rounded-xl bg-[#1E2B1F] hover:bg-[#283A27] text-white border-none flex items-center justify-center cursor-pointer active:scale-95 transition-all shadow-xs"
+              title="Scroll Right"
+            >
+              <ChevronRight size={16} />
+            </button>
+          </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+        {/* Horizontal Scrolling Track (Compact Width & Height) */}
+        <div 
+          ref={workflowScrollRef}
+          className="flex items-stretch gap-4 overflow-x-auto pb-4 pt-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden snap-x snap-mandatory scroll-smooth"
+        >
           {[
             {
               num: "01",
@@ -857,21 +899,25 @@ export default function LandingPage({ onStartChat, onOpenLogin, onOpenExplore })
               desc: "Preview live apps directly in the browser, export one-click files, and keep history organized with search, pinning, and renaming."
             }
           ].map((step, idx) => (
-            <motion.div
+            <div
               key={idx}
-              initial={{ opacity: 0, y: 40 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-60px" }}
-              transition={{ duration: 0.5, delay: idx * 0.12 }}
-              className="bg-[#FAF8F3] border border-[#DDD3C1] rounded-3xl p-6 space-y-3 shadow-2xs hover:shadow-md transition-shadow relative"
+              className="w-[245px] sm:w-[275px] shrink-0 snap-start bg-[#FAF8F3] border border-[#DDD3C1] rounded-2xl p-4 sm:p-5 space-y-2.5 shadow-2xs hover:shadow-md transition-shadow relative text-left"
             >
-              <span className="font-display text-4xl font-extrabold text-[#C8BEAC] block">{step.num}</span>
-              <h3 className="font-display text-base font-bold text-[#1E1B18]">{step.title}</h3>
-              <p className="text-xs text-[#696256] leading-relaxed">
+              <span className="font-display text-3xl sm:text-4xl font-extrabold text-[#C8BEAC] block">{step.num}</span>
+              <h3 className="font-display text-sm sm:text-base font-bold text-[#1E1B18]">{step.title}</h3>
+              <p className="text-[11.5px] sm:text-xs text-[#696256] leading-relaxed">
                 {step.desc}
               </p>
-            </motion.div>
+            </div>
           ))}
+        </div>
+
+        {/* Swipe Indicator Footer */}
+        <div className="mt-3 flex items-center justify-between text-xs text-[#7A7469] px-1">
+          <span className="text-[11px] font-medium">← Swipe horizontally to see 4-step pipeline →</span>
+          <span className="text-[11px] font-bold text-[#1E2B1F] bg-[#EAE2D2] px-2 py-0.5 rounded-full">
+            Pipeline Architecture
+          </span>
         </div>
       </section>
 
@@ -955,7 +1001,7 @@ export default function LandingPage({ onStartChat, onOpenLogin, onOpenExplore })
                 </div>
                 <div className="bg-[#24221E] p-3.5 rounded-xl border border-white/5 space-y-1">
                   <p className="text-[10px] text-[#A69F91] uppercase font-mono">Agent Graph</p>
-                  <p className="font-bold text-[#4ADE80]">LangGraph Sub-Agents</p>
+                  <p className="font-bold text-[#4ADE80]">Adaptive Agent Graph</p>
                 </div>
               </div>
 
@@ -973,97 +1019,108 @@ export default function LandingPage({ onStartChat, onOpenLogin, onOpenExplore })
       </section>
 
       {/* ========================================================
-          6. WHY AIVORA AI (VALUE PROPOSITION WITH LEFT/RIGHT GLIDES)
+          6. WHY AIVORA AI (VALUE PROPOSITION)
       ======================================================== */}
-      <section id="why-aivora" className="py-20 lg:py-28 relative z-10">
+      <section id="why-aivora" className="py-16 sm:py-20 lg:py-24 relative z-10 overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           
-          <div className="text-center max-w-2xl mx-auto space-y-3 mb-16">
+          <div className="text-center max-w-2xl mx-auto space-y-2.5 mb-10 sm:mb-14">
             <span className="text-xs font-bold text-[#4A653C] uppercase tracking-wider">
               The Aivora Advantage
             </span>
-            <h2 className="font-display text-3xl sm:text-5xl font-bold tracking-tight text-[#1E1B18]">
+            <h2 className="font-display text-2xl sm:text-4xl font-bold tracking-tight text-[#1E1B18]">
               Why Switch to Aivora AI?
             </h2>
-            <p className="text-sm text-[#696256]">
+            <p className="text-xs sm:text-sm text-[#696256]">
               Replace 5+ fragmented subscriptions with one unified, domain-expert platform.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="flex sm:grid sm:grid-cols-3 gap-4 sm:gap-6 overflow-x-auto sm:overflow-visible pb-4 sm:pb-0 snap-x snap-mandatory [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
             
-            <motion.div 
-              initial={{ opacity: 0, x: -40 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true, margin: "-60px" }}
-              transition={{ duration: 0.6 }}
-              className="bg-[#FAF8F3] border border-[#DDD3C1] rounded-3xl p-7 space-y-3.5 shadow-2xs hover:shadow-md transition-shadow"
-            >
-              <div className="w-11 h-11 rounded-2xl bg-[#1E2B1F] text-[#E8DDC8] flex items-center justify-center font-bold">
-                <Layers size={22} />
+            <div className="w-[265px] sm:w-auto shrink-0 snap-start bg-[#FAF8F3] border border-[#DDD3C1] rounded-2xl sm:rounded-3xl p-5 sm:p-6 space-y-3 shadow-2xs hover:shadow-md transition-shadow text-left">
+              <div className="w-10 h-10 rounded-2xl bg-[#1E2B1F] text-[#E8DDC8] flex items-center justify-center font-bold">
+                <Layers size={20} />
               </div>
-              <h3 className="font-display text-lg font-bold text-[#1E1B18]">Zero Context Switching</h3>
-              <p className="text-xs text-[#554E43] leading-relaxed">
+              <h3 className="font-display text-base sm:text-lg font-bold text-[#1E1B18]">Zero Context Switching</h3>
+              <p className="text-[11.5px] sm:text-xs text-[#554E43] leading-relaxed">
                 Never copy-paste code snippets into external sandboxes or slide scripts into presentation apps. Aivora compiles outputs inside your active session.
               </p>
-            </motion.div>
+            </div>
 
-            <motion.div 
-              initial={{ opacity: 0, y: 40 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-60px" }}
-              transition={{ duration: 0.6, delay: 0.1 }}
-              className="bg-[#FAF8F3] border border-[#DDD3C1] rounded-3xl p-7 space-y-3.5 shadow-2xs hover:shadow-md transition-shadow"
-            >
-              <div className="w-11 h-11 rounded-2xl bg-[#1E2B1F] text-[#E8DDC8] flex items-center justify-center font-bold">
-                <Zap size={22} />
+            <div className="w-[265px] sm:w-auto shrink-0 snap-start bg-[#FAF8F3] border border-[#DDD3C1] rounded-2xl sm:rounded-3xl p-5 sm:p-6 space-y-3 shadow-2xs hover:shadow-md transition-shadow text-left">
+              <div className="w-10 h-10 rounded-2xl bg-[#1E2B1F] text-[#E8DDC8] flex items-center justify-center font-bold">
+                <Zap size={20} />
               </div>
-              <h3 className="font-display text-lg font-bold text-[#1E1B18]">Domain-Specific Quality</h3>
-              <p className="text-xs text-[#554E43] leading-relaxed">
+              <h3 className="font-display text-base sm:text-lg font-bold text-[#1E1B18]">Domain-Specific Quality</h3>
+              <p className="text-[11.5px] sm:text-xs text-[#554E43] leading-relaxed">
                 Specialized execution models tailored for each discipline. You get clean semantic code, ATS-compliant resumes, and investor-ready presentation decks.
               </p>
-            </motion.div>
+            </div>
 
-            <motion.div 
-              initial={{ opacity: 0, x: 40 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true, margin: "-60px" }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-              className="bg-[#FAF8F3] border border-[#DDD3C1] rounded-3xl p-7 space-y-3.5 shadow-2xs hover:shadow-md transition-shadow"
-            >
-              <div className="w-11 h-11 rounded-2xl bg-[#1E2B1F] text-[#E8DDC8] flex items-center justify-center font-bold">
-                <ShieldCheck size={22} />
+            <div className="w-[265px] sm:w-auto shrink-0 snap-start bg-[#FAF8F3] border border-[#DDD3C1] rounded-2xl sm:rounded-3xl p-5 sm:p-6 space-y-3 shadow-2xs hover:shadow-md transition-shadow text-left">
+              <div className="w-10 h-10 rounded-2xl bg-[#1E2B1F] text-[#E8DDC8] flex items-center justify-center font-bold">
+                <ShieldCheck size={20} />
               </div>
-              <h3 className="font-display text-lg font-bold text-[#1E1B18]">Privacy & Cloud Sync</h3>
-              <p className="text-xs text-[#554E43] leading-relaxed">
+              <h3 className="font-display text-base sm:text-lg font-bold text-[#1E1B18]">Privacy & Cloud Sync</h3>
+              <p className="text-[11.5px] sm:text-xs text-[#554E43] leading-relaxed">
                 Enterprise session management with Redis and MongoDB. Your documents, code projects, and custom presentations are securely saved and exportable anytime.
               </p>
-            </motion.div>
+            </div>
 
+          </div>
+
+          {/* Mobile Swipe Hint */}
+          <div className="mt-2 sm:hidden flex items-center justify-center text-[10.5px] text-[#8E877B]">
+            <span>← Swipe horizontally to see all benefits →</span>
           </div>
 
         </div>
       </section>
 
       {/* ========================================================
-          6.5. TRANSPARENT CREDIT PACKAGES & PRICING
+          6.5. TRANSPARENT CREDIT PACKAGES & PRICING (HORIZONTAL SLIDER)
       ======================================================== */}
-      <section id="pricing" className="py-20 lg:py-28 bg-[#FAF8F3]/90 border-t border-[#DDD3C1] relative z-10">
+      <section id="pricing" className="py-16 sm:py-20 lg:py-24 bg-[#FAF8F3]/90 border-t border-[#DDD3C1] relative z-10 overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           
-          <div className="text-center max-w-2xl mx-auto space-y-3 mb-16">
-            <span className="text-xs font-bold text-[#4A653C] uppercase tracking-wider">
-              Pay As You Use
-            </span>
-            <h2 className="font-display text-3xl sm:text-5xl font-bold tracking-tight text-[#1E1B18]">
-              Simple, Transparent AI Credits
-            </h2>
-            <p className="text-sm text-[#554E43]">
-              No subscriptions or surprise recurring billing. Purchase credits whenever you need, with lifetime validity.
-            </p>
+          {/* Header with Title and Left/Right Navigation Controls */}
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8 sm:mb-10">
+            <div className="space-y-2 max-w-2xl text-left">
+              <span className="text-xs font-bold text-[#4A653C] uppercase tracking-wider">
+                Pay As You Use
+              </span>
+              <h2 className="font-display text-2xl sm:text-4xl font-bold tracking-tight text-[#1E1B18]">
+                Simple, Transparent AI Credits
+              </h2>
+              <p className="text-xs sm:text-sm text-[#554E43]">
+                Swipe horizontally to compare credit packs. No subscriptions or recurring fees.
+              </p>
+            </div>
+
+            {/* Slider Navigation Arrows */}
+            <div className="flex items-center gap-2 self-start sm:self-auto">
+              <button
+                onClick={() => scrollPricing('left')}
+                className="w-9 h-9 rounded-xl bg-[#F2ECE0] hover:bg-[#EAE2D2] text-[#1E1B18] border border-[#DDD3C1] flex items-center justify-center cursor-pointer active:scale-95 transition-all shadow-2xs"
+                title="Scroll Left"
+              >
+                <ChevronLeft size={16} />
+              </button>
+              <button
+                onClick={() => scrollPricing('right')}
+                className="w-9 h-9 rounded-xl bg-[#1E2B1F] hover:bg-[#283A27] text-white border-none flex items-center justify-center cursor-pointer active:scale-95 transition-all shadow-xs"
+                title="Scroll Right"
+              >
+                <ChevronRight size={16} />
+              </button>
+            </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div 
+            ref={pricingScrollRef}
+            className="flex items-stretch gap-4 sm:gap-5 overflow-x-auto pb-4 pt-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden snap-x snap-mandatory scroll-smooth"
+          >
             {[
               {
                 code: 'starter',
@@ -1098,15 +1155,10 @@ export default function LandingPage({ onStartChat, onOpenLogin, onOpenExplore })
                 desc: 'Designed for intensive enterprise workflows.',
                 features: ['9,000 AI credits (~1,200,000 words)', 'DeepSeek reasoning models', 'Highest priority execution queue', 'Multi-modal document parsing', 'Priority technical support']
               }
-            ].map((plan, idx) => (
-              <motion.div
+            ].map((plan) => (
+              <div
                 key={plan.code}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-60px" }}
-                transition={{ duration: 0.5, delay: idx * 0.1 }}
-                whileHover={{ y: -6, transition: { duration: 0.2 } }}
-                className={`rounded-3xl p-6 flex flex-col justify-between relative transition-all duration-200 ${
+                className={`w-[260px] sm:w-[285px] shrink-0 snap-start rounded-2xl p-4 sm:p-5 flex flex-col justify-between relative transition-all duration-200 text-left ${
                   plan.recommended
                     ? 'bg-[#1E2B1F] text-white shadow-xl border-2 border-[#C9A875]'
                     : 'bg-[#F4EEE2] hover:bg-[#EAE2D2] text-[#1E1B18] border border-[#DDD3C1] shadow-2xs hover:shadow-md'
@@ -1158,8 +1210,16 @@ export default function LandingPage({ onStartChat, onOpenLogin, onOpenExplore })
                     <span>Buy {plan.name} Plan</span>
                   </button>
                 </div>
-              </motion.div>
+              </div>
             ))}
+          </div>
+
+          {/* Swipe Indicator Footer */}
+          <div className="mt-3 flex items-center justify-between text-xs text-[#7A7469] px-1">
+            <span className="text-[11px] font-medium">← Swipe horizontally to explore all plans →</span>
+            <span className="text-[11px] font-bold text-[#1E2B1F] bg-[#EAE2D2] px-2 py-0.5 rounded-full">
+              Lifetime Validity
+            </span>
           </div>
 
         </div>
