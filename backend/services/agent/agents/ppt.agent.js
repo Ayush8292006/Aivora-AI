@@ -2,6 +2,7 @@ import { getModel } from "../config/llmModels.js";
 import { buildPptxDeck } from "../utils/pptxBuilder.js";
 import storage from "../storage/storage.js";
 import File from "../models/file.model.js";
+import { checkAgentScope } from "../utils/agentScopeGuard.js";
 
 /**
  * Fetch latest generated PPT in conversation
@@ -37,8 +38,18 @@ const parsePptJson = (rawContent) => {
 
 export const pptAgent = async (state) => {
     try {
-        const { prompt, conversationId, userId } = state;
+        const { prompt, conversationId, userId, attachments = [] } = state;
         const lowerPrompt = (prompt || "").toLowerCase();
+
+        // 0. Domain Scope Guard: Check if user asks for code, PDF, image, etc.
+        const redirection = checkAgentScope("ppt", prompt, attachments);
+        if (redirection) {
+            return {
+                ...state,
+                aiResponse: redirection,
+                artifacts: []
+            };
+        }
 
         console.log("📊 PPT Agent processing request");
 

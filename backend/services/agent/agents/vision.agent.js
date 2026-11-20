@@ -2,6 +2,7 @@ import { getModel, gemini } from "../config/llmModels.js";
 import { generateImageBuffer } from "../providers/image/imageProvider.js";
 import storage from "../storage/storage.js";
 import File from "../models/file.model.js";
+import { checkAgentScope } from "../utils/agentScopeGuard.js";
 import fs from "fs";
 import { HumanMessage } from "@langchain/core/messages";
 
@@ -21,6 +22,18 @@ const getLatestImageArtifact = async (conversationId) => {
 export const imageAgent = async (state) => {
     try {
         const { prompt, conversationId, userId, attachments = [] } = state;
+
+        // 0. Domain Scope Guard: Check if user asks for code, PPT, PDF, etc.
+        const redirection = checkAgentScope("image", prompt, attachments);
+        if (redirection) {
+            return {
+                ...state,
+                aiResponse: redirection,
+                artifacts: [],
+                images: []
+            };
+        }
+
         const lowerPrompt = (prompt || "").toLowerCase();
 
         // 1. Identify image attachment

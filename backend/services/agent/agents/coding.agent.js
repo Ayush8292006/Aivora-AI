@@ -1,5 +1,6 @@
 // open router - deepseek
 import { getFallbackModel, getModel } from "../config/llmModels.js"
+import { checkAgentScope } from "../utils/agentScopeGuard.js"
 
 const parseProjectJSON = (text) => {
     if (!text || typeof text !== 'string') {
@@ -21,6 +22,16 @@ const parseProjectJSON = (text) => {
 };
 
 export const codingAgent = async (state) => {
+    // 0. Domain Scope Guard: If user asks for PPT, PDF, Image, etc., politely redirect
+    const redirection = checkAgentScope("coding", state.prompt, state.attachments || []);
+    if (redirection) {
+        return {
+            ...state,
+            aiResponse: redirection,
+            artifacts: []
+        };
+    }
+
     const intentLlm = await getModel("intent")
     const llm = await getModel("coding")
     const lowerPrompt = (state.prompt || "").toLowerCase()

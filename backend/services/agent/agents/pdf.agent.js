@@ -3,6 +3,7 @@ import { renderHtmlToPdf, sanitizePdfHtml } from "../utils/pdfRenderer.js";
 import storage from "../storage/storage.js";
 import File from "../models/file.model.js";
 import { parsePdfBuffer } from "../utils/pdfParser.js";
+import { checkAgentScope } from "../utils/agentScopeGuard.js";
 import fs from "fs";
 
 /**
@@ -25,6 +26,17 @@ const getLatestPdfArtifact = async (conversationId) => {
 export const pdfAgent = async (state) => {
     try {
         const { prompt, conversationId, userId, attachments = [] } = state;
+
+        // 0. Domain Scope Guard: Check if user asks for code, PPT, image, etc.
+        const redirection = checkAgentScope("pdf", prompt, attachments);
+        if (redirection) {
+            return {
+                ...state,
+                aiResponse: redirection,
+                artifacts: []
+            };
+        }
+
         const lowerPrompt = (prompt || "").toLowerCase();
 
         // 1. Identify PDF attachment

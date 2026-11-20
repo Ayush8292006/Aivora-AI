@@ -1,124 +1,134 @@
 // backend/services/agent/agents/search.agent.js
-import { searchTool } from "../config/tavily.js"
+import axios from "axios";
+import { searchTool } from "../config/tavily.js";
+import { checkAgentScope } from "../utils/agentScopeGuard.js";
+
+/**
+ * Clean and optimize the user's prompt for search engines
+ */
+const cleanSearchQuery = (prompt = "") => {
+  let q = prompt.trim();
+  // Strip common conversational chat prefixes
+  q = q.replace(/^(please\s+)?(search\s+for|search|google|find\s+me|find|look\s+up|tell\s+me\s+about|batao|kya\s+hai|search\s+karke\s+batao|can\s+you\s+search)\s+/i, "");
+  // Strip trailing punctuation
+  q = q.replace(/[?!.]+$/, "").trim();
+  return q || prompt.trim();
+};
 
 export const searchAgent = async (state) => {
-    try {
-        console.log("🔍 Search agent called with state:", state)
-        
-        if (!state) {
-            return {
-                searchResults: [],
-                images: [],
-                aiResponse: "I'm having trouble processing your search. Please try again."
-            }
-        }
+  try {
+    console.log("🔍 Search agent invoked for:", state.prompt);
 
-        if (!searchTool) {
-            return {
-                ...state,
-                searchResults: [],
-                images: [],
-                aiResponse: "Search functionality is currently unavailable. Please try again later."
-            }
-        }
-
-        if (!state.prompt) {
-            return {
-                ...state,
-                searchResults: [],
-                images: [],
-                aiResponse: "Please provide a search query."
-            }
-        }
-
-        console.log("🔍 Searching for:", state.prompt)
-
-        const results = await searchTool.invoke({
-            query: state.prompt,
-            searchDepth: "basic",
-            maxResults: 5,
-            topic: "general",
-            includeImages: true,
-            includeImageDescriptions: true
-        })
-        
-        console.log("✅ Search results received")
-        console.log("📊 Full Results:", JSON.stringify(results, null, 2).substring(0, 500))
-        
-        // ✅ Extract search results
-        const searchResults = results?.results || results || []
-        
-        // ✅ Extract images properly - Try multiple sources
-        let images = []
-        
-        // 1. Check results.images array
-        if (results?.images && Array.isArray(results.images)) {
-            console.log("📸 Found images in results.images:", results.images.length)
-            results.images.forEach(img => {
-                if (typeof img === 'string') {
-                    images.push(img)
-                } else if (typeof img === 'object' && img) {
-                    // Try different property names
-                    const url = img.url || img.src || img.image || img.thumbnail || img.large || img.medium || img.small || img.original || null
-                    if (url) images.push(url)
-                }
-            })
-        }
-        
-        // 2. If no images, try to extract from results
-        if (images.length === 0 && results?.results) {
-            console.log("🔍 Trying to extract images from results...")
-            results.results.forEach(result => {
-                if (result.image) images.push(result.image)
-                if (result.thumbnail) images.push(result.thumbnail)
-                if (result.image_url) images.push(result.image_url)
-                if (result.images && Array.isArray(result.images)) {
-                    result.images.forEach(img => {
-                        if (typeof img === 'string') images.push(img)
-                        if (typeof img === 'object' && img.url) images.push(img.url)
-                    })
-                }
-            })
-        }
-        
-        // 3. Try to get images from content (extract image URLs from text)
-        if (images.length === 0 && results?.results) {
-            console.log("🔍 Trying to extract images from content...")
-            results.results.forEach(result => {
-                const content = result.content || result.snippet || ''
-                // Find image URLs in content
-                const imgRegex = /https?:\/\/[^\s]+\.(jpg|jpeg|png|gif|webp|svg)/gi
-                const matches = content.match(imgRegex)
-                if (matches) {
-                    matches.forEach(url => images.push(url))
-                }
-            })
-        }
-        
-        // 4. Remove duplicates and invalid URLs
-        images = [...new Set(images)].filter(url => {
-            return url && typeof url === 'string' && 
-                   (url.startsWith('http://') || url.startsWith('https://'))
-        })
-        
-        console.log("📸 Final images:", images)
-        console.log("📸 Images count:", images.length)
-        
-        // ✅ Return with images
-        return {
-            ...state,
-            searchResults: searchResults,
-            images: images,
-        }
-
-    } catch (error) {
-        console.error("❌ Search agent error:", error)
-        console.error("❌ Error stack:", error.stack)
-        return {
-            ...state,
-            searchResults: [],
-            images: [],
-            aiResponse: `❌ Search error: ${error.message || 'Failed to perform search. Please try again.'}`
-        }
+    if (!state || !state.prompt) {
+      return {
+        ...state,
+        searchResults: [],
+        searchAnswer: "",
+        images: [],
+        aiResponse: "Please provide a query or topic to search."
+      };
     }
-}
+
+    // 1. Domain Scope Guard
+    const redirection = checkAgentScope("search", state.prompt, state.attachments || []);
+    if (redirection) {
+      return {
+        ...state,
+        searchResults: [],
+        searchAnswer: "",
+        images: [],
+        aiResponse: redirection
+      };
+    }
+
+    const searchQuery = cleanSearchQuery(state.prompt);
+    console.log("🔍 Optimized Search Query:", searchQuery);
+
+    const apiKey = process.env.TAVILY_API_KEY;
+    let tavilyData = null;
+
+    // 2. Primary: Direct Tavily Advanced Search API for maximum factual accuracy & instant ground-truth answer
+    if (apiKey && !apiKey.includes("placeholder")) {
+      try {
+        const response = await axios.post(
+          "https://api.tavily.com/search",
+          {
+            api_key: apiKey,
+            query: searchQuery,
+            search_depth: "advanced",
+            include_answer: true,
+            include_images: true,
+            max_results: 6
+          },
+          { timeout: 12000 }
+        );
+
+        if (response.data) {
+          tavilyData = response.data;
+          console.log("✅ Tavily Advanced Search responded successfully");
+        }
+      } catch (directErr) {
+        console.warn("⚠️ Direct Tavily API warning, falling back to searchTool:", directErr.response?.data || directErr.message);
+      }
+    }
+
+    // 3. Fallback: searchTool from @langchain/tavily if direct API did not respond
+    if (!tavilyData && searchTool) {
+      try {
+        const toolRes = await searchTool.invoke({
+          query: searchQuery,
+          searchDepth: "advanced",
+          maxResults: 6,
+          topic: "general",
+          includeImages: true,
+          includeImageDescriptions: true
+        });
+        tavilyData = toolRes;
+      } catch (toolErr) {
+        console.warn("⚠️ Tavily searchTool error:", toolErr.message);
+      }
+    }
+
+    // 4. Extract verified Ground Truth Answer and Web Sources
+    const searchAnswer = tavilyData?.answer || "";
+    let rawResults = tavilyData?.results || (Array.isArray(tavilyData) ? tavilyData : []);
+    
+    // Ensure clean array of results
+    const searchResults = (Array.isArray(rawResults) ? rawResults : [])
+      .filter(r => r && (r.title || r.url || r.content))
+      .map(r => ({
+        title: r.title || "Web Source",
+        url: r.url || "",
+        content: (r.content || r.snippet || "").trim(),
+        score: r.score || null
+      }));
+
+    // 5. Extract Images
+    let images = [];
+    if (Array.isArray(tavilyData?.images)) {
+      images = tavilyData.images
+        .map(img => (typeof img === "string" ? img : img?.url || img?.src || null))
+        .filter(url => url && typeof url === "string" && (url.startsWith("http://") || url.startsWith("https://")));
+    }
+
+    console.log(`📊 Found ${searchResults.length} verified web sources & direct ground-truth answer: ${Boolean(searchAnswer)}`);
+
+    return {
+      ...state,
+      searchResults,
+      searchAnswer,
+      searchQuery,
+      images: [...new Set(images)].slice(0, 4)
+    };
+
+  } catch (error) {
+    console.error("❌ Search agent error:", error.message);
+    return {
+      ...state,
+      searchResults: [],
+      searchAnswer: "",
+      images: [],
+      aiResponse: `Search error: ${error.message || "Failed to fetch real-time search results."}`
+    };
+  }
+};

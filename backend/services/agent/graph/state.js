@@ -9,6 +9,8 @@ export const agentState = Annotation.Root({
     userId: Annotation(),
     attachments: Annotation(),
     searchResults: Annotation(),
+    searchAnswer: Annotation(),
+    searchQuery: Annotation(),
     images: Annotation(),
     artifacts: Annotation()
 })
