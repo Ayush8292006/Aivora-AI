@@ -61,35 +61,36 @@ function Nav({ onOpenMobileMenu }) {
   return (
     <header className='flex flex-col gap-2 pb-2 select-none'>
       
-      {/* Mobile Top Navigation */}
-      <div className='lg:hidden flex items-center justify-between px-2 py-1.5'>
+      {/* Mobile Top Navigation: Clean Native App Bar */}
+      <div className='lg:hidden flex items-center justify-between px-3 py-2 border-b border-[#E8DEC9] bg-[#FAF8F3]/95 backdrop-blur-md sticky top-0 z-30'>
+        {/* Left: Open Conversations Drawer */}
+        <button
+          onClick={onOpenMobileMenu}
+          className='flex items-center justify-center w-8 h-8 rounded-xl text-[#1E1B18] bg-[#F2ECE0] border border-[#DDD3C1] active:scale-95 transition-all cursor-pointer'
+          title="Open Conversations"
+        >
+          <Menu size={16} />
+        </button>
+
+        {/* Center: Brand Mark + Name + Pro */}
         <div className='flex items-center gap-2'>
-          <div className='w-7 h-7 rounded-full bg-[#24201C] text-[#E8DDC8] font-bold flex items-center justify-center text-xs shadow-xs'>
+          <div className='w-6 h-6 rounded-full bg-[#24201C] text-[#E8DDC8] font-bold flex items-center justify-center text-[11px] shadow-xs'>
             A
           </div>
-          <span className='text-sm font-bold text-[#1E1B18]'>Aivora AI</span>
-          <span className='bg-[#24201C] text-[#E8DDC8] font-bold text-[10px] px-2 py-0.5 rounded-full'>
+          <span className='text-[14.5px] font-bold text-[#1E1B18] tracking-tight'>Aivora AI</span>
+          <span className='bg-[#24201C] text-[#E8DDC8] font-bold text-[9px] px-1.5 py-0.5 rounded-full uppercase tracking-wider'>
             PRO
           </span>
         </div>
 
-        <div className='flex items-center gap-2'>
-          <button
-            onClick={handleNewChat}
-            className='flex items-center gap-1 px-3 py-1.5 rounded-xl text-xs font-semibold bg-[#243223] text-white border-none cursor-pointer'
-          >
-            <Plus size={13} />
-            <span>New</span>
-          </button>
-          
-          <button
-            onClick={onOpenMobileMenu}
-            className='p-2 rounded-xl text-[#1E1B18] bg-[#F2ECE0] border border-[#DDD3C1] cursor-pointer'
-            title="Open Conversations"
-          >
-            <Menu size={16} />
-          </button>
-        </div>
+        {/* Right: Start New Chat */}
+        <button
+          onClick={handleNewChat}
+          className='flex items-center justify-center w-8 h-8 rounded-xl bg-[#243223] text-white active:scale-95 transition-all border-none cursor-pointer shadow-xs'
+          title="New Chat"
+        >
+          <Plus size={15} />
+        </button>
       </div>
 
       {/* Desktop Workspace Top Bar */}

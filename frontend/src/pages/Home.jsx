@@ -8,13 +8,12 @@ import { setUserdata } from '../redux/userSlice.js'
 import SideBar from '../components/SideBar.jsx'
 import ChatArea from '../components/ChatArea.jsx'
 import Artifact from '../components/Artifact.jsx'
-import { MessageSquare, Compass, BookOpen, User as UserIcon } from 'lucide-react'
+import { User as UserIcon } from 'lucide-react'
 
 function Home() {
   const dispatch = useDispatch()
   const { userData } = useSelector(state => state.user)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-  const [mobileTab, setMobileTab] = useState('home')
 
   const handleLogin = async (token) => {
     try {
@@ -38,8 +37,8 @@ function Home() {
   return (
     <div className='relative h-screen w-screen bg-[#D8CDBA] bg-[radial-gradient(circle_at_15%_20%,#E6D9C4_0%,transparent_45%),radial-gradient(circle_at_85%_15%,#E2D4BF_0%,transparent_50%),radial-gradient(circle_at_50%_85%,#CFC1AA_0%,transparent_60%),linear-gradient(135deg,#D8CDBA_0%,#CFC1AA_50%,#D5C8B4_100%)] text-[#1E1B18] overflow-hidden flex flex-col font-["Plus_Jakarta_Sans",sans-serif]'>
       
-      {/* Main 3-Column Desktop Layout (Left Sidebar, Center Chat Area, Right Code/Preview Panel) */}
-      <div className='relative z-10 flex-1 flex p-2.5 sm:p-3.5 lg:p-4 gap-2.5 sm:gap-3.5 lg:gap-4 overflow-hidden max-w-[1850px] w-full mx-auto'>
+      {/* Main 3-Column Desktop Layout (Full Native View on Mobile, 3-Column on Desktop) */}
+      <div className='relative z-10 flex-1 flex p-0 sm:p-2 lg:p-4 gap-0 lg:gap-4 overflow-hidden max-w-[1850px] w-full mx-auto'>
         <SideBar 
           mobileMenuOpen={mobileMenuOpen} 
           setMobileMenuOpen={setMobileMenuOpen} 
@@ -48,46 +47,6 @@ function Home() {
           onOpenMobileMenu={() => setMobileMenuOpen(true)} 
         />
         <Artifact />
-      </div>
-
-      {/* Mobile Bottom Navigation Bar in Matching Olive Green */}
-      <div className='relative z-20 lg:hidden flex items-center justify-around py-2.5 px-6 bg-[#1E2B1F]/90 backdrop-blur-md border-t border-[#2F432E]'>
-        <button
-          onClick={() => setMobileTab('home')}
-          className={`flex flex-col items-center gap-1 bg-transparent border-none cursor-pointer transition-colors ${
-            mobileTab === 'home' ? 'text-[#E8DDC8] font-bold' : 'text-[#8EA58C] hover:text-white'
-          }`}
-        >
-          <MessageSquare size={17} />
-          <span className='text-[10px]'>Chat</span>
-        </button>
-        <button
-          onClick={() => setMobileTab('explore')}
-          className={`flex flex-col items-center gap-1 bg-transparent border-none cursor-pointer transition-colors ${
-            mobileTab === 'explore' ? 'text-[#E8DDC8] font-bold' : 'text-[#8EA58C] hover:text-white'
-          }`}
-        >
-          <Compass size={17} />
-          <span className='text-[10px]'>Explore</span>
-        </button>
-        <button
-          onClick={() => setMobileTab('library')}
-          className={`flex flex-col items-center gap-1 bg-transparent border-none cursor-pointer transition-colors ${
-            mobileTab === 'library' ? 'text-[#E8DDC8] font-bold' : 'text-[#8EA58C] hover:text-white'
-          }`}
-        >
-          <BookOpen size={17} />
-          <span className='text-[10px]'>Library</span>
-        </button>
-        <button
-          onClick={() => setMobileTab('profile')}
-          className={`flex flex-col items-center gap-1 bg-transparent border-none cursor-pointer transition-colors ${
-            mobileTab === 'profile' ? 'text-[#E8DDC8] font-bold' : 'text-[#8EA58C] hover:text-white'
-          }`}
-        >
-          <UserIcon size={17} />
-          <span className='text-[10px]'>Account</span>
-        </button>
       </div>
 
       {/* Editorial Login Modal */}

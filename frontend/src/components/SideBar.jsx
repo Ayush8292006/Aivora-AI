@@ -219,9 +219,9 @@ function SideBar({ mobileMenuOpen, setMobileMenuOpen }) {
         <div className='fixed inset-0 z-50 lg:hidden flex'>
           <div 
             onClick={() => setMobileMenuOpen(false)}
-            className='fixed inset-0 bg-black/30 backdrop-blur-xs'
+            className='fixed inset-0 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200'
           />
-          <div className='relative z-10 w-[285px] h-full p-2.5 animate-in slide-in-from-left duration-200'>
+          <div className='relative z-10 w-[84vw] max-w-[320px] h-full p-2.5 animate-in slide-in-from-left duration-250'>
             {sidebarContent}
           </div>
         </div>
