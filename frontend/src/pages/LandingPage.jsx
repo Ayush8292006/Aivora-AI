@@ -351,373 +351,338 @@ export default function LandingPage({ onStartChat, onOpenLogin, onOpenExplore })
       </header>
 
       {/* ========================================================
-          2. ELEGANT MODERN SAAS HERO SECTION
+          2. ELEGANT 2-COLUMN SPLIT SAAS HERO SECTION (LEFT & RIGHT)
       ======================================================== */}
-      <section className="relative pt-8 pb-14 sm:pt-14 sm:pb-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto z-10">
+      <section className="relative pt-6 pb-12 sm:pt-10 sm:pb-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto z-10">
         
-        {/* Soft Ambient Glow Backdrop */}
-        <div className="absolute top-4 left-1/2 -translate-x-1/2 w-[700px] h-[350px] bg-gradient-to-b from-[#2D452E]/10 via-[#C9A875]/8 to-transparent blur-3xl pointer-events-none -z-10 rounded-full" />
+        {/* Soft Ambient Radial Lighting */}
+        <div className="absolute top-0 left-1/4 -translate-x-1/2 w-[650px] h-[400px] bg-gradient-to-br from-[#2D452E]/12 via-[#C9A875]/8 to-transparent blur-3xl pointer-events-none -z-10 rounded-full" />
+        <div className="absolute top-10 right-10 w-[500px] h-[350px] bg-gradient-to-bl from-[#C9A875]/10 via-[#2D452E]/6 to-transparent blur-3xl pointer-events-none -z-10 rounded-full" />
 
-        <div className="text-center max-w-3xl mx-auto space-y-5">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center">
           
-          {/* Refined Single Product Badge */}
-          <motion.div 
-            initial={{ scale: 0.95, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ duration: 0.4 }}
-            onClick={() => scrollTo('features')}
-            className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#FAF8F3] border border-[#DDD3C1] shadow-2xs hover:border-[#BFAF98] transition-all cursor-pointer group"
-          >
-            <span className="w-2 h-2 rounded-full bg-[#4ADE80] shadow-[0_0_8px_rgba(74,222,128,0.5)]" />
-            <span className="text-[11.5px] font-semibold text-[#1E1B18]">
-              Introducing Aivora 2.0 • Unified Workspace
-            </span>
-            <ArrowRight size={12} className="text-[#7D7567] group-hover:translate-x-0.5 transition-transform" />
-          </motion.div>
-
-          {/* Main Headline (Clean, Balanced 2-Line Editorial Typography) */}
-          <motion.div 
-            initial={{ y: 20, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ duration: 0.5, delay: 0.1 }}
-            className="space-y-3"
-          >
-            <h1 className="font-display text-4xl sm:text-5xl lg:text-[62px] font-extrabold tracking-[-0.03em] text-[#141413] leading-[1.12] max-w-2xl mx-auto">
-              The unified workspace for<br className="hidden sm:inline" />{" "}
-              <span className="bg-gradient-to-r from-[#1E2B1F] via-[#2E4731] to-[#99793E] bg-clip-text text-transparent">
-                code, documents & design.
-              </span>
-            </h1>
-
-            <p className="text-base sm:text-lg text-[#554E43] leading-relaxed max-w-xl mx-auto font-normal pt-1">
-              Build full-stack applications with live previews, author publication-ready PDFs, export pitch decks, and craft visual assets—in one seamless platform.
-            </p>
-          </motion.div>
-
-          {/* Sleek Interactive Prompt Bar */}
-          <motion.div 
-            initial={{ y: 15, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ duration: 0.5, delay: 0.15 }}
-            className="pt-0.5 pb-1 max-w-lg mx-auto"
-          >
-            <div className="flex items-center gap-2.5 px-4 py-2.5 rounded-2xl bg-[#FAF8F3]/95 border border-[#D5C9B4] shadow-[0_6px_20px_rgba(40,32,20,0.05),inset_0_1px_0_rgba(255,255,255,0.9)] backdrop-blur-md transition-all hover:border-[#BFAF98]">
-              <div className="w-6 h-6 rounded-lg bg-[#1E2B1F] text-[#E8DDC8] flex items-center justify-center shrink-0 shadow-2xs">
-                <Sparkles size={13} className="text-[#C9A875]" />
-              </div>
-              <div className="text-xs text-left truncate flex items-center gap-1.5 flex-1 min-w-0">
-                <span className="text-[#7D7567] font-medium shrink-0">Try:</span>
-                <TypewriterText words={typewriterPhrases} />
-              </div>
-              <span className="hidden sm:inline-flex items-center px-1.5 py-0.5 rounded-md text-[10px] font-mono font-bold bg-[#EAE2D2] text-[#554E43] border border-[#DDD3C1] shrink-0">
-                ↵
-              </span>
-            </div>
-          </motion.div>
-
-          {/* Quick-Switch Mode Chips */}
-          <motion.div 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-            className="flex flex-wrap items-center justify-center gap-2 pt-1"
-          >
-            {heroTabs.map((t) => {
-              const Icon = t.icon
-              const isActive = heroActiveTab === t.id
-              return (
-                <button
-                  key={t.id}
-                  onClick={() => setHeroActiveTab(t.id)}
-                  className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold transition-all border cursor-pointer ${
-                    isActive 
-                      ? 'bg-[#1E2B1F] text-[#E8DDC8] border-[#1E2B1F] shadow-xs' 
-                      : 'bg-[#FAF8F3] hover:bg-[#F2ECE0] text-[#554E43] border-[#DDD3C1]'
-                  }`}
-                >
-                  <Icon size={12} className={isActive ? 'text-[#C9A875]' : 'text-[#7D7567]'} />
-                  <span>{t.label}</span>
-                </button>
-              )
-            })}
-          </motion.div>
-
-          {/* Prominent Action CTAs */}
-          <motion.div 
-            initial={{ y: 15, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ duration: 0.5, delay: 0.25 }}
-            className="flex flex-wrap items-center justify-center gap-3.5 pt-1"
-          >
-            <motion.button
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              onClick={() => onStartChat && onStartChat()}
-              className="px-8 py-3.5 rounded-xl text-sm font-bold bg-[#1E2B1F] hover:bg-[#283A27] text-white shadow-[0_6px_20px_rgba(25,45,32,0.22)] hover:shadow-xl transition-all border-none cursor-pointer flex items-center justify-center gap-2 group"
-            >
-              <span>Start Free with 100 Credits</span>
-              <ArrowRight size={16} className="group-hover:translate-x-0.5 transition-transform" />
-            </motion.button>
-
-            <button
-              onClick={() => scrollTo('showcase')}
-              className="px-6 py-3.5 rounded-xl text-sm font-semibold bg-[#FAF8F3] hover:bg-[#F2ECE0] text-[#1E1B18] border border-[#DDD3C1] shadow-2xs transition-all cursor-pointer flex items-center justify-center gap-2"
-            >
-              <Play size={14} className="text-[#1E2B1F] fill-[#1E2B1F]" />
-              <span>Interactive Sandbox Demo</span>
-            </button>
-          </motion.div>
-
-          {/* Clean Trust Strip */}
-          <motion.div 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.5, delay: 0.3 }}
-            className="flex flex-wrap items-center justify-center gap-6 pt-1 text-xs text-[#696256]"
-          >
-            <span className="flex items-center gap-1.5 font-medium">
-              <CheckCircle2 size={14} className="text-[#4A653C]" /> Instant 100 free bonus credits
-            </span>
-            <span className="flex items-center gap-1.5 font-medium">
-              <CheckCircle2 size={14} className="text-[#4A653C]" /> Live interactive code previews
-            </span>
-            <span className="flex items-center gap-1.5 font-medium">
-              <CheckCircle2 size={14} className="text-[#4A653C]" /> Private & secure per-user wallet
-            </span>
-          </motion.div>
-
-        </div>
-
-        {/* ========================================================
-            HERO INTERACTIVE 3-COLUMN WORKSPACE SHOWCASE
-        ======================================================== */}
-        <motion.div 
-          initial={{ y: 50, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.7, delay: 0.35, ease: "easeOut" }}
-          className="relative max-w-5xl mx-auto mt-12 sm:mt-16"
-        >
-          {/* Glass Window Outer Frame */}
-          <div className="rounded-3xl bg-[#C5BBA8]/80 p-2 sm:p-3 border border-[#DDD3C1] shadow-[0_25px_60px_-15px_rgba(30,43,31,0.35),0_0_0_1px_rgba(255,255,255,0.4)] backdrop-blur-xl">
+          {/* ==================== LEFT COLUMN: HEADLINE, COPY & CTAS ==================== */}
+          <div className="lg:col-span-5 text-left space-y-5">
             
-            {/* Window Top Bar with Interactive Mode Switcher */}
-            <div className="bg-[#FAF8F3] rounded-t-2xl px-4 py-2.5 border-b border-[#DDD3C1] flex flex-wrap items-center justify-between gap-3">
-              <div className="flex items-center gap-2">
-                <span className="w-3 h-3 rounded-full bg-[#FF5F56] border border-[#E0443E]" />
-                <span className="w-3 h-3 rounded-full bg-[#FFBD2E] border border-[#DEA123]" />
-                <span className="w-3 h-3 rounded-full bg-[#27C93F] border border-[#1AAB29]" />
-                <span className="font-mono text-[11px] font-semibold text-[#8B8476] ml-2">
-                  aivora-workspace.app
+            {/* Top Product Badge */}
+            <motion.div 
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ duration: 0.4 }}
+              onClick={() => scrollTo('features')}
+              className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#FAF8F3] border border-[#DDD3C1] shadow-2xs hover:border-[#BFAF98] transition-all cursor-pointer group"
+            >
+              <span className="w-2 h-2 rounded-full bg-[#4ADE80] shadow-[0_0_8px_rgba(74,222,128,0.5)]" />
+              <span className="text-[11.5px] font-semibold text-[#1E1B18]">
+                Introducing Aivora 2.0 • Unified Platform
+              </span>
+              <ArrowRight size={12} className="text-[#7D7567] group-hover:translate-x-0.5 transition-transform" />
+            </motion.div>
+
+            {/* Left-Aligned Headline */}
+            <motion.div 
+              initial={{ y: 20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ duration: 0.5, delay: 0.1 }}
+              className="space-y-3"
+            >
+              <h1 className="font-display text-4xl sm:text-5xl lg:text-[46px] xl:text-[52px] font-extrabold tracking-[-0.035em] text-[#141413] leading-[1.12]">
+                The unified workspace for<br />
+                <span className="bg-gradient-to-r from-[#1E2B1F] via-[#2E4731] to-[#99793E] bg-clip-text text-transparent">
+                  code, documents & design.
+                </span>
+              </h1>
+
+              <p className="text-sm sm:text-base text-[#554E43] leading-relaxed font-normal pt-1">
+                Build full-stack applications with live previews, author publication-ready PDFs, export pitch decks, and craft visual assets—in one seamless platform.
+              </p>
+            </motion.div>
+
+            {/* Interactive Prompt Capsule */}
+            <motion.div 
+              initial={{ y: 15, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ duration: 0.5, delay: 0.15 }}
+            >
+              <div className="flex items-center gap-2.5 px-3.5 py-2 rounded-2xl bg-[#FAF8F3]/95 border border-[#D5C9B4] shadow-[0_4px_16px_rgba(40,32,20,0.04),inset_0_1px_0_rgba(255,255,255,0.9)] backdrop-blur-md">
+                <div className="w-6 h-6 rounded-lg bg-[#1E2B1F] text-[#E8DDC8] flex items-center justify-center shrink-0 shadow-2xs">
+                  <Sparkles size={12} className="text-[#C9A875]" />
+                </div>
+                <div className="text-xs truncate flex items-center gap-1.5 flex-1 min-w-0">
+                  <span className="text-[#7D7567] font-medium shrink-0">Try:</span>
+                  <TypewriterText words={typewriterPhrases} />
+                </div>
+                <span className="hidden sm:inline-flex items-center px-1.5 py-0.5 rounded-md text-[9px] font-mono font-bold bg-[#EAE2D2] text-[#554E43] border border-[#DDD3C1] shrink-0">
+                  ↵
                 </span>
               </div>
+            </motion.div>
 
-              {/* Mode Switcher */}
-              <div className="flex items-center gap-1 bg-[#F2ECE0] p-1 rounded-xl border border-[#DDD3C1]">
-                {heroTabs.map((t) => {
-                  const Icon = t.icon
-                  const isActive = heroActiveTab === t.id
-                  return (
-                    <button
-                      key={t.id}
-                      onClick={() => setHeroActiveTab(t.id)}
-                      className={`flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-bold transition-all border cursor-pointer ${
-                        isActive 
-                          ? 'bg-[#1E2B1F] text-white border-[#1E2B1F] shadow-xs' 
-                          : 'bg-transparent text-[#696256] border-transparent hover:text-[#1E1B18]'
-                      }`}
-                    >
-                      <Icon size={12} />
-                      <span className="hidden sm:inline">{t.label}</span>
-                    </button>
-                  )
-                })}
-              </div>
+            {/* Quick Mode Switcher Chips */}
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+              className="flex flex-wrap items-center gap-1.5 pt-0.5"
+            >
+              {heroTabs.map((t) => {
+                const Icon = t.icon
+                const isActive = heroActiveTab === t.id
+                return (
+                  <button
+                    key={t.id}
+                    onClick={() => setHeroActiveTab(t.id)}
+                    className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold transition-all border cursor-pointer ${
+                      isActive 
+                        ? 'bg-[#1E2B1F] text-[#E8DDC8] border-[#1E2B1F] shadow-xs' 
+                        : 'bg-[#FAF8F3] hover:bg-[#F2ECE0] text-[#554E43] border-[#DDD3C1]'
+                    }`}
+                  >
+                    <Icon size={12} className={isActive ? 'text-[#C9A875]' : 'text-[#7D7567]'} />
+                    <span>{t.label}</span>
+                  </button>
+                )
+              })}
+            </motion.div>
 
-              <div className="hidden sm:flex items-center gap-2 text-[11px] text-[#4A653C] font-bold">
-                <span className="w-2 h-2 rounded-full bg-[#4ADE80] animate-pulse" />
-                <span>Interactive Runner</span>
-              </div>
-            </div>
+            {/* Left Action Buttons */}
+            <motion.div 
+              initial={{ y: 15, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ duration: 0.5, delay: 0.25 }}
+              className="flex flex-wrap items-center gap-3 pt-1"
+            >
+              <motion.button
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                onClick={() => onStartChat && onStartChat()}
+                className="px-6 py-3 rounded-xl text-xs sm:text-sm font-bold bg-[#1E2B1F] hover:bg-[#283A27] text-white shadow-[0_6px_20px_rgba(25,45,32,0.22)] hover:shadow-xl transition-all border-none cursor-pointer flex items-center justify-center gap-2 group"
+              >
+                <span>Start Free with 100 Credits</span>
+                <ArrowRight size={15} className="group-hover:translate-x-0.5 transition-transform" />
+              </motion.button>
 
-            {/* 3-Column Preview Surface */}
-            <div className="grid grid-cols-12 gap-0 sm:gap-2 h-[400px] sm:h-[440px] bg-[#D8CDBA] rounded-b-2xl overflow-hidden">
+              <button
+                onClick={() => scrollTo('features')}
+                className="px-4 py-3 rounded-xl text-xs sm:text-sm font-semibold bg-[#FAF8F3] hover:bg-[#F2ECE0] text-[#1E1B18] border border-[#DDD3C1] shadow-2xs transition-all cursor-pointer flex items-center justify-center gap-2"
+              >
+                <span>Explore Features</span>
+              </button>
+            </motion.div>
+
+            {/* Left Trust Indicators */}
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.5, delay: 0.3 }}
+              className="flex flex-col sm:flex-row flex-wrap items-start sm:items-center gap-3 sm:gap-5 pt-1 text-xs text-[#696256]"
+            >
+              <span className="flex items-center gap-1.5 font-medium">
+                <CheckCircle2 size={13} className="text-[#4A653C]" /> Instant 100 free bonus credits
+              </span>
+              <span className="flex items-center gap-1.5 font-medium">
+                <CheckCircle2 size={13} className="text-[#4A653C]" /> Live interactive code previews
+              </span>
+              <span className="flex items-center gap-1.5 font-medium">
+                <CheckCircle2 size={13} className="text-[#4A653C]" /> Private & secure per-user wallet
+              </span>
+            </motion.div>
+
+          </div>
+
+          {/* ==================== RIGHT COLUMN: INTERACTIVE WORKSPACE CANVAS ==================== */}
+          <motion.div 
+            initial={{ x: 30, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            transition={{ duration: 0.7, delay: 0.25, ease: "easeOut" }}
+            className="lg:col-span-7 relative"
+          >
+            {/* Glass Window Outer Frame */}
+            <div className="rounded-3xl bg-[#C5BBA8]/80 p-2 sm:p-2.5 border border-[#DDD3C1] shadow-[0_25px_60px_-15px_rgba(30,43,31,0.28),0_0_0_1px_rgba(255,255,255,0.5)] backdrop-blur-xl">
               
-              {/* 1. Left Mini Sidebar */}
-              <div className="hidden md:flex md:col-span-3 bg-[#1E2B1F]/95 p-3 flex-col justify-between border-r border-white/10 text-[#CBD8CA] select-none">
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <div className="w-5 h-5 rounded-full bg-[#E8DDC8] text-[#1E2B1F] flex items-center justify-center font-bold text-[9px]">A</div>
-                      <span className="text-xs font-bold text-white tracking-tight">Aivora AI</span>
-                      <span className="bg-[#2B3C2A] text-[#E8DDC8] text-[8px] font-bold px-1.5 py-0.5 rounded-full">PRO</span>
-                    </div>
-                  </div>
-
-                  <div className="w-full py-1.5 px-3 rounded-lg bg-[#E8DDC8] text-[#1E2B1F] text-xs font-bold text-center shadow-xs">
-                    + New Chat
-                  </div>
-
-                  <div className="space-y-1 pt-1">
-                    <span className="text-[9px] font-bold text-[#8EA58C] uppercase tracking-wider px-1">Recents</span>
-                    <div className="bg-[#2D402C] border border-[#435E41] rounded-lg px-2.5 py-1.5 text-xs text-white font-medium flex items-center justify-between">
-                      <span className="truncate">{activeHero.prompt.slice(0, 22)}...</span>
-                      <span className="w-1.5 h-1.5 rounded-full bg-[#4ADE80]" />
-                    </div>
-                    <div className="text-[#CBD8CA] text-xs px-2.5 py-1 truncate">Modern Calculator v2</div>
-                    <div className="text-[#CBD8CA] text-xs px-2.5 py-1 truncate">Sequoia Pitch Deck</div>
-                    <div className="text-[#CBD8CA] text-xs px-2.5 py-1 truncate">Lead Architect CV</div>
-                  </div>
-                </div>
-
-                <div className="bg-[#162117] p-2 rounded-xl flex items-center gap-2 border border-white/5">
-                  <div className="w-6 h-6 rounded-full bg-[#3E553D] flex items-center justify-center text-[9px] font-bold text-white">AK</div>
-                  <div className="text-xs min-w-0">
-                    <p className="font-semibold text-white truncate text-[11px]">Ayush Kumar</p>
-                    <p className="text-[#8EA58C] text-[9.5px]">Pro Tier Member</p>
-                  </div>
-                </div>
-              </div>
-
-              {/* 2. Center Chat Canvas */}
-              <div className="col-span-12 md:col-span-5 bg-[#FAF8F3] p-3 sm:p-4 flex flex-col justify-between border-r border-[#DDD3C1] overflow-hidden">
-                <div className="flex items-center justify-between border-b border-[#DDD3C1]/80 pb-2">
-                  <div className="flex items-center gap-1.5">
-                    <div className="w-4 h-4 rounded-full bg-[#1E2B1F] text-[#E8DDC8] flex items-center justify-center text-[8px] font-bold">A</div>
-                    <span className="text-xs font-bold text-[#1E1B18]">Aivora AI</span>
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#4A653C]" />
-                  </div>
-                  <span className="text-[10px] font-semibold text-[#4A653C] bg-[#EAE2D2] px-2 py-0.5 rounded-full">
-                    {activeHero.badge}
+              {/* Window Top Bar with Interactive Mode Switcher */}
+              <div className="bg-[#FAF8F3] rounded-t-2xl px-3.5 py-2 border-b border-[#DDD3C1] flex flex-wrap items-center justify-between gap-2">
+                <div className="flex items-center gap-1.5">
+                  <span className="w-2.5 h-2.5 rounded-full bg-[#FF5F56] border border-[#E0443E]" />
+                  <span className="w-2.5 h-2.5 rounded-full bg-[#FFBD2E] border border-[#DEA123]" />
+                  <span className="w-2.5 h-2.5 rounded-full bg-[#27C93F] border border-[#1AAB29]" />
+                  <span className="font-mono text-[10px] font-semibold text-[#8B8476] ml-2">
+                    aivora-workspace.app
                   </span>
                 </div>
 
-                <div className="space-y-3 py-2 overflow-hidden">
-                  <div className="flex justify-end">
-                    <div className="bg-[#1E2B1F] text-white text-xs px-3.5 py-2 rounded-2xl max-w-[90%] font-medium shadow-2xs">
-                      {activeHero.prompt}
-                    </div>
-                  </div>
-
-                  <div className="bg-[#F2ECE0] border border-[#DDD3C1] rounded-2xl p-3.5 space-y-2 text-xs shadow-2xs">
-                    <p className="font-bold text-[#1E1B18]">{activeHero.response}</p>
-                    <div className="bg-white border border-[#DDD3C1] rounded-xl p-2.5 flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <span className="font-mono text-xs text-[#4A653C] font-bold">&lt;/&gt;</span>
-                        <div>
-                          <p className="text-xs font-bold text-[#1E1B18]">{activeHero.label} Artifact</p>
-                          <p className="text-[10px] text-[#8B8476]">{activeHero.meta}</p>
-                        </div>
-                      </div>
-                      <span className="bg-[#1E2B1F] text-white text-[10px] font-bold px-2 py-1 rounded-lg">
-                        Compiled
-                      </span>
-                    </div>
-                  </div>
+                <div className="flex items-center gap-1 bg-[#F2ECE0] p-0.5 rounded-xl border border-[#DDD3C1]">
+                  {heroTabs.map((t) => {
+                    const Icon = t.icon
+                    const isActive = heroActiveTab === t.id
+                    return (
+                      <button
+                        key={t.id}
+                        onClick={() => setHeroActiveTab(t.id)}
+                        className={`flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-bold transition-all border cursor-pointer ${
+                          isActive 
+                            ? 'bg-[#1E2B1F] text-white border-[#1E2B1F] shadow-xs' 
+                            : 'bg-transparent text-[#696256] border-transparent hover:text-[#1E1B18]'
+                        }`}
+                      >
+                        <Icon size={11} />
+                        <span className="hidden sm:inline">{t.label}</span>
+                      </button>
+                    )
+                  })}
                 </div>
 
-                <div className="bg-[#F2ECE0] border border-[#DDD3C1] rounded-xl p-2 flex items-center justify-between text-xs">
-                  <span className="text-[#8B8476] text-[11px] truncate">Ask anything, generate code, create decks...</span>
-                  <button 
-                    onClick={() => onStartChat && onStartChat(activeHero.id)}
-                    className="w-6 h-6 rounded-lg bg-[#1E2B1F] text-white flex items-center justify-center hover:bg-[#283A27] transition-colors border-none cursor-pointer"
-                  >
-                    <ArrowRight size={13} />
-                  </button>
+                <div className="hidden sm:flex items-center gap-1.5 text-[10px] text-[#4A653C] font-bold">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#4ADE80] animate-pulse" />
+                  <span>Live Sandbox</span>
                 </div>
               </div>
 
-              {/* 3. Right Sandbox Runner */}
-              <div className="col-span-12 md:col-span-4 bg-[#181715] p-3.5 flex flex-col justify-between text-white overflow-hidden">
-                <div className="flex items-center justify-between border-b border-white/10 pb-2 text-xs">
-                  <span className="font-mono text-[#4ADE80] font-bold">Interactive Sandbox</span>
-                  <span className="text-[10px] font-mono text-[#8E8A82]">LIVE RUNNER</span>
-                </div>
+              {/* 2-Column Split inside Right Window */}
+              <div className="grid grid-cols-12 h-[380px] sm:h-[420px] bg-[#D8CDBA] rounded-b-2xl overflow-hidden">
+                
+                {/* Center Chat Canvas */}
+                <div className="col-span-12 sm:col-span-6 bg-[#FAF8F3] p-3 sm:p-3.5 flex flex-col justify-between border-r border-[#DDD3C1] overflow-hidden">
+                  <div className="flex items-center justify-between border-b border-[#DDD3C1]/80 pb-2">
+                    <div className="flex items-center gap-1.5">
+                      <div className="w-4 h-4 rounded-full bg-[#1E2B1F] text-[#E8DDC8] flex items-center justify-center text-[8px] font-bold">A</div>
+                      <span className="text-xs font-bold text-[#1E1B18]">Aivora AI</span>
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#4A653C]" />
+                    </div>
+                    <span className="text-[9.5px] font-semibold text-[#4A653C] bg-[#EAE2D2] px-2 py-0.5 rounded-full">
+                      {activeHero.badge}
+                    </span>
+                  </div>
 
-                <div className="flex-1 flex flex-col justify-center py-2">
-                  {heroActiveTab === 'code' && (
-                    <div className="bg-[#24211D] border border-white/10 rounded-xl p-3 space-y-2 shadow-inner">
-                      <div className="bg-black/50 text-right px-3 py-2 rounded-lg text-lg font-mono text-[#4ADE80] border border-white/5">
-                        {calculatorInput}
-                      </div>
-                      <div className="grid grid-cols-4 gap-1.5 text-xs text-center font-bold">
-                        <button onClick={() => setCalculatorInput('0')} className="bg-[#3A362F] hover:bg-[#48433A] p-2 rounded text-[#CBD8CA] border-none cursor-pointer">C</button>
-                        <button onClick={() => setCalculatorInput('±')} className="bg-[#3A362F] hover:bg-[#48433A] p-2 rounded text-[#CBD8CA] border-none cursor-pointer">±</button>
-                        <button onClick={() => setCalculatorInput('%')} className="bg-[#3A362F] hover:bg-[#48433A] p-2 rounded text-[#CBD8CA] border-none cursor-pointer">%</button>
-                        <button onClick={() => setCalculatorInput(prev => prev + '÷')} className="bg-[#C9A875] text-[#1E1B18] p-2 rounded border-none cursor-pointer">÷</button>
-                        <button onClick={() => setCalculatorInput(prev => prev + '7')} className="bg-[#2C2923] hover:bg-[#38342D] p-2 rounded text-white border-none cursor-pointer">7</button>
-                        <button onClick={() => setCalculatorInput(prev => prev + '8')} className="bg-[#2C2923] hover:bg-[#38342D] p-2 rounded text-white border-none cursor-pointer">8</button>
-                        <button onClick={() => setCalculatorInput(prev => prev + '9')} className="bg-[#2C2923] hover:bg-[#38342D] p-2 rounded text-white border-none cursor-pointer">9</button>
-                        <button onClick={() => setCalculatorInput(prev => prev + '×')} className="bg-[#C9A875] text-[#1E1B18] p-2 rounded border-none cursor-pointer">×</button>
-                        <button onClick={() => setCalculatorInput(prev => prev + '4')} className="bg-[#2C2923] hover:bg-[#38342D] p-2 rounded text-white border-none cursor-pointer">4</button>
-                        <button onClick={() => setCalculatorInput(prev => prev + '5')} className="bg-[#2C2923] hover:bg-[#38342D] p-2 rounded text-white border-none cursor-pointer">5</button>
-                        <button onClick={() => setCalculatorInput(prev => prev + '6')} className="bg-[#2C2923] hover:bg-[#38342D] p-2 rounded text-white border-none cursor-pointer">6</button>
-                        <button onClick={() => setCalculatorInput(prev => prev + '-')} className="bg-[#C9A875] text-[#1E1B18] p-2 rounded border-none cursor-pointer">-</button>
+                  <div className="space-y-2.5 py-2 overflow-hidden">
+                    <div className="flex justify-end">
+                      <div className="bg-[#1E2B1F] text-white text-[11px] px-3 py-1.5 rounded-2xl max-w-[92%] font-medium shadow-2xs">
+                        {activeHero.prompt}
                       </div>
                     </div>
-                  )}
 
-                  {heroActiveTab === 'pdf' && (
-                    <div className="bg-[#FAF8F3] text-[#1E1B18] rounded-xl p-3.5 space-y-2 border border-[#DDD3C1]">
-                      <div className="flex justify-between items-center border-b border-[#DDD3C1] pb-1.5">
-                        <div>
-                          <h4 className="font-bold text-xs">Ayush Kumar</h4>
-                          <p className="text-[9px] text-[#696256]">Staff Solutions Architect</p>
+                    <div className="bg-[#F2ECE0] border border-[#DDD3C1] rounded-2xl p-2.5 sm:p-3 space-y-2 text-xs shadow-2xs">
+                      <p className="font-bold text-[11px] text-[#1E1B18] leading-tight">{activeHero.response}</p>
+                      <div className="bg-white border border-[#DDD3C1] rounded-xl p-2 flex items-center justify-between">
+                        <div className="flex items-center gap-1.5 min-w-0">
+                          <span className="font-mono text-xs text-[#4A653C] font-bold">&lt;/&gt;</span>
+                          <div className="min-w-0">
+                            <p className="text-[11px] font-bold text-[#1E1B18] truncate">{activeHero.label} Artifact</p>
+                            <p className="text-[9px] text-[#8B8476] truncate">{activeHero.meta}</p>
+                          </div>
                         </div>
-                        <span className="text-[8px] bg-[#1E2B1F] text-white px-2 py-0.5 rounded font-bold">A4 PDF</span>
-                      </div>
-                      <p className="text-[10px] text-[#554E43] leading-relaxed">
-                        10+ years architecting scalable cloud platforms, real-time reactive runtimes, and distributed event-driven systems.
-                      </p>
-                      <div className="flex flex-wrap gap-1 pt-1">
-                        <span className="text-[8px] bg-[#EAE2D2] px-1.5 py-0.5 rounded font-medium">TypeScript</span>
-                        <span className="text-[8px] bg-[#EAE2D2] px-1.5 py-0.5 rounded font-medium">React 19</span>
-                        <span className="text-[8px] bg-[#EAE2D2] px-1.5 py-0.5 rounded font-medium">Node.js</span>
+                        <span className="bg-[#1E2B1F] text-white text-[9px] font-bold px-1.5 py-0.5 rounded-md shrink-0">
+                          Compiled
+                        </span>
                       </div>
                     </div>
-                  )}
+                  </div>
 
-                  {heroActiveTab === 'ppt' && (
-                    <div className="bg-[#221F1A] border border-white/10 rounded-xl p-3.5 space-y-2 text-white">
-                      <span className="text-[9px] text-[#C9A875] font-bold uppercase tracking-wider">Slide 01 of 08 • Executive Pitch</span>
-                      <h4 className="text-sm font-bold leading-tight">The Next Generation of Unified Developer Workspaces</h4>
-                      <ul className="text-[10.5px] text-[#DDD4C5] space-y-1 list-disc pl-4">
-                        <li>Consolidates code, document design & presentations</li>
-                        <li>Zero-latency interactive artifact sandbox</li>
-                      </ul>
-                    </div>
-                  )}
-
-                  {heroActiveTab === 'image' && (
-                    <div className="bg-[#221F1A] border border-white/10 rounded-xl p-4 text-center space-y-2 text-white">
-                      <div className="w-10 h-10 rounded-xl bg-[#372E15] text-[#C9A875] flex items-center justify-center mx-auto">
-                        <ImageIcon size={20} />
-                      </div>
-                      <p className="text-xs font-bold">Cinematic 4K Synthesis</p>
-                      <p className="text-[10px] text-[#8E8A82]">Volumetric ray tracing & photorealism</p>
-                    </div>
-                  )}
+                  <div className="bg-[#F2ECE0] border border-[#DDD3C1] rounded-xl p-1.5 flex items-center justify-between text-xs">
+                    <span className="text-[#8B8476] text-[10.5px] truncate pl-1">Ask anything, generate code, create decks...</span>
+                    <button 
+                      onClick={() => onStartChat && onStartChat(activeHero.id)}
+                      className="w-5 h-5 rounded-lg bg-[#1E2B1F] text-white flex items-center justify-center hover:bg-[#283A27] transition-colors border-none cursor-pointer shrink-0"
+                    >
+                      <ArrowRight size={11} />
+                    </button>
+                  </div>
                 </div>
 
-                <div className="pt-2 border-t border-white/10 flex items-center justify-between text-[11px] text-[#8E8A82]">
-                  <span>Ready for Instant Export</span>
-                  <button 
-                    onClick={() => onStartChat && onStartChat(activeHero.id)}
-                    className="text-[#E8DDC8] hover:underline font-bold bg-transparent border-none cursor-pointer"
-                  >
-                    Open in Canvas &rarr;
-                  </button>
+                {/* Right Interactive Runner (Calculator / Document / Deck / Image) */}
+                <div className="col-span-12 sm:col-span-6 bg-[#181715] p-3 sm:p-3.5 flex flex-col justify-between text-white overflow-hidden">
+                  <div className="flex items-center justify-between border-b border-white/10 pb-1.5 text-xs">
+                    <span className="font-mono text-[#4ADE80] font-bold text-[11px]">Interactive Sandbox</span>
+                    <span className="text-[9px] font-mono text-[#8E8A82]">LIVE RUNNER</span>
+                  </div>
+
+                  <div className="flex-1 flex flex-col justify-center py-2">
+                    {heroActiveTab === 'code' && (
+                      <div className="bg-[#24211D] border border-white/10 rounded-xl p-2.5 space-y-1.5 shadow-inner">
+                        <div className="bg-black/50 text-right px-2.5 py-1.5 rounded-lg text-base font-mono text-[#4ADE80] border border-white/5">
+                          {calculatorInput}
+                        </div>
+                        <div className="grid grid-cols-4 gap-1 text-[11px] text-center font-bold">
+                          <button onClick={() => setCalculatorInput('0')} className="bg-[#3A362F] hover:bg-[#48433A] p-1.5 rounded text-[#CBD8CA] border-none cursor-pointer">C</button>
+                          <button onClick={() => setCalculatorInput('±')} className="bg-[#3A362F] hover:bg-[#48433A] p-1.5 rounded text-[#CBD8CA] border-none cursor-pointer">±</button>
+                          <button onClick={() => setCalculatorInput('%')} className="bg-[#3A362F] hover:bg-[#48433A] p-1.5 rounded text-[#CBD8CA] border-none cursor-pointer">%</button>
+                          <button onClick={() => setCalculatorInput(prev => prev + '÷')} className="bg-[#C9A875] text-[#1E1B18] p-1.5 rounded border-none cursor-pointer">÷</button>
+                          <button onClick={() => setCalculatorInput(prev => prev + '7')} className="bg-[#2C2923] hover:bg-[#38342D] p-1.5 rounded text-white border-none cursor-pointer">7</button>
+                          <button onClick={() => setCalculatorInput(prev => prev + '8')} className="bg-[#2C2923] hover:bg-[#38342D] p-1.5 rounded text-white border-none cursor-pointer">8</button>
+                          <button onClick={() => setCalculatorInput(prev => prev + '9')} className="bg-[#2C2923] hover:bg-[#38342D] p-1.5 rounded text-white border-none cursor-pointer">9</button>
+                          <button onClick={() => setCalculatorInput(prev => prev + '×')} className="bg-[#C9A875] text-[#1E1B18] p-1.5 rounded border-none cursor-pointer">×</button>
+                          <button onClick={() => setCalculatorInput(prev => prev + '4')} className="bg-[#2C2923] hover:bg-[#38342D] p-1.5 rounded text-white border-none cursor-pointer">4</button>
+                          <button onClick={() => setCalculatorInput(prev => prev + '5')} className="bg-[#2C2923] hover:bg-[#38342D] p-1.5 rounded text-white border-none cursor-pointer">5</button>
+                          <button onClick={() => setCalculatorInput(prev => prev + '6')} className="bg-[#2C2923] hover:bg-[#38342D] p-1.5 rounded text-white border-none cursor-pointer">6</button>
+                          <button onClick={() => setCalculatorInput(prev => prev + '-')} className="bg-[#C9A875] text-[#1E1B18] p-1.5 rounded border-none cursor-pointer">-</button>
+                        </div>
+                      </div>
+                    )}
+
+                    {heroActiveTab === 'pdf' && (
+                      <div className="bg-[#FAF8F3] text-[#1E1B18] rounded-xl p-3 space-y-1.5 border border-[#DDD3C1]">
+                        <div className="flex justify-between items-center border-b border-[#DDD3C1] pb-1">
+                          <div>
+                            <h4 className="font-bold text-xs">Ayush Kumar</h4>
+                            <p className="text-[9px] text-[#696256]">Staff Solutions Architect</p>
+                          </div>
+                          <span className="text-[8px] bg-[#1E2B1F] text-white px-1.5 py-0.5 rounded font-bold">A4 PDF</span>
+                        </div>
+                        <p className="text-[9.5px] text-[#554E43] leading-relaxed">
+                          10+ years architecting scalable cloud platforms, real-time reactive runtimes, and distributed event-driven systems.
+                        </p>
+                        <div className="flex flex-wrap gap-1 pt-0.5">
+                          <span className="text-[8px] bg-[#EAE2D2] px-1.5 py-0.5 rounded font-medium">TypeScript</span>
+                          <span className="text-[8px] bg-[#EAE2D2] px-1.5 py-0.5 rounded font-medium">React 19</span>
+                          <span className="text-[8px] bg-[#EAE2D2] px-1.5 py-0.5 rounded font-medium">Node.js</span>
+                        </div>
+                      </div>
+                    )}
+
+                    {heroActiveTab === 'ppt' && (
+                      <div className="bg-[#221F1A] border border-white/10 rounded-xl p-3 space-y-1.5 text-white">
+                        <span className="text-[8.5px] text-[#C9A875] font-bold uppercase tracking-wider">Slide 01 of 08 • Executive Pitch</span>
+                        <h4 className="text-xs font-bold leading-tight">The Next Generation of Unified Developer Workspaces</h4>
+                        <ul className="text-[10px] text-[#DDD4C5] space-y-1 list-disc pl-3">
+                          <li>Consolidates code, document design & presentations</li>
+                          <li>Zero-latency interactive artifact sandbox</li>
+                        </ul>
+                      </div>
+                    )}
+
+                    {heroActiveTab === 'image' && (
+                      <div className="bg-[#221F1A] border border-white/10 rounded-xl p-3 text-center space-y-1.5 text-white">
+                        <div className="w-8 h-8 rounded-lg bg-[#372E15] text-[#C9A875] flex items-center justify-center mx-auto">
+                          <ImageIcon size={16} />
+                        </div>
+                        <p className="text-xs font-bold">Cinematic 4K Synthesis</p>
+                        <p className="text-[9.5px] text-[#8E8A82]">Volumetric ray tracing & photorealism</p>
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="pt-1.5 border-t border-white/10 flex items-center justify-between text-[10px] text-[#8E8A82]">
+                    <span>Ready for Instant Export</span>
+                    <button 
+                      onClick={() => onStartChat && onStartChat(activeHero.id)}
+                      className="text-[#E8DDC8] hover:underline font-bold bg-transparent border-none cursor-pointer"
+                    >
+                      Open in Canvas &rarr;
+                    </button>
+                  </div>
                 </div>
               </div>
+
             </div>
+          </motion.div>
 
-          </div>
-        </motion.div>
+        </div>
 
         {/* Scroll Indicator */}
         <motion.div 
           animate={{ y: [0, 6, 0] }}
           transition={{ repeat: Infinity, duration: 1.8 }}
-          className="mt-12 flex flex-col items-center justify-center gap-1 text-[#696256] text-xs font-medium cursor-pointer"
+          className="mt-10 flex flex-col items-center justify-center gap-1 text-[#696256] text-xs font-medium cursor-pointer"
           onClick={() => scrollTo('features')}
         >
           <span>Scroll to explore capabilities</span>
