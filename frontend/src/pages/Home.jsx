@@ -50,12 +50,12 @@ function Home() {
         <Artifact />
       </div>
 
-      {/* Mobile Bottom Navigation Bar */}
-      <div className='relative z-20 lg:hidden flex items-center justify-around py-2.5 px-6 bg-[#D8D0BF] border-t border-[#BEB49F]'>
+      {/* Mobile Bottom Navigation Bar in Matching Olive Green */}
+      <div className='relative z-20 lg:hidden flex items-center justify-around py-2.5 px-6 bg-[#1E2B1F] border-t border-[#2F432E]'>
         <button
           onClick={() => setMobileTab('home')}
           className={`flex flex-col items-center gap-1 bg-transparent border-none cursor-pointer transition-colors ${
-            mobileTab === 'home' ? 'text-[#243223] font-bold' : 'text-[#696256] hover:text-[#1E1B18]'
+            mobileTab === 'home' ? 'text-[#E8DDC8] font-bold' : 'text-[#8EA58C] hover:text-white'
           }`}
         >
           <MessageSquare size={17} />
@@ -64,7 +64,7 @@ function Home() {
         <button
           onClick={() => setMobileTab('explore')}
           className={`flex flex-col items-center gap-1 bg-transparent border-none cursor-pointer transition-colors ${
-            mobileTab === 'explore' ? 'text-[#243223] font-bold' : 'text-[#696256] hover:text-[#1E1B18]'
+            mobileTab === 'explore' ? 'text-[#E8DDC8] font-bold' : 'text-[#8EA58C] hover:text-white'
           }`}
         >
           <Compass size={17} />
@@ -73,7 +73,7 @@ function Home() {
         <button
           onClick={() => setMobileTab('library')}
           className={`flex flex-col items-center gap-1 bg-transparent border-none cursor-pointer transition-colors ${
-            mobileTab === 'library' ? 'text-[#243223] font-bold' : 'text-[#696256] hover:text-[#1E1B18]'
+            mobileTab === 'library' ? 'text-[#E8DDC8] font-bold' : 'text-[#8EA58C] hover:text-white'
           }`}
         >
           <BookOpen size={17} />
@@ -82,7 +82,7 @@ function Home() {
         <button
           onClick={() => setMobileTab('profile')}
           className={`flex flex-col items-center gap-1 bg-transparent border-none cursor-pointer transition-colors ${
-            mobileTab === 'profile' ? 'text-[#243223] font-bold' : 'text-[#696256] hover:text-[#1E1B18]'
+            mobileTab === 'profile' ? 'text-[#E8DDC8] font-bold' : 'text-[#8EA58C] hover:text-white'
           }`}
         >
           <UserIcon size={17} />

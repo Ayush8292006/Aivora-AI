@@ -3,8 +3,8 @@
 @layer base {
   :root {
     --bg-outer: #C7BEAD;
-    --sidebar-bg: #D8D0BF;
-    --sidebar-border: #BEB49F;
+    --sidebar-bg: #1E2B1F;
+    --sidebar-border: #2F432E;
     --chat-bg: #FFFFFF;
     --chat-border: #DFD9CC;
     --preview-bg: #141413;
