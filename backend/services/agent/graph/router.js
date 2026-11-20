@@ -35,22 +35,38 @@ export const router = async (state) => {
     }
 
     // 3. Keyword rules (English + Hindi / Hinglish)
-    // PPT keywords
+    // PPT keywords (explicit requests for presentation / slides)
     if (/\b(ppt|powerpoint|slides?|presentation|slide\s*deck|slides?\s*banao|presentation\s*banao|deck)\b/i.test(lowerPrompt)) {
       console.log("🎯 Keyword match -> Routing to ppt agent");
       return { ...state, agent: "ppt" };
     }
 
-    // PDF keywords
+    // PDF keywords (explicit requests for PDF, resume, invoice, document)
     if (/\b(pdf|resume|cv|biodata|invoice|report\s*banao|document\s*banao|bill\s*banao|pdf\s*banao|pdf\s*bana\s*do)\b/i.test(lowerPrompt)) {
       console.log("🎯 Keyword match -> Routing to pdf agent");
       return { ...state, agent: "pdf" };
     }
 
-    // Image keywords
-    if (/\b(image|photo|picture|draw|logo|poster|wallpaper|tasveer|generate\s*image|draw\s*karo|chitra|photo\s*banao)\b/i.test(lowerPrompt)) {
+    // Image keywords (explicit requests for visual image generation)
+    if (/\b(generate\s*image|draw|wallpaper|tasveer|create\s*image|draw\s*karo|chitra|photo\s*banao|logo\s*banao|illustration\s*banao)\b/i.test(lowerPrompt)) {
       console.log("🎯 Keyword match -> Routing to image agent");
       return { ...state, agent: "image" };
+    }
+
+    // Conceptual / Informational questions (e.g. "what is javascript", "explain closure", "what is an api")
+    // Should ALWAYS go to chat agent unless user explicitly asks to generate/code a project.
+    const isConceptualQuestion = /\b(what\s+is|what\s+are|explain|samjhao|kya\s+hai|kya\s+hota\s+hai|tell\s+me\s+about|difference\s+between|how\s+does|why\s+use|meaning\s+of)\b/i.test(lowerPrompt);
+    const isExplicitBuildRequest = /\b(build|create\s+a|make\s+a|banao|develop|generate\s+code|write\s+a\s+program|write\s+code)\b/i.test(lowerPrompt);
+
+    if (isConceptualQuestion && !isExplicitBuildRequest) {
+      console.log("🎯 Conceptual / QA question detected -> Routing to chat agent");
+      return { ...state, agent: "chat" };
+    }
+
+    // Explicit coding / project generation keywords
+    if (/\b(create\s+(a\s+)?(website|webpage|calculator|landing\s*page|portfolio|todo|game|component)|build\s+(a\s+)?(website|app)|write\s+(code|function|script)|fix\s+(this\s+)?(bug|error|code)|debug|refactor)\b/i.test(lowerPrompt)) {
+      console.log("🎯 Explicit coding project match -> Routing to coding agent");
+      return { ...state, agent: "coding" };
     }
 
     // 4. Fallback to LLM classification
@@ -65,12 +81,12 @@ ppt
 image
 
 Rules:
-- ppt: Presentations, slides, deck, slide summaries.
-- pdf: Reports, resumes, documents, invoices, letters to download as PDF.
-- image: Generating images, photos, illustrations, wallpapers, logos, drawings.
-- coding: Web projects, HTML/CSS/JS, algorithms, software development.
-- search: Real-time news, current weather, scores, live stock prices.
-- chat: General discussions, advice, questions, greetings.
+- chat: Conceptual questions, definitions, explanations (e.g. "what is javascript", "what is an API", "explain react"), general discussion, greetings, writing advice.
+- coding: ONLY when the user explicitly asks to generate code, build a website/application, implement a programming task, or debug/fix code.
+- search: Current real-time events, live weather, today's news, current stock prices, live sports scores.
+- pdf: Creating or editing formal PDF documents, resumes, CVs, invoices, or reports.
+- ppt: Creating or editing presentation slides, slide decks, or PowerPoint files.
+- image: Creating, generating, or designing images, illustrations, or wallpapers.
 
 User Query:
 ${userPrompt}

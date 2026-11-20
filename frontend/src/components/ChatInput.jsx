@@ -292,16 +292,16 @@ function ChatInput() {
         className="hidden"
       />
 
-      {/* Chat Input Container in Soft Cream Beige (Exact Match to Reference Image) */}
+      {/* Chat Input Container: Clean Crisp White, Compact Height */}
       <div 
         onPaste={handlePaste}
         onDragOver={handleDragOver}
         onDrop={handleDrop}
-        className='bg-[#D3CABE] border border-[#BCB29F] rounded-2xl p-3 sm:p-3.5 flex flex-col gap-2.5 relative shadow-2xs'
+        className='bg-white border border-[#DFD9CC] rounded-2xl px-3.5 py-2 sm:py-2.5 flex flex-col gap-1.5 relative shadow-xs'
       >
 
-        {/* Mode Selector Chips Row */}
-        <div className='flex items-center gap-1.5 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden py-0.5'>
+        {/* Mode Selector Chips Row (Compact) */}
+        <div className='flex items-center gap-1 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden py-0.5'>
           {agents.map((agent) => {
             const isActive = selectedAgent === agent.label
             const Icon = agent.icon
@@ -311,14 +311,14 @@ function ChatInput() {
                 type="button"
                 onClick={() => setSelectedAgent(agent.label)}
                 className={`
-                  shrink-0 cursor-pointer inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-all duration-150 border-none
+                  shrink-0 cursor-pointer inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-medium transition-all duration-150 border-none
                   ${isActive
-                    ? "bg-[#3E4D3A] text-white shadow-xs font-semibold"
-                    : "bg-[#C5BCAB] hover:bg-[#BAB19F] text-[#2A2621]"
+                    ? "bg-[#243223] text-white shadow-2xs font-semibold"
+                    : "bg-[#F4F1EA] hover:bg-[#EAE4D8] text-[#3A3630]"
                   }
                 `}
               >
-                <Icon size={12} className={isActive ? 'text-white' : 'text-[#2A2621]'} />
+                <Icon size={11} className={isActive ? 'text-white' : 'text-[#3A3630]'} />
                 <span>{agent.label}</span>
               </button>
             )
@@ -327,27 +327,27 @@ function ChatInput() {
 
         {/* Attachment Preview Chips */}
         {attachments.length > 0 && (
-          <div className="flex flex-wrap gap-2 pt-0.5">
+          <div className="flex flex-wrap gap-1.5 pt-0.5">
             {attachments.map((att) => (
               <div
                 key={att.id}
-                className="relative flex items-center gap-2 bg-[#DDD4C5] border border-[#C4B9A4] rounded-xl px-2.5 py-1 text-xs text-[#1E1B18] shadow-2xs"
+                className="relative flex items-center gap-1.5 bg-[#F8F7F4] border border-[#E8E4DA] rounded-xl px-2 py-0.5 text-xs text-[#1E1B18] shadow-2xs"
               >
                 {att.kind === "image" && att.previewUrl ? (
-                  <img src={att.previewUrl} alt="thumb" className="w-5 h-5 rounded object-cover" />
+                  <img src={att.previewUrl} alt="thumb" className="w-4 h-4 rounded object-cover" />
                 ) : (
-                  <FileText size={13} className="text-[#4A653C]" />
+                  <FileText size={12} className="text-[#4A653C]" />
                 )}
                 <span className="max-w-[130px] truncate text-[11px] font-medium">{att.name}</span>
 
                 {att.uploading ? (
-                  <Loader2 size={12} className="animate-spin text-[#4A653C] ml-1" />
+                  <Loader2 size={11} className="animate-spin text-[#4A653C] ml-1" />
                 ) : (
                   <button
                     onClick={() => handleRemoveAttachment(att.id)}
                     className="text-[#696256] hover:text-red-500 transition-colors p-0.5 rounded cursor-pointer border-none bg-transparent"
                   >
-                    <X size={12} />
+                    <X size={11} />
                   </button>
                 )}
               </div>
@@ -355,80 +355,80 @@ function ChatInput() {
           </div>
         )}
 
-        {/* Input Textarea */}
+        {/* Input Textarea (Compact) */}
         <textarea
           placeholder="Ask anything, request a PDF resume, generate slides, create an image..."
           onChange={(e) => setValue(e.target.value)}
           value={value}
           onKeyDown={handleKeyDown}
           disabled={isLoading}
-          className="w-full bg-transparent outline-none resize-none text-[13.5px] text-[#1E1B18] placeholder:text-[#696256] leading-relaxed [scrollbar-width:none] [&::-webkit-scrollbar]:hidden disabled:opacity-50 min-h-[38px] max-h-[120px]"
+          className="w-full bg-transparent outline-none resize-none text-[13px] text-[#1E1B18] placeholder:text-[#8E877B] leading-snug [scrollbar-width:none] [&::-webkit-scrollbar]:hidden disabled:opacity-50 min-h-[26px] max-h-[100px] py-0.5"
           rows={1}
         />
 
         {/* Status Bubble while running */}
         {isLoading && statusMessage && (
-          <div className="flex items-center justify-between bg-[#DDD4C5] border border-[#C4B9A4] rounded-xl px-3 py-1.5 text-xs text-[#1E1B18]">
+          <div className="flex items-center justify-between bg-[#F8F7F4] border border-[#E8E4DA] rounded-xl px-2.5 py-1 text-xs text-[#1E1B18]">
             <div className="flex items-center gap-2">
-              <Loader2 size={12} className="animate-spin text-[#4A653C]" />
-              <span className="text-[11.5px] font-medium">{statusMessage}</span>
+              <Loader2 size={11} className="animate-spin text-[#4A653C]" />
+              <span className="text-[11px] font-medium">{statusMessage}</span>
             </div>
             <button
               onClick={handleStop}
-              className="flex items-center gap-1 text-[10.5px] font-bold text-red-600 hover:text-red-700 bg-red-50 hover:bg-red-100 px-2 py-0.5 rounded-md border border-red-200 cursor-pointer transition-all"
+              className="flex items-center gap-1 text-[10px] font-bold text-red-600 hover:text-red-700 bg-red-50 hover:bg-red-100 px-1.5 py-0.5 rounded-md border border-red-200 cursor-pointer transition-all"
             >
-              <StopCircle size={11} />
+              <StopCircle size={10} />
               Stop
             </button>
           </div>
         )}
 
-        {/* Bottom Actions Row: Paperclip, Mic, Settings on left; Circular Espresso Send Button on right */}
+        {/* Bottom Actions Row: Paperclip, Mic, Settings on left; Circular Send Button on right */}
         <div className='flex items-center justify-between pt-0.5'>
-          <div className='flex items-center gap-1.5'>
+          <div className='flex items-center gap-1'>
             <button 
               type="button"
               onClick={() => fileInputRef.current?.click()}
-              className='flex items-center justify-center w-7 h-7 rounded-lg text-[#696256] hover:text-[#1E1B18] hover:bg-[#C5BCAB] transition-all bg-transparent border-none cursor-pointer disabled:opacity-50'
+              className='flex items-center justify-center w-6 h-6 rounded-md text-[#696256] hover:text-[#1E1B18] hover:bg-[#F4F1EA] transition-all bg-transparent border-none cursor-pointer disabled:opacity-50'
               disabled={isLoading || isUploading}
               title="Attach File or Image"
             >
-              <Paperclip size={15}/>
+              <Paperclip size={14}/>
             </button>
             <button 
               type="button"
-              className='flex items-center justify-center w-7 h-7 rounded-lg text-[#696256] hover:text-[#1E1B18] hover:bg-[#C5BCAB] transition-all bg-transparent border-none cursor-pointer disabled:opacity-50'
+              className='flex items-center justify-center w-6 h-6 rounded-md text-[#696256] hover:text-[#1E1B18] hover:bg-[#F4F1EA] transition-all bg-transparent border-none cursor-pointer disabled:opacity-50'
               disabled={isLoading}
               title="Voice Input"
             >
-              <Mic size={15}/>
+              <Mic size={14}/>
             </button>
             <button 
               type="button"
               onClick={() => setSelectedAgent("Search")}
-              className={`flex items-center justify-center w-7 h-7 rounded-lg transition-all bg-transparent border-none cursor-pointer ${
-                selectedAgent === 'Search' ? 'text-[#1E1B18] bg-[#C5BCAB]' : 'text-[#696256] hover:text-[#1E1B18] hover:bg-[#C5BCAB]'
+              className={`flex items-center justify-center w-6 h-6 rounded-md transition-all bg-transparent border-none cursor-pointer ${
+                selectedAgent === 'Search' ? 'text-[#1E1B18] bg-[#F4F1EA]' : 'text-[#696256] hover:text-[#1E1B18] hover:bg-[#F4F1EA]'
               }`}
               title="Web Search Mode"
             >
-              <Globe size={15}/>
+              <Globe size={14}/>
             </button>
           </div>
           
-          {/* Circular Dark Espresso Send Button (Exact Match to Reference Image) */}
+          {/* Circular Dark Espresso Send Button (Compact) */}
           <button
             disabled={(!value.trim() && attachments.length === 0) || isLoading || isUploading}
             onClick={handleSendMessage}
-            className={`w-8 h-8 rounded-full flex items-center justify-center border-none cursor-pointer transition-all duration-150 ${
+            className={`w-7 h-7 rounded-full flex items-center justify-center border-none cursor-pointer transition-all duration-150 ${
               (value.trim() || attachments.length > 0) && !isLoading && !isUploading
                 ? "bg-[#241F1A] hover:bg-[#181410] text-white shadow-xs hover:scale-105 active:scale-95" 
-                : "bg-[#C4BBA8] text-[#8C8372] cursor-not-allowed"
+                : "bg-[#EAE6DF] text-[#A69E90] cursor-not-allowed"
             }`}
           >
             {isLoading ? (
-              <Loader2 size={13} className="animate-spin text-white" />
+              <Loader2 size={12} className="animate-spin text-white" />
             ) : (
-              <Send size={13} className="translate-x-[0.5px]" />
+              <Send size={12} className="translate-x-[0.5px]" />
             )}
           </button>
         </div>

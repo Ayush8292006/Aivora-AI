@@ -5,24 +5,24 @@
     --bg-outer: #C7BEAD;
     --sidebar-bg: #D8D0BF;
     --sidebar-border: #BEB49F;
-    --chat-bg: #E0D8C8;
-    --chat-border: #C6BEAA;
+    --chat-bg: #FFFFFF;
+    --chat-border: #DFD9CC;
     --preview-bg: #141413;
     --preview-border: #2A2825;
     --olive-btn: #243223;
-    --olive-active: #3E4D3A;
+    --olive-active: #2F3D2E;
     --olive-dot: #4A653C;
     --sage-active-bg: #B6C6AE;
     --sage-active-border: #9BB091;
     --espresso-btn: #241F1A;
-    --ai-card-bg: #D3CABE;
-    --ai-card-border: #BCB29F;
-    --artifact-bg: #DDD4C5;
-    --artifact-border: #C4B9A4;
-    --user-bubble: #645A4C;
+    --ai-card-bg: #F8F7F4;
+    --ai-card-border: #E8E4DA;
+    --artifact-bg: #FFFFFF;
+    --artifact-border: #E2DDD2;
+    --user-bubble: #2F3D2E;
     --text-primary: #1E1B18;
     --text-secondary: #696256;
-    --stone-pill: #C5BCAB;
+    --stone-pill: #F3EFE6;
     --stone-pill-text: #2A2621;
   }
 

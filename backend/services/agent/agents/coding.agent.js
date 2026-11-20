@@ -1,5 +1,5 @@
 // open router - deepseek
-import { getModel } from "../config/llmModels.js"
+import { getFallbackModel, getModel } from "../config/llmModels.js"
 
 const parseProjectJSON = (text) => {
     if (!text || typeof text !== 'string') {
@@ -23,55 +23,62 @@ const parseProjectJSON = (text) => {
 export const codingAgent = async (state) => {
     const intentLlm = await getModel("intent")
     const llm = await getModel("coding")
+    const lowerPrompt = (state.prompt || "").toLowerCase()
 
-    const intentRes = await Promise.race([
-        intentLlm.invoke(`
-      You are an intent classifier.
-      
-      Return only one of these values:
-      CODE_GENERATION
-      CODE_REVIEW
-      CODE_EXPLANATION
-      DEBUGGING
-      OPTIMIZATION
-      CONVERSION
-      DOCUMENTATION
+    let rawIntent = "CODE_EXPLANATION"
 
-      User Request:
-      ${state.prompt}
-        `),
-        new Promise((_, reject) => setTimeout(() => reject(new Error('Intent LLM timeout')), 20000))
-    ])
+    // 1. Fast deterministic check for project generation requests
+    const isExplicitProjectRequest = /\b(build|create|make|generate|develop|banao)\b/i.test(lowerPrompt) &&
+        /\b(website|webpage|page|app|calculator|landing\s*page|portfolio|todo|game|project|ui|component|tool|script|html)\b/i.test(lowerPrompt)
 
-    const rawIntent = (intentRes.content || "").toString().trim().toUpperCase()
+    if (isExplicitProjectRequest) {
+        rawIntent = "CODE_GENERATION"
+    } else if (/\b(what\s+is|what\s+are|explain|how\s+to|why|difference|guide|tutorial|kya\s+hai)\b/i.test(lowerPrompt)) {
+        rawIntent = "CODE_EXPLANATION"
+    } else {
+        // Fallback to LLM intent classification with safe error handling
+        try {
+            const intentRes = await Promise.race([
+                intentLlm.invoke(`
+You are an intent classifier for coding requests.
+Return only one:
+CODE_GENERATION
+CODE_EXPLANATION
+DEBUGGING
+CODE_REVIEW
+OPTIMIZATION
+
+User Request:
+${state.prompt}
+                `),
+                new Promise((_, reject) => setTimeout(() => reject(new Error('Intent LLM timeout')), 10000))
+            ])
+            rawIntent = (intentRes.content || "").toString().trim().toUpperCase()
+        } catch (err) {
+            console.warn('⚠️ Intent classification fallback to CODE_EXPLANATION:', err.message)
+            rawIntent = "CODE_EXPLANATION"
+        }
+    }
 
     if (rawIntent.includes("CODE_GENERATION")) {
         const prompt = `
-  You are CortexAI Coding Agent.
+You are Aivora AI Code Architect.
 
-Generate the requested project.
+Generate the requested software project with clean, production-ready code.
 
 Default stack:
-- HTML
-- CSS
-- JavaScript
+- HTML5 (semantic)
+- CSS3 (modern styling, clean flex/grid, responsive)
+- JavaScript (clean vanilla ES6+)
 
 Use React / Next.js / Vue ONLY if explicitly requested.
 
 Rules:
-- Responsive
-- Modern UI
-- CSS Variables
-- Flexbox/Grid
-- Smooth Scroll
-- Hover Effects
-- Beautiful spacing
-- Single page unless user asks otherwise.
-
-IMAGES 
-=======================
-Always use real unsplash images,
-Never use placeholders.
+- Fully responsive across desktop and mobile.
+- Clean typography and professional styling.
+- Smooth animations and hover states.
+- Clean semantic code structure.
+- Always use high-quality Unsplash image URLs (never broken links or empty placeholders).
 
 Return ONLY valid JSON.
 
@@ -159,41 +166,48 @@ ${state.prompt}
         }
     }
 
-    const res = await Promise.race([
-        llm.invoke(`
-  The user's request is:
+    try {
+        const res = await Promise.race([
+            llm.invoke(`You are Aivora AI Technical & Code Specialist.
+The user's query intent is: ${rawIntent}
 
-${rawIntent}
+Answer the user's technical or programming question directly, accurately, and professionally.
 
-Return Markdown only.
-
-Never generate project files.
-
-Use headings like:
-
-# Overview
-
-## Explanation
-
-## Problems
-
-## Improvements
-
-## Best Practices
-
-## Optimized Code (if needed)
+Guidelines:
+1. Focus strictly on what was asked. Never generate unrequested project templates, unasked calculators, or random sample apps.
+2. If explaining a language, technology, or concept, explain its core definition, where it is used, key features, and provide small, minimal code snippets only to illustrate the concept.
+3. If debugging or reviewing code, identify the root cause clearly, explain the solution, and provide the fixed code snippet.
+4. Use clean, modern Markdown with language-tagged code blocks (e.g. \`\`\`javascript).
+5. Structure your response with clean headings and bullet points for readability.
 
 User Request:
+${state.prompt}`),
+            new Promise((_, reject) => setTimeout(() => reject(new Error('LLM timeout')), 45000))
+        ])
 
-${state.prompt}
-`),
-        new Promise((_, reject) => setTimeout(() => reject(new Error('LLM timeout')), 45000))
-    ])
-
-    const data = res.content
-    return {
-        ...state,
-        aiResponse: data,
-        artifacts: []
+        const data = res.content
+        return {
+            ...state,
+            aiResponse: data,
+            artifacts: []
+        }
+    } catch (err) {
+        console.warn('⚠️ Coding Agent LLM failed or timed out, trying fallback model:', err.message)
+        try {
+            const fallbackLlm = await getFallbackModel()
+            const fallbackRes = await fallbackLlm.invoke(`You are Aivora AI Technical Specialist. Answer the user directly and professionally without unrequested projects:\n\n${state.prompt}`)
+            return {
+                ...state,
+                aiResponse: fallbackRes.content,
+                artifacts: []
+            }
+        } catch (fbErr) {
+            console.error('❌ Coding fallback also failed:', fbErr.message)
+            return {
+                ...state,
+                aiResponse: "I'm having trouble processing this code request right now. Please try again in a moment.",
+                artifacts: []
+            }
+        }
     }
 }
