@@ -1,6 +1,6 @@
 // src/pages/LandingPage.jsx
 import React, { useState, useEffect } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion, AnimatePresence, useScroll, useSpring } from 'framer-motion'
 import { useDispatch } from 'react-redux'
 import { openPricingModal } from '../redux/creditSlice.js'
 import { 
@@ -8,7 +8,7 @@ import {
   Presentation, Globe, Mic, LayoutDashboard, ArrowRight, 
   CheckCircle2, Download, ExternalLink, Layers, 
   ShieldCheck, Zap, Menu, X, ArrowUpRight, Play,
-  ChevronDown, Terminal, Check, CreditCard, Award
+  ChevronDown, Terminal, Check, CreditCard, Award, ArrowUp
 } from 'lucide-react'
 
 // Dynamic Typewriter Component
@@ -51,12 +51,34 @@ export default function LandingPage({ onStartChat, onOpenLogin, onOpenExplore })
   const [mobileNavOpen, setMobileNavOpen] = useState(false)
   const [heroActiveTab, setHeroActiveTab] = useState('code')
   const [calculatorInput, setCalculatorInput] = useState('2,048')
+  const [showScrollTop, setShowScrollTop] = useState(false)
+
+  const { scrollYProgress } = useScroll()
+  const scaleX = useSpring(scrollYProgress, {
+    stiffness: 120,
+    damping: 30,
+    restDelta: 0.001
+  })
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setShowScrollTop(window.scrollY > 380)
+    }
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
 
   const scrollTo = (id) => {
     setMobileNavOpen(false)
     const el = document.getElementById(id)
     if (el) {
-      el.scrollIntoView({ behavior: 'smooth' })
+      const navHeight = 85
+      const elementPosition = el.getBoundingClientRect().top
+      const offsetPosition = elementPosition + window.pageYOffset - navHeight
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: 'smooth'
+      })
     }
   }
 
@@ -200,6 +222,12 @@ export default function LandingPage({ onStartChat, onOpenLogin, onOpenExplore })
   return (
     <div className="w-full bg-[#D8CDBA] bg-[radial-gradient(circle_at_15%_15%,#E6D9C4_0%,transparent_40%),radial-gradient(circle_at_85%_10%,#E2D4BF_0%,transparent_45%),radial-gradient(circle_at_50%_80%,#CFC1AA_0%,transparent_50%),linear-gradient(135deg,#D8CDBA_0%,#CFC1AA_50%,#D5C8B4_100%)] text-[#1E1B18] selection:bg-[#1E2B1F] selection:text-[#E8DDC8] relative">
       
+      {/* Top Scroll Reading Progress Indicator */}
+      <motion.div
+        style={{ scaleX }}
+        className="fixed top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-[#1E2B1F] via-[#4ADE80] to-[#C9A875] origin-left z-50 shadow-[0_1px_8px_rgba(74,222,128,0.5)] pointer-events-none"
+      />
+
       {/* Subtle Background Architectural Grid */}
       <div className="fixed inset-0 bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:32px_32px] pointer-events-none opacity-50 z-0" />
 
@@ -1178,6 +1206,23 @@ export default function LandingPage({ onStartChat, onOpenLogin, onOpenExplore })
           </div>
         </div>
       </footer>
+
+      {/* Floating Scroll-to-Top Button */}
+      <AnimatePresence>
+        {showScrollTop && (
+          <motion.button
+            initial={{ opacity: 0, scale: 0.8, y: 15 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.8, y: 15 }}
+            transition={{ duration: 0.2 }}
+            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+            className="fixed bottom-6 right-6 z-40 w-11 h-11 rounded-2xl bg-[#1E2B1F]/90 hover:bg-[#283A27] text-[#E8DDC8] hover:text-white border border-white/10 shadow-[0_8px_24px_rgba(20,30,22,0.25)] backdrop-blur-lg flex items-center justify-center cursor-pointer transition-colors group"
+            title="Scroll to Top"
+          >
+            <ArrowUp size={16} className="group-hover:-translate-y-0.5 transition-transform" />
+          </motion.button>
+        )}
+      </AnimatePresence>
 
     </div>
   )
