@@ -73,6 +73,7 @@ export default function LandingPage({ onStartChat, onOpenLogin, onOpenExplore })
     {
       id: 'code',
       label: 'Full-Stack Code',
+      shortLabel: 'Code',
       icon: Code2,
       badge: 'Monaco Live Sandbox',
       prompt: 'Build a modern responsive calculator with keyboard support',
@@ -82,6 +83,7 @@ export default function LandingPage({ onStartChat, onOpenLogin, onOpenExplore })
     {
       id: 'pdf',
       label: 'Executive PDF',
+      shortLabel: 'PDF',
       icon: FileText,
       badge: 'Puppeteer Vector Engine',
       prompt: 'Create a 2-page executive resume for a Senior Solutions Architect',
@@ -91,6 +93,7 @@ export default function LandingPage({ onStartChat, onOpenLogin, onOpenExplore })
     {
       id: 'ppt',
       label: 'Pitch Decks',
+      shortLabel: 'Slides',
       icon: Presentation,
       badge: 'Executive Slide Engine',
       prompt: 'Generate an 8-slide pitch deck on Next-Gen Cloud Architecture',
@@ -100,6 +103,7 @@ export default function LandingPage({ onStartChat, onOpenLogin, onOpenExplore })
     {
       id: 'image',
       label: 'Cinematic Visuals',
+      shortLabel: 'Visuals',
       icon: ImageIcon,
       badge: '4K Diffusion Synthesis',
       prompt: 'A majestic golden eagle soaring over snow-capped alpine mountains at sunset',
@@ -361,8 +365,8 @@ export default function LandingPage({ onStartChat, onOpenLogin, onOpenExplore })
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center">
           
-          {/* ==================== LEFT COLUMN: HEADLINE, COPY & CTAS ==================== */}
-          <div className="lg:col-span-5 text-left space-y-5">
+          {/* ==================== LEFT COLUMN: CLEAN, PUNCHY, HIGH-CONVERTING ==================== */}
+          <div className="lg:col-span-5 text-left space-y-6">
             
             {/* Top Product Badge */}
             <motion.div 
@@ -384,7 +388,7 @@ export default function LandingPage({ onStartChat, onOpenLogin, onOpenExplore })
               initial={{ y: 20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{ duration: 0.5, delay: 0.1 }}
-              className="space-y-3"
+              className="space-y-3.5"
             >
               <h1 className="font-display text-4xl sm:text-5xl lg:text-[46px] xl:text-[52px] font-extrabold tracking-[-0.035em] text-[#141413] leading-[1.12]">
                 The unified workspace for<br />
@@ -393,98 +397,53 @@ export default function LandingPage({ onStartChat, onOpenLogin, onOpenExplore })
                 </span>
               </h1>
 
-              <p className="text-sm sm:text-base text-[#554E43] leading-relaxed font-normal pt-1">
-                Build full-stack applications with live previews, author publication-ready PDFs, export pitch decks, and craft visual assets—in one seamless platform.
+              <p className="text-base text-[#554E43] leading-relaxed font-normal max-w-md">
+                Build full-stack web applications with live code sandboxes, export publication-ready PDFs, and compile executive pitch decks—all in one place.
               </p>
-            </motion.div>
-
-            {/* Interactive Prompt Capsule */}
-            <motion.div 
-              initial={{ y: 15, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ duration: 0.5, delay: 0.15 }}
-            >
-              <div className="flex items-center gap-2.5 px-3.5 py-2 rounded-2xl bg-[#FAF8F3]/95 border border-[#D5C9B4] shadow-[0_4px_16px_rgba(40,32,20,0.04),inset_0_1px_0_rgba(255,255,255,0.9)] backdrop-blur-md">
-                <div className="w-6 h-6 rounded-lg bg-[#1E2B1F] text-[#E8DDC8] flex items-center justify-center shrink-0 shadow-2xs">
-                  <Sparkles size={12} className="text-[#C9A875]" />
-                </div>
-                <div className="text-xs truncate flex items-center gap-1.5 flex-1 min-w-0">
-                  <span className="text-[#7D7567] font-medium shrink-0">Try:</span>
-                  <TypewriterText words={typewriterPhrases} />
-                </div>
-                <span className="hidden sm:inline-flex items-center px-1.5 py-0.5 rounded-md text-[9px] font-mono font-bold bg-[#EAE2D2] text-[#554E43] border border-[#DDD3C1] shrink-0">
-                  ↵
-                </span>
-              </div>
-            </motion.div>
-
-            {/* Quick Mode Switcher Chips */}
-            <motion.div 
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-              className="flex flex-wrap items-center gap-1.5 pt-0.5"
-            >
-              {heroTabs.map((t) => {
-                const Icon = t.icon
-                const isActive = heroActiveTab === t.id
-                return (
-                  <button
-                    key={t.id}
-                    onClick={() => setHeroActiveTab(t.id)}
-                    className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold transition-all border cursor-pointer ${
-                      isActive 
-                        ? 'bg-[#1E2B1F] text-[#E8DDC8] border-[#1E2B1F] shadow-xs' 
-                        : 'bg-[#FAF8F3] hover:bg-[#F2ECE0] text-[#554E43] border-[#DDD3C1]'
-                    }`}
-                  >
-                    <Icon size={12} className={isActive ? 'text-[#C9A875]' : 'text-[#7D7567]'} />
-                    <span>{t.label}</span>
-                  </button>
-                )
-              })}
             </motion.div>
 
             {/* Left Action Buttons */}
             <motion.div 
               initial={{ y: 15, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
-              transition={{ duration: 0.5, delay: 0.25 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
               className="flex flex-wrap items-center gap-3 pt-1"
             >
               <motion.button
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 onClick={() => onStartChat && onStartChat()}
-                className="px-6 py-3 rounded-xl text-xs sm:text-sm font-bold bg-[#1E2B1F] hover:bg-[#283A27] text-white shadow-[0_6px_20px_rgba(25,45,32,0.22)] hover:shadow-xl transition-all border-none cursor-pointer flex items-center justify-center gap-2 group"
+                className="px-7 py-3.5 rounded-xl text-sm font-bold bg-[#1E2B1F] hover:bg-[#283A27] text-white shadow-[0_6px_20px_rgba(25,45,32,0.22)] hover:shadow-xl transition-all border-none cursor-pointer flex items-center justify-center gap-2 group"
               >
                 <span>Start Free with 100 Credits</span>
-                <ArrowRight size={15} className="group-hover:translate-x-0.5 transition-transform" />
+                <ArrowRight size={16} className="group-hover:translate-x-0.5 transition-transform" />
               </motion.button>
 
               <button
                 onClick={() => scrollTo('features')}
-                className="px-4 py-3 rounded-xl text-xs sm:text-sm font-semibold bg-[#FAF8F3] hover:bg-[#F2ECE0] text-[#1E1B18] border border-[#DDD3C1] shadow-2xs transition-all cursor-pointer flex items-center justify-center gap-2"
+                className="px-5 py-3.5 rounded-xl text-sm font-semibold bg-[#FAF8F3] hover:bg-[#F2ECE0] text-[#1E1B18] border border-[#DDD3C1] shadow-2xs transition-all cursor-pointer flex items-center justify-center gap-2"
               >
                 <span>Explore Features</span>
               </button>
             </motion.div>
 
-            {/* Left Trust Indicators */}
+            {/* Clean Single-Row Trust Strip */}
             <motion.div 
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ duration: 0.5, delay: 0.3 }}
-              className="flex flex-col sm:flex-row flex-wrap items-start sm:items-center gap-3 sm:gap-5 pt-1 text-xs text-[#696256]"
+              transition={{ duration: 0.5, delay: 0.25 }}
+              className="flex items-center gap-3.5 pt-1 text-xs text-[#696256]"
             >
               <span className="flex items-center gap-1.5 font-medium">
-                <CheckCircle2 size={13} className="text-[#4A653C]" /> Instant 100 free bonus credits
+                <CheckCircle2 size={13} className="text-[#4A653C]" /> 100 free bonus credits
               </span>
+              <span className="text-[#DDD3C1]">•</span>
               <span className="flex items-center gap-1.5 font-medium">
-                <CheckCircle2 size={13} className="text-[#4A653C]" /> Live interactive code previews
+                <CheckCircle2 size={13} className="text-[#4A653C]" /> Live code runner
               </span>
+              <span className="text-[#DDD3C1]">•</span>
               <span className="flex items-center gap-1.5 font-medium">
-                <CheckCircle2 size={13} className="text-[#4A653C]" /> Private & secure per-user wallet
+                <CheckCircle2 size={13} className="text-[#4A653C]" /> Private wallet
               </span>
             </motion.div>
 
@@ -526,7 +485,7 @@ export default function LandingPage({ onStartChat, onOpenLogin, onOpenExplore })
                         }`}
                       >
                         <Icon size={11} />
-                        <span className="hidden sm:inline">{t.label}</span>
+                        <span className="hidden sm:inline">{t.shortLabel || t.label}</span>
                       </button>
                     )
                   })}
@@ -592,8 +551,8 @@ export default function LandingPage({ onStartChat, onOpenLogin, onOpenExplore })
                 {/* Right Interactive Runner (Calculator / Document / Deck / Image) */}
                 <div className="col-span-12 sm:col-span-6 bg-[#181715] p-3 sm:p-3.5 flex flex-col justify-between text-white overflow-hidden">
                   <div className="flex items-center justify-between border-b border-white/10 pb-1.5 text-xs">
-                    <span className="font-mono text-[#4ADE80] font-bold text-[11px]">Interactive Sandbox</span>
-                    <span className="text-[9px] font-mono text-[#8E8A82]">LIVE RUNNER</span>
+                    <span className="font-mono text-[#4ADE80] font-bold text-[11px] truncate">Interactive Runner</span>
+                    <span className="text-[9px] font-mono text-[#8E8A82] px-1.5 py-0.5 rounded bg-white/5 shrink-0">LIVE</span>
                   </div>
 
                   <div className="flex-1 flex flex-col justify-center py-2">
