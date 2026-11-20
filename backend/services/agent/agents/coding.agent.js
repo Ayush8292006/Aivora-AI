@@ -1,53 +1,34 @@
 // open router - deepseek
-
 import { getModel } from "../config/llmModels.js"
 
-// ✅ Ye helper function add karo (top par)
-const safeJSONParse = (response) => {
-    try {
-        // Agar response string hai toh parse karo
-        if (typeof response === 'string') {
-            // Remove markdown code blocks
-            let cleaned = response
-                .replace(/```json\s*/g, '')
-                .replace(/```\s*/g, '')
-                .trim();
-            
-            // JSON object dhoondo
-            const jsonMatch = cleaned.match(/\{[\s\S]*\}/);
-            if (jsonMatch) {
-                cleaned = jsonMatch[0];
-            }
-            
-            return JSON.parse(cleaned);
-        }
-        return response;
-    } catch (error) {
-        console.error('❌ JSON Parse Error:', error);
-        // Default fallback
-        return {
-            files: [
-                {
-                    name: "index.html",
-                    content: `<!DOCTYPE html>
-<html>
-<head><title>Error</title></head>
-<body><h1>Error loading content</h1><p>Please try again</p></body>
-</html>`
-                }
-            ]
-        };
+const parseProjectJSON = (text) => {
+    if (!text || typeof text !== 'string') {
+        throw new Error("Empty or non-string response received from model");
     }
+
+    let cleaned = text.trim();
+    // Remove markdown code fences like ```json ... ```
+    cleaned = cleaned.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/i, '').trim();
+
+    // Find outermost JSON object
+    const firstBrace = cleaned.indexOf('{');
+    const lastBrace = cleaned.lastIndexOf('}');
+    if (firstBrace !== -1 && lastBrace !== -1 && lastBrace > firstBrace) {
+        cleaned = cleaned.substring(firstBrace, lastBrace + 1);
+    }
+
+    return JSON.parse(cleaned);
 };
 
 export const codingAgent = async (state) => {
     const intentLlm = await getModel("intent")
     const llm = await getModel("coding")
-    const intentRes = await intentLlm.invoke(`
+
+    const intentRes = await Promise.race([
+        intentLlm.invoke(`
       You are an intent classifier.
       
-      Return only one of these values.
-
+      Return only one of these values:
       CODE_GENERATION
       CODE_REVIEW
       CODE_EXPLANATION
@@ -58,12 +39,14 @@ export const codingAgent = async (state) => {
 
       User Request:
       ${state.prompt}
-        
-        `)
+        `),
+        new Promise((_, reject) => setTimeout(() => reject(new Error('Intent LLM timeout')), 20000))
+    ])
 
-        const intent = intentRes.content
-        if (intent == "CODE_GENERATION") {
-            const prompt = `
+    const rawIntent = (intentRes.content || "").toString().trim().toUpperCase()
+
+    if (rawIntent.includes("CODE_GENERATION")) {
+        const prompt = `
   You are CortexAI Coding Agent.
 
 Generate the requested project.
@@ -76,7 +59,6 @@ Default stack:
 Use React / Next.js / Vue ONLY if explicitly requested.
 
 Rules:
-
 - Responsive
 - Modern UI
 - CSS Variables
@@ -89,14 +71,11 @@ Rules:
 IMAGES 
 =======================
 Always use real unsplash images,
-
 Never use placeholders.
-
 
 Return ONLY valid JSON.
 
 Schema:
-
 {
   "files":[
     {
@@ -115,7 +94,6 @@ Schema:
 }
 
 Rules:
-
 - Output must start with {
 - Output must end with }
 - No markdown
@@ -128,49 +106,64 @@ User Request:
 ${state.prompt}
 `
 
-            try {
-                const res = await llm.invoke(prompt)
-                // ✅ Ye line change karo - safeJSONParse use karo
-                const data = safeJSONParse(res.content)
+        try {
+            const res = await Promise.race([
+                llm.invoke(prompt),
+                new Promise((_, reject) => setTimeout(() => reject(new Error('Coding LLM timeout')), 60000))
+            ])
 
-                return {
-                    ...state,
-                    aiResponse: "Code Generated Successfully.",
-                    artifacts: [
-                        {
-                            id: Date.now(),
-                            type: "Project",
-                            files: data.files || [],
-                            title:state.prompt
-                        }
-                    ]
-                }
-            } catch (error) {
-                console.error('❌ Coding Agent Error:', error)
-                // ✅ Error handle karo
-                return {
-                    ...state,
-                    aiResponse: "Sorry, I encountered an error generating the code. Please try again.",
-                    artifacts: [
-                        {
-                            id: Date.now(),
-                            type: "Project",
-                            files: [
-                                {
-                                    name: "index.html",
-                                    content: `<h1>Error: ${error.message || 'Something went wrong'}</h1>`
-                                }
-                            ]
-                        }
-                    ]
-                }
+            let data
+            try {
+                data = parseProjectJSON(res.content)
+            } catch (firstParseErr) {
+                console.warn('⚠️ Initial JSON parse failed, retrying once with fix prompt:', firstParseErr.message)
+                const retryPrompt = `The following output was not valid JSON. Please fix it and return ONLY valid JSON matching the schema with no explanations or markdown:\n\n${(res.content || "").slice(0, 4000)}`
+                const retryRes = await Promise.race([
+                    llm.invoke(retryPrompt),
+                    new Promise((_, reject) => setTimeout(() => reject(new Error('Retry LLM timeout')), 30000))
+                ])
+                data = parseProjectJSON(retryRes.content)
+            }
+
+            return {
+                ...state,
+                aiResponse: "Code Generated Successfully.",
+                artifacts: [
+                    {
+                        id: Date.now(),
+                        type: "Project",
+                        files: Array.isArray(data?.files) ? data.files : [],
+                        title: state.prompt
+                    }
+                ]
+            }
+        } catch (error) {
+            console.error('❌ Coding Agent Error:', error.message)
+            return {
+                ...state,
+                aiResponse: "Sorry, I encountered an error generating the code. Please try again.",
+                artifacts: [
+                    {
+                        id: Date.now(),
+                        type: "Project",
+                        files: [
+                            {
+                                name: "index.html",
+                                content: `<!DOCTYPE html><html><head><title>Error</title></head><body><h1>Error generating project</h1><p>${error.message || 'Please try again'}</p></body></html>`
+                            }
+                        ],
+                        title: state.prompt
+                    }
+                ]
             }
         }
+    }
 
-        const res = await llm.invoke(`
+    const res = await Promise.race([
+        llm.invoke(`
   The user's request is:
 
-${intent}
+${rawIntent}
 
 Return Markdown only.
 
@@ -193,12 +186,14 @@ Use headings like:
 User Request:
 
 ${state.prompt}
-`)
+`),
+        new Promise((_, reject) => setTimeout(() => reject(new Error('LLM timeout')), 45000))
+    ])
 
-const data = res.content
-return {
-    ...state,
-    aiResponse: data,
-    artifacts: []
-}
+    const data = res.content
+    return {
+        ...state,
+        aiResponse: data,
+        artifacts: []
+    }
 }

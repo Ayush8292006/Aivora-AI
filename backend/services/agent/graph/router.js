@@ -17,10 +17,12 @@ export const router = async (state) => {
 
     // ✅ If agent is specified and not "auto", use it directly
     if (state.agent && state.agent !== "auto") {
-      console.log(`🎯 Using selected agent: ${state.agent}`)
+      let mappedAgent = state.agent.toLowerCase().trim()
+      if (mappedAgent === "vision") mappedAgent = "image"
+      console.log(`🎯 Using selected agent: ${mappedAgent}`)
       return {
         ...state,
-        agent: state.agent
+        agent: mappedAgent
       }
     }
 
@@ -36,7 +38,7 @@ Available agents:
 - coding
 - pdf
 - ppt
-- vision
+- image
 
 Rules:
 
@@ -84,7 +86,7 @@ ppt:
 Questions about generate ppts
 or ppt context.
 
-vision:
+image:
 Generate image,
 create image
 ANY question about:
@@ -98,7 +100,7 @@ search
 coding
 pdf
 ppt
-vision
+image
 
 User Query:
 ${userPrompt}
@@ -111,9 +113,10 @@ ${userPrompt}
     console.log("✅ Router response:", response)
     
     let agent = response.content.trim().toLowerCase()
+    if (agent === "vision") agent = "image"
     
     // ✅ Validate the agent
-    const validAgents = ["chat", "search", "coding", "pdf", "ppt", "vision"]
+    const validAgents = ["chat", "search", "coding", "pdf", "ppt", "image"]
     const selectedAgent = validAgents.includes(agent) ? agent : "chat"
     
     console.log(`🎯 Router selected agent: ${selectedAgent}`)

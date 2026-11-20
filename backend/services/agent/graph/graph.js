@@ -7,7 +7,7 @@ import { searchAgent } from "../agents/search.agent.js"
 import { codingAgent } from "../agents/coding.agent.js"
 import { pdfAgent } from "../agents/pdf.agent.js"
 import { pptAgent } from "../agents/ppt.agent.js"
-import { visionAgent } from "../agents/vision.agent.js"
+import { imageAgent } from "../agents/vision.agent.js"
 
 const workflow = new StateGraph(agentState)
 
@@ -18,7 +18,7 @@ workflow.addNode("search", searchAgent)
 workflow.addNode("coding", codingAgent)
 workflow.addNode("pdf", pdfAgent)
 workflow.addNode("ppt", pptAgent)
-workflow.addNode("vision", visionAgent)
+workflow.addNode("image", imageAgent)
 
 // Add edge from start to router
 workflow.addEdge("__start__", "router")
@@ -27,7 +27,8 @@ workflow.addEdge("__start__", "router")
 workflow.addConditionalEdges(
   "router",
   (state) => {
-    const agent = state.agent || "chat"
+    let agent = state.agent || "chat"
+    if (agent === "vision") agent = "image"
     console.log(`🔄 Routing to agent: ${agent}`)
     return agent
   },
@@ -37,7 +38,7 @@ workflow.addConditionalEdges(
     coding: "coding",
     pdf: "pdf",
     ppt: "ppt",
-    vision: "vision",
+    image: "image",
   }
 )
 
@@ -49,6 +50,6 @@ workflow.addEdge("chat", "__end__")
 workflow.addEdge("coding", "__end__")
 workflow.addEdge("pdf", "__end__")
 workflow.addEdge("ppt", "__end__")
-workflow.addEdge("vision", "__end__")
+workflow.addEdge("image", "__end__")
 
 export const graph = workflow.compile()
