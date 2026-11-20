@@ -1,0 +1,14 @@
+{
+  "name": "aivora-ai",
+  "version": "1.0.0",
+  "description": "Aivora AI - Production Multi-Model AI SaaS Platform",
+  "main": "start.js",
+  "type": "module",
+  "scripts": {
+    "start": "node start.js",
+    "build": "npm install --prefix backend/gateway && npm install --prefix backend/services/auth && npm install --prefix backend/services/chat && npm install --prefix backend/services/agent"
+  },
+  "keywords": ["ai", "saas", "fullstack", "langgraph", "react", "nodejs"],
+  "author": "Rahul Kumar",
+  "license": "ISC"
+}
