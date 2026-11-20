@@ -292,15 +292,15 @@ function ChatInput() {
         className="hidden"
       />
 
-      {/* Floating Liquid Glass Composer Dock */}
+      {/* Chat Input Container in Soft Cream Beige (Exact Match to Reference Image) */}
       <div 
         onPaste={handlePaste}
         onDragOver={handleDragOver}
         onDrop={handleDrop}
-        className='glass-composer rounded-[24px] p-3 sm:p-3.5 flex flex-col gap-2.5 relative'
+        className='bg-[#EFECE4] border border-[#DCD5C7] rounded-2xl p-3 sm:p-3.5 flex flex-col gap-2.5 relative shadow-2xs'
       >
 
-        {/* Mode Selector Chips */}
+        {/* Mode Selector Chips Row */}
         <div className='flex items-center gap-1.5 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden py-0.5'>
           {agents.map((agent) => {
             const isActive = selectedAgent === agent.label
@@ -311,14 +311,14 @@ function ChatInput() {
                 type="button"
                 onClick={() => setSelectedAgent(agent.label)}
                 className={`
-                  shrink-0 cursor-pointer inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-semibold transition-all duration-200 border-none
+                  shrink-0 cursor-pointer inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-all duration-150 border-none
                   ${isActive
-                    ? "btn-liquid-gold shadow-md"
-                    : "bg-white/5 hover:bg-white/10 text-[#E9DDC8]/70 hover:text-white"
+                    ? "bg-[#5A523B] text-white shadow-xs font-semibold"
+                    : "bg-[#E4DFD4] hover:bg-[#DDD7C9] text-[#3A3630]"
                   }
                 `}
               >
-                <Icon size={12} className={isActive ? 'text-[#211C16]' : 'text-[#89977B]'} />
+                <Icon size={12} className={isActive ? 'text-white' : 'text-[#3A3630]'} />
                 <span>{agent.label}</span>
               </button>
             )
@@ -331,21 +331,21 @@ function ChatInput() {
             {attachments.map((att) => (
               <div
                 key={att.id}
-                className="relative flex items-center gap-2 bg-[#30271F]/60 border border-white/15 rounded-xl px-2.5 py-1 text-xs text-[#E9DDC8] shadow-sm backdrop-blur-md"
+                className="relative flex items-center gap-2 bg-[#F8F6F1] border border-[#E4DEC9] rounded-xl px-2.5 py-1 text-xs text-[#23211E] shadow-2xs"
               >
                 {att.kind === "image" && att.previewUrl ? (
                   <img src={att.previewUrl} alt="thumb" className="w-5 h-5 rounded object-cover" />
                 ) : (
-                  <FileText size={13} className="text-[#C9AD7C]" />
+                  <FileText size={13} className="text-[#6C8461]" />
                 )}
-                <span className="max-w-[130px] truncate text-[11px]">{att.name}</span>
+                <span className="max-w-[130px] truncate text-[11px] font-medium">{att.name}</span>
 
                 {att.uploading ? (
-                  <Loader2 size={12} className="animate-spin text-[#89977B] ml-1" />
+                  <Loader2 size={12} className="animate-spin text-[#6C8461] ml-1" />
                 ) : (
                   <button
                     onClick={() => handleRemoveAttachment(att.id)}
-                    className="text-[#89977B] hover:text-red-400 transition-colors p-0.5 rounded cursor-pointer border-none bg-transparent"
+                    className="text-[#7A7469] hover:text-red-500 transition-colors p-0.5 rounded cursor-pointer border-none bg-transparent"
                   >
                     <X size={12} />
                   </button>
@@ -362,20 +362,20 @@ function ChatInput() {
           value={value}
           onKeyDown={handleKeyDown}
           disabled={isLoading}
-          className="w-full bg-transparent outline-none resize-none text-[13.5px] text-[#F5F0E6] placeholder:text-[#89977B]/80 leading-relaxed [scrollbar-width:none] [&::-webkit-scrollbar]:hidden disabled:opacity-50 min-h-[38px] max-h-[120px]"
+          className="w-full bg-transparent outline-none resize-none text-[13.5px] text-[#23211E] placeholder:text-[#7A7469] leading-relaxed [scrollbar-width:none] [&::-webkit-scrollbar]:hidden disabled:opacity-50 min-h-[38px] max-h-[120px]"
           rows={1}
         />
 
         {/* Status Bubble while running */}
         {isLoading && statusMessage && (
-          <div className="flex items-center justify-between bg-white/5 border border-white/10 rounded-xl px-3 py-1.5 text-xs text-[#E9DDC8] backdrop-blur-md">
+          <div className="flex items-center justify-between bg-[#F8F6F1] border border-[#E4DEC9] rounded-xl px-3 py-1.5 text-xs text-[#23211E]">
             <div className="flex items-center gap-2">
-              <Loader2 size={12} className="animate-spin text-[#C9AD7C]" />
+              <Loader2 size={12} className="animate-spin text-[#6C8461]" />
               <span className="text-[11.5px] font-medium">{statusMessage}</span>
             </div>
             <button
               onClick={handleStop}
-              className="flex items-center gap-1 text-[10.5px] font-bold text-red-400 hover:text-red-300 bg-red-500/10 hover:bg-red-500/20 px-2 py-0.5 rounded-md border border-red-500/20 cursor-pointer transition-all"
+              className="flex items-center gap-1 text-[10.5px] font-bold text-red-600 hover:text-red-700 bg-red-50 hover:bg-red-100 px-2 py-0.5 rounded-md border border-red-200 cursor-pointer transition-all"
             >
               <StopCircle size={11} />
               Stop
@@ -383,13 +383,13 @@ function ChatInput() {
           </div>
         )}
 
-        {/* Bottom Actions Row */}
+        {/* Bottom Actions Row: Paperclip, Mic, Settings on left; Circular Espresso Send Button on right */}
         <div className='flex items-center justify-between pt-0.5'>
-          <div className='flex items-center gap-1'>
+          <div className='flex items-center gap-1.5'>
             <button 
               type="button"
               onClick={() => fileInputRef.current?.click()}
-              className='flex items-center justify-center w-7 h-7 rounded-lg text-[#89977B] hover:text-[#E9DDC8] hover:bg-white/10 transition-all bg-transparent border-none cursor-pointer disabled:opacity-50'
+              className='flex items-center justify-center w-7 h-7 rounded-lg text-[#7A7469] hover:text-[#23211E] hover:bg-[#E4DFD4] transition-all bg-transparent border-none cursor-pointer disabled:opacity-50'
               disabled={isLoading || isUploading}
               title="Attach File or Image"
             >
@@ -397,7 +397,7 @@ function ChatInput() {
             </button>
             <button 
               type="button"
-              className='flex items-center justify-center w-7 h-7 rounded-lg text-[#89977B] hover:text-[#E9DDC8] hover:bg-white/10 transition-all bg-transparent border-none cursor-pointer disabled:opacity-50'
+              className='flex items-center justify-center w-7 h-7 rounded-lg text-[#7A7469] hover:text-[#23211E] hover:bg-[#E4DFD4] transition-all bg-transparent border-none cursor-pointer disabled:opacity-50'
               disabled={isLoading}
               title="Voice Input"
             >
@@ -407,7 +407,7 @@ function ChatInput() {
               type="button"
               onClick={() => setSelectedAgent("Search")}
               className={`flex items-center justify-center w-7 h-7 rounded-lg transition-all bg-transparent border-none cursor-pointer ${
-                selectedAgent === 'Search' ? 'text-[#E9DDC8] bg-white/15' : 'text-[#89977B] hover:text-[#E9DDC8] hover:bg-white/10'
+                selectedAgent === 'Search' ? 'text-[#23211E] bg-[#E4DFD4]' : 'text-[#7A7469] hover:text-[#23211E] hover:bg-[#E4DFD4]'
               }`}
               title="Web Search Mode"
             >
@@ -415,20 +415,20 @@ function ChatInput() {
             </button>
           </div>
           
-          {/* Circular Liquid Champagne Gold Send Button */}
+          {/* Circular Dark Espresso Send Button (Exact Match to Reference Image) */}
           <button
             disabled={(!value.trim() && attachments.length === 0) || isLoading || isUploading}
             onClick={handleSendMessage}
-            className={`w-9 h-9 rounded-full flex items-center justify-center border-none cursor-pointer transition-all duration-200 ${
+            className={`w-8 h-8 rounded-full flex items-center justify-center border-none cursor-pointer transition-all duration-150 ${
               (value.trim() || attachments.length > 0) && !isLoading && !isUploading
-                ? "btn-liquid-gold shadow-lg hover:scale-105 active:scale-95" 
-                : "bg-white/5 text-[#89977B]/50 cursor-not-allowed"
+                ? "bg-[#2E2822] hover:bg-[#1E1914] text-white shadow-xs hover:scale-105 active:scale-95" 
+                : "bg-[#DCD5C7] text-[#A69E90] cursor-not-allowed"
             }`}
           >
             {isLoading ? (
-              <Loader2 size={15} className="animate-spin text-[#211C16]" />
+              <Loader2 size={13} className="animate-spin text-white" />
             ) : (
-              <Send size={14} className="translate-x-[1px]" />
+              <Send size={13} className="translate-x-[0.5px]" />
             )}
           </button>
         </div>

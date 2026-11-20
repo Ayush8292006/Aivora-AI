@@ -27,49 +27,46 @@ function MessageList() {
   return (
     <div className='flex-1 overflow-y-auto px-2 sm:px-4 py-4 space-y-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden'>
       {!hasSelectedConv || !hasMessages ? (
-        <div className='h-full flex flex-col items-center justify-center gap-6 text-center py-8 px-4 relative'>
+        <div className='h-full flex flex-col items-center justify-center gap-5 text-center py-8 px-4'>
           
-          {/* Subtle Ambient Light Glow behind welcome icon */}
-          <div className='absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-[#C9AD7C]/12 rounded-full blur-3xl pointer-events-none'></div>
-          
-          <div className='flex flex-col items-center gap-3.5 relative z-10'>
-            <div className='w-16 h-16 rounded-2xl bg-gradient-to-br from-[#30271F] to-[#211C16] border border-white/20 flex items-center justify-center shadow-xl shadow-black/40'>
-              <span className='text-2xl text-[#E9DDC8] font-bold'>A</span>
+          <div className='flex flex-col items-center gap-3'>
+            <div className='w-12 h-12 rounded-full bg-[#24201C] text-[#F3EFE6] flex items-center justify-center font-bold text-lg shadow-xs'>
+              A
             </div>
             
             <div className='flex flex-col gap-1'>
-              <h2 className='text-xl sm:text-2xl font-bold text-[#F5F0E6] tracking-tight'>
+              <h2 className='text-xl sm:text-2xl font-bold text-[#23211E] tracking-tight'>
                 How can I help you today?
               </h2>
-              <p className='text-xs sm:text-sm text-[#89977B] max-w-md leading-relaxed'>
+              <p className='text-xs sm:text-sm text-[#7A7469] max-w-md leading-relaxed'>
                 Multi-agent workspace: chat, search, code, generate PDF documents, presentation decks & graphics.
               </p>
             </div>
           </div>
 
-          {/* Liquid Glass Suggestion Cards Grid */}
-          <div className='grid grid-cols-1 sm:grid-cols-2 gap-2.5 max-w-xl w-full mt-2 relative z-10'>
+          {/* Clean Suggestion Cards */}
+          <div className='grid grid-cols-1 sm:grid-cols-2 gap-2.5 max-w-xl w-full mt-2'>
             {suggestionPrompts.map((s, index) => {
               const Icon = s.icon
               return (
                 <div 
                   key={index}
-                  className='glass-card-interactive p-3 rounded-xl flex items-center justify-between gap-3 text-left cursor-pointer group'
+                  className='bg-[#EFECE4] hover:bg-[#EAE4D8] border border-[#DDD7C9] p-3 rounded-xl flex items-center justify-between gap-3 text-left cursor-pointer transition-colors shadow-2xs group'
                 >
                   <div className='flex items-center gap-2.5 min-w-0'>
-                    <div className='w-7 h-7 rounded-lg bg-[#343B29]/70 flex items-center justify-center text-[#E9DDC8] shrink-0 border border-white/10'>
+                    <div className='w-7 h-7 rounded-lg bg-[#F8F6F1] flex items-center justify-center text-[#23211E] shrink-0 border border-[#E4DEC9]'>
                       <Icon size={13} />
                     </div>
                     <div className='min-w-0'>
-                      <span className='text-[10px] font-bold text-[#C9AD7C] uppercase tracking-wider block'>
+                      <span className='text-[10px] font-bold text-[#6C8461] uppercase tracking-wider block'>
                         {s.type}
                       </span>
-                      <span className='text-xs text-[#E9DDC8]/85 group-hover:text-white transition-colors truncate block'>
+                      <span className='text-xs text-[#23211E] group-hover:text-black transition-colors truncate block'>
                         {s.text}
                       </span>
                     </div>
                   </div>
-                  <ArrowUpRight size={13} className='text-[#89977B] group-hover:text-[#E9DDC8] shrink-0 transition-colors' />
+                  <ArrowUpRight size={13} className='text-[#7A7469] group-hover:text-[#23211E] shrink-0 transition-colors' />
                 </div>
               )
             })}
@@ -81,7 +78,7 @@ function MessageList() {
           {messages.map((msg, i) => (
             <div 
               key={msg._id || i} 
-              className='animate-in fade-in slide-in-from-bottom-2 duration-200' 
+              className='animate-in fade-in duration-150' 
             >
               <MessageBubble 
                 role={msg?.role} 

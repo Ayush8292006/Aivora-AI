@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { 
-  Search, Download, Maximize2, Menu, ChevronDown, Plus 
+  Download, Maximize2, Menu, ChevronDown, Plus, Copy, Check 
 } from 'lucide-react'
 import { useSelector, useDispatch } from 'react-redux'
 import { createConversation } from '../features/createConversation'
@@ -13,14 +13,12 @@ function Nav({ onOpenMobileMenu }) {
   const dispatch = useDispatch()
   const [aspectRatio, setAspectRatio] = useState('1:1')
   const [dropdownOpen, setDropdownOpen] = useState(false)
+  const [copiedTitle, setCopiedTitle] = useState(false)
 
   const activeArtifact = artifacts?.find(a => a.id === activeArtifactId) || artifacts?.[artifacts.length - 1]
 
   const handleDownload = () => {
-    if (!activeArtifact) {
-      alert("No artifact or file available to download yet.")
-      return
-    }
+    if (!activeArtifact) return
 
     const serverUrl = import.meta.env.VITE_SERVER_URL || "http://localhost:8000"
     if (activeArtifact.url) {
@@ -50,25 +48,35 @@ function Nav({ onOpenMobileMenu }) {
     }
   }
 
+  const copyConversationLink = async () => {
+    try {
+      await navigator.clipboard.writeText(window.location.href)
+      setCopiedTitle(true)
+      setTimeout(() => setCopiedTitle(false), 2000)
+    } catch (err) {
+      console.error('Copy link error:', err)
+    }
+  }
+
   return (
     <header className='flex flex-col gap-2 pb-2 select-none'>
       
       {/* Mobile Top Navigation */}
       <div className='lg:hidden flex items-center justify-between px-2 py-1.5'>
         <div className='flex items-center gap-2'>
-          <div className='w-7 h-7 rounded-xl bg-gradient-to-br from-[#30271F] to-[#211C16] border border-white/20 text-[#E9DDC8] font-bold flex items-center justify-center text-xs shadow-xs'>
+          <div className='w-7 h-7 rounded-full bg-[#24201C] text-[#F3EFE6] font-bold flex items-center justify-center text-xs shadow-xs'>
             A
           </div>
-          <span className='text-sm font-bold text-[#F5F0E6]'>Aivora AI</span>
-          <span className='bg-gradient-to-r from-[#E9DDC8] to-[#C9AD7C] text-[#211C16] font-extrabold text-[10px] px-2 py-0.5 rounded-full'>
-            Pro
+          <span className='text-sm font-bold text-[#23211E]'>Aivora AI</span>
+          <span className='bg-[#24201C] text-[#F3EFE6] font-bold text-[10px] px-2 py-0.5 rounded-full'>
+            PRO
           </span>
         </div>
 
         <div className='flex items-center gap-2'>
           <button
             onClick={handleNewChat}
-            className='flex items-center gap-1 px-3 py-1.5 rounded-xl text-xs font-semibold btn-liquid-gold border-none cursor-pointer'
+            className='flex items-center gap-1 px-3 py-1.5 rounded-xl text-xs font-semibold bg-[#2F3D2E] text-white border-none cursor-pointer'
           >
             <Plus size={13} />
             <span>New</span>
@@ -76,7 +84,7 @@ function Nav({ onOpenMobileMenu }) {
           
           <button
             onClick={onOpenMobileMenu}
-            className='p-2 rounded-xl text-[#E9DDC8] hover:text-white glass-card border border-white/10 cursor-pointer'
+            className='p-2 rounded-xl text-[#23211E] bg-[#EFECE4] border border-[#DDD7C9] cursor-pointer'
             title="Open Conversations"
           >
             <Menu size={16} />
@@ -84,75 +92,75 @@ function Nav({ onOpenMobileMenu }) {
         </div>
       </div>
 
-      {/* Desktop Workspace Top Bar */}
-      <div className='hidden lg:flex items-center justify-between px-2 py-1 gap-3'>
+      {/* Desktop Workspace Top Bar (Exact Match to Reference Image) */}
+      <div className='hidden lg:flex items-center justify-between px-3 py-1.5 border-b border-[#E2DDD2]'>
         
-        {/* Left: Minimal Search Bar Pill with Ctrl + K */}
-        <div className='flex items-center gap-2.5 glass-card rounded-full px-4 py-1.5 text-xs text-[#89977B] w-72 hover:border-white/25 transition-all cursor-text'>
-          <Search size={13} className='text-[#89977B]' />
-          <span className='flex-1 truncate text-[#E9DDC8]/70 text-[11px]'>Search anything...</span>
-          <span className='text-[10px] font-mono bg-white/5 text-[#E9DDC8]/90 px-1.5 py-0.2 rounded border border-white/10'>
-            Ctrl+K
+        {/* Left: Brand Badge + Aivora AI + PRO Pill */}
+        <div className='flex items-center gap-2.5'>
+          <div className='w-7 h-7 rounded-full bg-[#24201C] text-[#F3EFE6] font-bold flex items-center justify-center text-xs shadow-xs'>
+            A
+          </div>
+          <span className='text-sm font-semibold tracking-tight text-[#23211E]'>
+            Aivora AI
+          </span>
+          <span className='bg-[#24201C] text-[#F3EFE6] font-bold text-[10px] px-2 py-0.5 rounded-full uppercase tracking-wider'>
+            PRO
           </span>
         </div>
 
-        {/* Right Controls: Dimension Selector + Liquid Gold Download + Fullscreen */}
-        <div className='flex items-center gap-2.5'>
-          
-          {/* Dimension Selector Pill */}
-          <div className='relative'>
-            <button
-              onClick={() => setDropdownOpen(!dropdownOpen)}
-              className='flex items-center gap-1.5 glass-card rounded-full px-3.5 py-1.5 text-xs font-medium text-[#E9DDC8] hover:text-white hover:border-white/25 transition-all cursor-pointer'
-            >
-              <span>Generated Image ({aspectRatio})</span>
-              <ChevronDown size={12} className='text-[#89977B]' />
-            </button>
+        {/* Right Action Icons: Copy, Artifact Format, Fullscreen */}
+        <div className='flex items-center gap-2'>
+          {activeArtifact && (
+            <div className='relative'>
+              <button
+                onClick={() => setDropdownOpen(!dropdownOpen)}
+                className='flex items-center gap-1.5 bg-[#EFECE4] border border-[#DDD7C9] hover:border-[#BAC6B1] rounded-lg px-2.5 py-1 text-xs font-medium text-[#23211E] transition-all cursor-pointer'
+              >
+                <span>Format ({aspectRatio})</span>
+                <ChevronDown size={12} className='text-[#7A7469]' />
+              </button>
 
-            {dropdownOpen && (
-              <div className='absolute right-0 top-full mt-1.5 z-50 w-44 glass-panel rounded-xl py-1 shadow-2xl backdrop-blur-2xl animate-fade-in'>
-                {['1:1 (Square)', '16:9 (Landscape)', '9:16 (Portrait)', '4:3 (Classic)'].map(ratio => {
-                  const val = ratio.split(' ')[0]
-                  return (
-                    <button
-                      key={ratio}
-                      onClick={() => {
-                        setAspectRatio(val)
-                        setDropdownOpen(false)
-                      }}
-                      className={`w-full text-left px-3 py-1.5 text-xs transition-colors cursor-pointer border-none ${
-                        aspectRatio === val 
-                          ? 'bg-[#343B29] text-[#E9DDC8] font-bold' 
-                          : 'bg-transparent text-[#F5F0E6]/80 hover:bg-white/10 hover:text-white'
-                      }`}
-                    >
-                      {ratio}
-                    </button>
-                  )
-                })}
-              </div>
-            )}
-          </div>
+              {dropdownOpen && (
+                <div className='absolute right-0 top-full mt-1.5 z-50 w-40 bg-[#F8F6F1] border border-[#DDD7C9] rounded-xl py-1 shadow-md'>
+                  {['1:1 (Square)', '16:9 (Landscape)', '9:16 (Portrait)', '4:3 (Classic)'].map(ratio => {
+                    const val = ratio.split(' ')[0]
+                    return (
+                      <button
+                        key={ratio}
+                        onClick={() => {
+                          setAspectRatio(val)
+                          setDropdownOpen(false)
+                        }}
+                        className={`w-full text-left px-3 py-1.5 text-xs transition-colors cursor-pointer border-none ${
+                          aspectRatio === val 
+                            ? 'bg-[#EFECE4] text-[#2F3D2E] font-bold' 
+                            : 'bg-transparent text-[#23211E] hover:bg-[#EAE4D8]'
+                        }`}
+                      >
+                        {ratio}
+                      </button>
+                    )
+                  })}
+                </div>
+              )}
+            </div>
+          )}
 
-          {/* Liquid Champagne Gold Download Button */}
           <button
-            onClick={handleDownload}
-            className='flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-bold btn-liquid-gold border-none cursor-pointer tracking-wide shadow-md'
-            title="Download Generated Asset"
+            onClick={copyConversationLink}
+            className='p-1.5 rounded-lg text-[#7A7469] hover:text-[#23211E] hover:bg-[#EFECE4] transition-colors border-none bg-transparent cursor-pointer'
+            title="Share Workspace Link"
           >
-            <Download size={13} className='stroke-[2.5]' />
-            <span>Download</span>
+            {copiedTitle ? <Check size={14} className='text-[#2F3D2E]' /> : <Copy size={14} />}
           </button>
 
-          {/* Fullscreen Expand Button */}
           <button
             onClick={() => dispatch(toggleMaximize())}
-            className='flex items-center justify-center w-8 h-8 rounded-full glass-card text-[#89977B] hover:text-white hover:border-white/25 transition-all cursor-pointer'
+            className='p-1.5 rounded-lg text-[#7A7469] hover:text-[#23211E] hover:bg-[#EFECE4] transition-colors border-none bg-transparent cursor-pointer'
             title="Toggle Expanded View"
           >
-            <Maximize2 size={13} />
+            <Maximize2 size={14} />
           </button>
-
         </div>
 
       </div>

@@ -36,17 +36,10 @@ function Home() {
   }
 
   return (
-    <div className='relative h-screen w-screen bg-[#181410] text-[#F5F0E6] overflow-hidden flex flex-col font-["Plus_Jakarta_Sans",sans-serif]'>
+    <div className='relative h-screen w-screen bg-[#E8E3D9] text-[#23211E] overflow-hidden flex flex-col font-["Plus_Jakarta_Sans",sans-serif]'>
       
-      {/* Liquid Glass Ambient Lighting Refraction Pools (Deep Espresso, Dark Walnut, Rich Olive & Warm Champagne) */}
-      <div className='liquid-ambient-bg'>
-        <div className='liquid-light-pool-1'></div>
-        <div className='liquid-light-pool-2'></div>
-        <div className='liquid-light-pool-3'></div>
-      </div>
-
-      {/* Main 3-Panel Dashboard Layout */}
-      <div className='relative z-10 flex-1 flex p-2 sm:p-3 lg:p-4 gap-3 lg:gap-4 overflow-hidden max-w-[1800px] w-full mx-auto'>
+      {/* Main 3-Column Desktop Layout (Left Sidebar, Center Chat Area, Right Code/Preview Panel) */}
+      <div className='relative z-10 flex-1 flex p-2.5 sm:p-3.5 lg:p-4 gap-2.5 sm:gap-3.5 lg:gap-4 overflow-hidden max-w-[1850px] w-full mx-auto'>
         <SideBar 
           mobileMenuOpen={mobileMenuOpen} 
           setMobileMenuOpen={setMobileMenuOpen} 
@@ -57,12 +50,12 @@ function Home() {
         <Artifact />
       </div>
 
-      {/* Mobile Bottom Glass Navigation Bar */}
-      <div className='relative z-20 lg:hidden flex items-center justify-around py-2.5 px-6 bg-[#211C16]/85 backdrop-blur-2xl border-t border-white/10'>
+      {/* Mobile Bottom Navigation Bar */}
+      <div className='relative z-20 lg:hidden flex items-center justify-around py-2.5 px-6 bg-[#F3EFE6] border-t border-[#DFD9CC]'>
         <button
           onClick={() => setMobileTab('home')}
           className={`flex flex-col items-center gap-1 bg-transparent border-none cursor-pointer transition-colors ${
-            mobileTab === 'home' ? 'text-[#E9DDC8] font-bold' : 'text-[#89977B] hover:text-[#F5F0E6]'
+            mobileTab === 'home' ? 'text-[#2F3D2E] font-bold' : 'text-[#7A7469] hover:text-[#23211E]'
           }`}
         >
           <MessageSquare size={17} />
@@ -71,7 +64,7 @@ function Home() {
         <button
           onClick={() => setMobileTab('explore')}
           className={`flex flex-col items-center gap-1 bg-transparent border-none cursor-pointer transition-colors ${
-            mobileTab === 'explore' ? 'text-[#E9DDC8] font-bold' : 'text-[#89977B] hover:text-[#F5F0E6]'
+            mobileTab === 'explore' ? 'text-[#2F3D2E] font-bold' : 'text-[#7A7469] hover:text-[#23211E]'
           }`}
         >
           <Compass size={17} />
@@ -80,7 +73,7 @@ function Home() {
         <button
           onClick={() => setMobileTab('library')}
           className={`flex flex-col items-center gap-1 bg-transparent border-none cursor-pointer transition-colors ${
-            mobileTab === 'library' ? 'text-[#E9DDC8] font-bold' : 'text-[#89977B] hover:text-[#F5F0E6]'
+            mobileTab === 'library' ? 'text-[#2F3D2E] font-bold' : 'text-[#7A7469] hover:text-[#23211E]'
           }`}
         >
           <BookOpen size={17} />
@@ -89,7 +82,7 @@ function Home() {
         <button
           onClick={() => setMobileTab('profile')}
           className={`flex flex-col items-center gap-1 bg-transparent border-none cursor-pointer transition-colors ${
-            mobileTab === 'profile' ? 'text-[#E9DDC8] font-bold' : 'text-[#89977B] hover:text-[#F5F0E6]'
+            mobileTab === 'profile' ? 'text-[#2F3D2E] font-bold' : 'text-[#7A7469] hover:text-[#23211E]'
           }`}
         >
           <UserIcon size={17} />
@@ -97,49 +90,46 @@ function Home() {
         </button>
       </div>
 
-      {/* Luxury Frosted Liquid Glass Login Modal */}
+      {/* Editorial Login Modal */}
       {!userData && (
-        <div className='fixed inset-0 z-50 flex items-center justify-center bg-black/65 backdrop-blur-md p-4'>
-          <div className='w-full max-w-[380px] glass-panel rounded-3xl p-7 flex flex-col gap-5 relative overflow-hidden shadow-2xl border border-white/15'>
+        <div className='fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-xs p-4'>
+          <div className='w-full max-w-[380px] bg-[#F3EFE6] rounded-2xl p-7 flex flex-col gap-5 relative overflow-hidden shadow-xl border border-[#DFD9CC]'>
             
-            {/* Top Gloss Refraction highlight */}
-            <div className='absolute -top-16 -right-16 w-36 h-36 bg-[#C9AD7C]/15 rounded-full blur-2xl pointer-events-none'></div>
-
             {/* Header: Brand Mark + Name + Pro */}
             <div className='flex items-center gap-3'>
-              <div className='w-10 h-10 rounded-2xl bg-gradient-to-br from-[#30271F] to-[#211C16] border border-white/20 flex items-center justify-center font-bold text-base text-[#E9DDC8] shadow-sm'>
+              <div className='w-9 h-9 rounded-xl bg-[#24201C] text-[#F3EFE6] flex items-center justify-center font-bold text-sm shadow-xs'>
                 A
               </div>
               <div>
                 <div className='flex items-center gap-2'>
-                  <h2 className='text-base font-bold text-[#F5F0E6] tracking-tight'>Aivora AI</h2>
-                  <span className='bg-gradient-to-r from-[#E9DDC8] to-[#C9AD7C] text-[#211C16] font-extrabold text-[10px] px-2 py-0.5 rounded-full shadow-xs'>
-                    Pro
+                  <h2 className='text-base font-bold text-[#23211E] tracking-tight'>Aivora AI</h2>
+                  <span className='bg-[#24201C] text-[#F3EFE6] font-bold text-[10px] px-2 py-0.5 rounded-full'>
+                    PRO
                   </span>
                 </div>
-                <p className='text-xs text-[#89977B] font-medium'>Luxury Multi-Agent Workspace</p>
+                <p className='text-xs text-[#7A7469] font-medium'>Multi-Agent Workspace</p>
               </div>
             </div>
 
             {/* Description */}
             <div className='flex flex-col gap-1 text-left'>
-              <p className='text-sm font-semibold text-[#F5F0E6]'>Welcome to your workspace</p>
-              <p className='text-xs text-[#E9DDC8]/70 leading-relaxed'>
-                Sign in to create high-impact documents, presentations, research summaries, and code with multi-agent orchestration.
+              <p className='text-sm font-semibold text-[#23211E]'>Sign in to your workspace</p>
+              <p className='text-xs text-[#7A7469] leading-relaxed'>
+                Access your conversations, documents, slide decks, and code synthesis.
               </p>
             </div>
 
             {/* Sign in with Google Button */}
             <button 
               onClick={googleLogin}
-              className='w-full flex items-center justify-center gap-3 py-3 px-4 rounded-xl text-xs font-semibold btn-liquid-gold border-none cursor-pointer'
+              className='w-full flex items-center justify-center gap-3 py-2.5 px-4 rounded-xl text-xs font-semibold bg-[#2E2822] hover:bg-[#221D18] text-white border-none cursor-pointer transition-all shadow-xs'
             >
               <FcGoogle size={18} />
               <span>Continue with Google</span>
             </button>
 
-            <p className='text-[10.5px] text-center text-[#89977B]'>
-              Protected by multi-agent security & encrypted cloud storage.
+            <p className='text-[10.5px] text-center text-[#7A7469]'>
+              Encrypted cloud storage & secure session management.
             </p>
           </div>
         </div>

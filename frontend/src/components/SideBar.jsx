@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { 
   MessageSquare, Plus, PenSquare, X, 
-  Settings, LogOut, User as UserIcon, Sparkles
+  Settings, LogOut, User as UserIcon
 } from 'lucide-react'
 import { getConversation } from '../features/getConversations.js'
 import { useDispatch, useSelector } from 'react-redux'
@@ -54,26 +54,26 @@ function SideBar({ mobileMenuOpen, setMobileMenuOpen }) {
   }
 
   const sidebarContent = (
-    <div className='flex flex-col h-full w-full glass-panel rounded-[24px] p-3.5 relative overflow-hidden select-none'>
+    <div className='flex flex-col h-full w-full bg-[#F3EFE6] rounded-2xl p-3.5 relative overflow-hidden border border-[#DFD9CC] select-none'>
       
       {/* Top Header: Brand Mark + Pro Badge + Action */}
-      <div className='flex items-center justify-between px-2 pt-1 pb-3 border-b border-white/10'>
+      <div className='flex items-center justify-between px-2 pt-1 pb-3 border-b border-[#DFD9CC]'>
         <div className='flex items-center gap-2.5'>
-          <div className='w-7 h-7 rounded-xl bg-gradient-to-br from-[#30271F] to-[#211C16] border border-white/20 flex items-center justify-center font-bold text-xs text-[#E9DDC8] shadow-xs'>
+          <div className='w-7 h-7 rounded-full bg-[#24201C] text-[#F3EFE6] flex items-center justify-center font-bold text-xs shadow-xs'>
             A
           </div>
-          <span className='text-[15px] font-bold tracking-tight text-[#F5F0E6]'>
+          <span className='text-[15px] font-bold tracking-tight text-[#23211E]'>
             Aivora AI
           </span>
-          <span className='bg-gradient-to-r from-[#E9DDC8] to-[#C9AD7C] text-[#211C16] font-extrabold text-[10px] px-2 py-0.5 rounded-full shadow-xs tracking-wider uppercase'>
-            Pro
+          <span className='bg-[#24201C] text-[#F3EFE6] font-bold text-[10px] px-2 py-0.5 rounded-full uppercase tracking-wider'>
+            PRO
           </span>
         </div>
 
         <div className='flex items-center gap-1'>
           <button 
             onClick={handleCreateConversation}
-            className='flex items-center justify-center w-7 h-7 rounded-lg text-[#E9DDC8]/80 hover:text-white hover:bg-white/10 transition-all border-none bg-transparent cursor-pointer'
+            className='flex items-center justify-center w-7 h-7 rounded-lg text-[#7A7469] hover:text-[#23211E] hover:bg-[#EAE4D8] transition-all border-none bg-transparent cursor-pointer'
             title="New Chat"
           >
             <PenSquare size={14} />
@@ -81,7 +81,7 @@ function SideBar({ mobileMenuOpen, setMobileMenuOpen }) {
           {setMobileMenuOpen && (
             <button 
               onClick={() => setMobileMenuOpen(false)}
-              className='lg:hidden flex items-center justify-center w-7 h-7 rounded-lg text-[#89977B] hover:text-white hover:bg-white/10 transition-all border-none bg-transparent cursor-pointer'
+              className='lg:hidden flex items-center justify-center w-7 h-7 rounded-lg text-[#7A7469] hover:text-[#23211E] hover:bg-[#EAE4D8] transition-all border-none bg-transparent cursor-pointer'
             >
               <X size={15} />
             </button>
@@ -89,31 +89,31 @@ function SideBar({ mobileMenuOpen, setMobileMenuOpen }) {
         </div>
       </div>
 
-      {/* Primary Action Button: + New Chat (Liquid Champagne Gold) */}
+      {/* Primary Action Button: + New Chat in Deep Matte Olive Green */}
       <div className='py-3 px-1'>
         <button 
           onClick={handleCreateConversation}
-          className='w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-xs font-bold btn-liquid-gold border-none cursor-pointer tracking-wide shadow-md'
+          className='w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-xs font-semibold bg-[#2F3D2E] hover:bg-[#253124] text-white border-none cursor-pointer tracking-wide shadow-xs transition-colors'
         >
-          <Plus size={14} className='stroke-[2.5]' />
+          <Plus size={14} />
           <span>New Chat</span>
         </button>
       </div>
 
       {/* Recents Section Header */}
       <div className='flex items-center justify-between px-2 pt-2 pb-1.5'>
-        <span className='text-[10.5px] font-bold text-[#89977B] tracking-wider uppercase'>
-          Recents
+        <span className='text-[10.5px] font-bold text-[#7A7469] tracking-wider uppercase'>
+          RECENTS
         </span>
         <button 
           onClick={handleCreateConversation}
-          className='text-[10px] text-[#C9AD7C] hover:text-[#E9DDC8] transition-colors bg-transparent border-none cursor-pointer font-medium'
+          className='text-[10.5px] text-[#7A7469] hover:text-[#23211E] transition-colors bg-transparent border-none cursor-pointer font-medium'
         >
           {conversations?.length || 0} chats
         </button>
       </div>
 
-      {/* Conversations List with Liquid Glass Hover / Active States */}
+      {/* Conversations List */}
       <div className='flex-1 overflow-y-auto px-1 py-1 space-y-1.5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden'>
         {conversations && conversations.length > 0 ? (
           conversations.map((conv, i) => {
@@ -122,41 +122,41 @@ function SideBar({ mobileMenuOpen, setMobileMenuOpen }) {
               <div
                 key={conv?._id || i}
                 onClick={() => handleSelectConv(conv)}
-                className={`group relative flex items-center justify-between gap-2.5 px-3 py-2.5 rounded-xl cursor-pointer transition-all duration-200 ${
+                className={`group relative flex items-center justify-between gap-2.5 px-3 py-2.5 rounded-xl cursor-pointer transition-all duration-150 ${
                   isActive 
-                    ? "glass-active-chat text-[#F5F0E6] font-semibold" 
-                    : "bg-transparent hover:bg-white/5 text-[#E9DDC8]/70 hover:text-[#F5F0E6]"
+                    ? "bg-[#D8DFD2] border border-[#BAC6B1] text-[#23211E] font-semibold" 
+                    : "bg-transparent hover:bg-[#EAE4D8] text-[#23211E] border border-transparent"
                 }`}
               >
                 <div className='flex items-center gap-2.5 min-w-0'>
                   <MessageSquare 
                     size={14} 
-                    className={`shrink-0 ${isActive ? 'text-[#C9AD7C]' : 'text-[#89977B] group-hover:text-[#E9DDC8]'}`} 
+                    className={`shrink-0 ${isActive ? 'text-[#23211E]' : 'text-[#7A7469] group-hover:text-[#23211E]'}`} 
                   />
                   <span className='text-xs truncate'>
                     {conv?.title || "New Chat"}
                   </span>
                 </div>
 
-                {/* Glowing Active Dot in Warm Champagne */}
+                {/* Active Indicator Dot */}
                 {isActive && (
-                  <span className='w-1.5 h-1.5 rounded-full bg-[#C9AD7C] shrink-0 shadow-[0_0_6px_#C9AD7C]' />
+                  <span className='w-2 h-2 rounded-full bg-[#6C8461] shrink-0' />
                 )}
               </div>
             )
           })
         ) : (
           <div className='flex flex-col items-center justify-center h-32 text-center px-4'>
-            <MessageSquare size={18} className='text-[#89977B]/60 mb-2' />
-            <p className='text-xs text-[#89977B]'>No conversations yet</p>
+            <MessageSquare size={18} className='text-[#7A7469]/50 mb-2' />
+            <p className='text-xs text-[#7A7469]'>No conversations yet</p>
           </div>
         )}
       </div>
 
-      {/* Bottom User Profile Section in Liquid Glass Card */}
-      <div className='pt-2.5 mt-auto border-t border-white/10'>
+      {/* Bottom User Profile Section */}
+      <div className='pt-2 mt-auto border-t border-[#DFD9CC]'>
         {userData ? (
-          <div className='glass-card rounded-2xl p-2.5 flex items-center justify-between gap-2'>
+          <div className='bg-[#E7E1D5] border border-[#D8D1C3] rounded-2xl p-2.5 flex items-center justify-between gap-2'>
             <div className='flex items-center gap-2.5 min-w-0'>
               <div className='relative shrink-0'>
                 {userData?.avatar && !imageError ? (
@@ -164,39 +164,33 @@ function SideBar({ mobileMenuOpen, setMobileMenuOpen }) {
                     src={userData.avatar} 
                     alt="avatar" 
                     onError={() => setImageError(true)}
-                    className='w-8 h-8 rounded-xl object-cover border border-white/20'
+                    className='w-8 h-8 rounded-full object-cover border border-[#DFD9CC]'
                   />
                 ) : (
-                  <div className='w-8 h-8 rounded-xl bg-[#30271F] border border-white/20 flex items-center justify-center text-[#E9DDC8]'>
+                  <div className='w-8 h-8 rounded-full bg-[#DFD9CC] flex items-center justify-center text-[#23211E]'>
                     <UserIcon size={14} />
                   </div>
                 )}
-                {/* Active online dot */}
-                <span className='absolute -bottom-0.5 -right-0.5 w-2 h-2 rounded-full bg-[#89977B] border border-[#211C16] shadow-[0_0_4px_#89977B]'></span>
               </div>
 
               <div className='min-w-0'>
-                <p className='text-xs font-semibold text-[#F5F0E6] truncate leading-tight'>
-                  {userData?.name || "User"}
+                <p className='text-xs font-semibold text-[#23211E] truncate leading-tight'>
+                  {userData?.name || "Ayush Kumar"}
                 </p>
-                <div className='flex items-center gap-1.5 mt-0.5'>
-                  <span className='text-[10px] text-[#89977B] truncate max-w-[80px] leading-tight'>
-                    {userData?.email?.split('@')[0] || "Pro Workspace"}
-                  </span>
-                  <span className='text-[9px] font-semibold text-[#C9AD7C] bg-[#343B29]/70 px-1.5 py-0.2 rounded-full border border-white/10'>
-                    Online
-                  </span>
-                </div>
+                <p className='text-[10px] text-[#7A7469] truncate max-w-[85px] leading-tight mt-0.5'>
+                  {userData?.email?.split('@')[0] || "viterkerkaai0475"}
+                </p>
               </div>
             </div>
 
             <div className='flex items-center gap-1 shrink-0'>
+              <span className='w-2 h-2 rounded-full bg-[#6C8461] mr-1' />
               <button 
                 onClick={() => {
                   logOut()
                   dispatch(setUserdata(null))
                 }}
-                className='p-1.5 rounded-lg text-[#89977B] hover:text-red-400 hover:bg-white/10 transition-colors border-none bg-transparent cursor-pointer'
+                className='p-1 rounded-lg text-[#7A7469] hover:text-[#23211E] hover:bg-[#DFD9CC] transition-colors border-none bg-transparent cursor-pointer'
                 title="Log Out"
               >
                 <LogOut size={13} />
@@ -204,7 +198,7 @@ function SideBar({ mobileMenuOpen, setMobileMenuOpen }) {
             </div>
           </div>
         ) : (
-          <div className='p-2 text-center text-xs text-[#89977B]'>
+          <div className='p-2 text-center text-xs text-[#7A7469]'>
             Guest Session
           </div>
         )}
@@ -216,7 +210,7 @@ function SideBar({ mobileMenuOpen, setMobileMenuOpen }) {
   return (
     <>
       {/* Desktop Persistent Left Sidebar */}
-      <aside className='hidden lg:flex w-[260px] xl:w-[280px] shrink-0 h-full flex-col'>
+      <aside className='hidden lg:flex w-[260px] xl:w-[275px] shrink-0 h-full flex-col'>
         {sidebarContent}
       </aside>
 
@@ -225,9 +219,9 @@ function SideBar({ mobileMenuOpen, setMobileMenuOpen }) {
         <div className='fixed inset-0 z-50 lg:hidden flex'>
           <div 
             onClick={() => setMobileMenuOpen(false)}
-            className='fixed inset-0 bg-black/60 backdrop-blur-md'
+            className='fixed inset-0 bg-black/30 backdrop-blur-xs'
           />
-          <div className='relative z-10 w-[285px] h-full p-2 animate-in slide-in-from-left duration-200'>
+          <div className='relative z-10 w-[285px] h-full p-2.5 animate-in slide-in-from-left duration-200'>
             {sidebarContent}
           </div>
         </div>
