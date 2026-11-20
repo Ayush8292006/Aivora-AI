@@ -7,7 +7,14 @@ import { useDispatch, useSelector } from 'react-redux'
 import { setArtifacts, setMessages } from '../redux/messageSlice.js'
 import getMessages from '../features/getMessages.js'
 
-function ChatArea({ onOpenMobileMenu, onGoToLanding, onOpenExplore, onOpenSettings }) {
+function ChatArea({ 
+  onOpenMobileMenu, 
+  onGoToLanding, 
+  onOpenExplore, 
+  onOpenSettings,
+  sidebarCollapsed,
+  onToggleSidebar
+}) {
   const { selectedConversation } = useSelector(state => state.conversation)
   const { messages } = useSelector(state => state.message)
   const dispatch = useDispatch()

@@ -2,7 +2,7 @@
 import React from 'react'
 import { 
   Sparkles, MessageSquare, Code2, ImageIcon, FileText, 
-  Presentation, Globe, ArrowUpRight, Plus, HelpCircle
+  Presentation, Globe, ArrowUpRight, Plus
 } from 'lucide-react'
 import { useSelector } from 'react-redux'
 
@@ -71,11 +71,11 @@ export default function WelcomeOnboarding({ onSelectPrompt, onNewChat, onSelectM
   ]
 
   return (
-    <div className="h-full flex flex-col items-center justify-center text-center py-6 px-3 sm:px-6 max-w-4xl mx-auto overflow-y-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+    <div className="w-full max-w-3xl mx-auto flex flex-col items-center py-6 sm:py-10 px-3 sm:px-6 my-auto text-center">
       
       {/* Brand Icon & Heading */}
-      <div className="flex flex-col items-center gap-3 mb-6 animate-in fade-in duration-300">
-        <div className="w-14 h-14 rounded-2xl bg-[#1E2B1F] text-[#E8DDC8] flex items-center justify-center font-bold text-xl shadow-md border border-[#3E553D]/50">
+      <div className="flex flex-col items-center gap-3 mb-6">
+        <div className="w-13 h-13 rounded-2xl bg-[#1E2B1F] text-[#E8DDC8] flex items-center justify-center font-bold text-lg shadow-sm border border-[#3E553D]/50">
           A
         </div>
 
@@ -84,18 +84,18 @@ export default function WelcomeOnboarding({ onSelectPrompt, onNewChat, onSelectM
             <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-[#1E1B18]">
               Welcome to Aivora AI{userData?.name ? `, ${userData.name.split(' ')[0]}` : ''}
             </h1>
-            <span className="bg-[#1E2B1F] text-[#E8DDC8] text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">
+            <span className="bg-[#1E2B1F] text-[#E8DDC8] text-[9.5px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">
               PRO
             </span>
           </div>
 
-          <p className="text-sm sm:text-base text-[#696256] font-medium max-w-lg">
+          <p className="text-xs sm:text-sm text-[#696256] font-medium max-w-md mx-auto">
             What would you like to create today?
           </p>
         </div>
 
         {/* Quick Mode Filter Bar */}
-        <div className="flex flex-wrap items-center justify-center gap-1.5 pt-2">
+        <div className="flex flex-wrap items-center justify-center gap-1.5 pt-1">
           {quickModes.map((m) => (
             <button
               key={m.mode}
@@ -108,20 +108,20 @@ export default function WelcomeOnboarding({ onSelectPrompt, onNewChat, onSelectM
         </div>
       </div>
 
-      {/* Suggested Prompt Cards (6 Interactive Cards) */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 w-full text-left mb-6 animate-in fade-in duration-400">
+      {/* Suggested Prompt Cards (Clean 2-Column Responsive Grid) */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full text-left mb-6">
         {promptCards.map((card, idx) => {
           const Icon = card.icon
           return (
             <div
               key={idx}
               onClick={() => onSelectPrompt && onSelectPrompt(card.prompt, card.agent)}
-              className="group bg-[#F4EEE2] hover:bg-[#EAE2D2] border border-[#DDD3C1] hover:border-[#BFAF98] rounded-xl p-3.5 transition-all duration-150 cursor-pointer flex flex-col justify-between shadow-2xs hover:shadow-xs"
+              className="group bg-[#F2ECE0] hover:bg-[#EAE2D2] border border-[#DDD3C1] hover:border-[#BFAF98] rounded-2xl p-4 transition-all duration-150 cursor-pointer flex flex-col justify-between shadow-2xs hover:shadow-xs"
             >
-              <div className="flex items-start justify-between gap-2 mb-2">
-                <div className="flex items-center gap-2 min-w-0">
-                  <div className={`w-7 h-7 rounded-lg flex items-center justify-center ${card.color} shrink-0`}>
-                    <Icon size={14} />
+              <div className="flex items-start justify-between gap-2 mb-2.5">
+                <div className="flex items-center gap-2.5 min-w-0">
+                  <div className={`w-8 h-8 rounded-xl flex items-center justify-center ${card.color} shrink-0 shadow-2xs`}>
+                    <Icon size={15} />
                   </div>
                   <div className="min-w-0">
                     <h3 className="text-xs font-bold text-[#1E1B18] group-hover:text-black truncate">
@@ -132,10 +132,10 @@ export default function WelcomeOnboarding({ onSelectPrompt, onNewChat, onSelectM
                     </p>
                   </div>
                 </div>
-                <ArrowUpRight size={13} className="text-[#8B8476] group-hover:text-[#1E1B18] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all shrink-0" />
+                <ArrowUpRight size={14} className="text-[#8B8476] group-hover:text-[#1E1B18] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all shrink-0" />
               </div>
 
-              <p className="text-[11px] text-[#554E43] line-clamp-2 leading-relaxed bg-[#FAF8F3]/60 p-2 rounded-lg border border-[#DDD3C1]/50">
+              <p className="text-xs text-[#554E43] line-clamp-2 leading-relaxed bg-[#FAF8F3]/80 p-2.5 rounded-xl border border-[#DDD3C1]/60 font-medium">
                 "{card.prompt}"
               </p>
             </div>
@@ -144,7 +144,7 @@ export default function WelcomeOnboarding({ onSelectPrompt, onNewChat, onSelectM
       </div>
 
       {/* Bottom CTA / New Chat */}
-      <div className="flex items-center gap-3 text-xs text-[#696256]">
+      <div className="flex items-center justify-center gap-3 text-xs text-[#696256]">
         <button
           onClick={onNewChat}
           className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold bg-[#E8DDC8] hover:bg-[#DDD2BD] text-[#1E2B1F] border border-[#C8BEAC] cursor-pointer transition-colors shadow-2xs"
@@ -152,7 +152,7 @@ export default function WelcomeOnboarding({ onSelectPrompt, onNewChat, onSelectM
           <Plus size={14} />
           <span>Start Fresh Chat</span>
         </button>
-        <span>or ask anything below to begin</span>
+        <span>or ask anything in the composer below</span>
       </div>
 
     </div>

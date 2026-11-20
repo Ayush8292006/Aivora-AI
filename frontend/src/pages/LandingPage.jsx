@@ -237,19 +237,31 @@ export default function LandingPage({ onStartChat, onOpenLogin, onOpenExplore })
               <span className="text-[11px] text-[#554E43] font-medium">Domain-Expert Intelligence</span>
             </motion.div>
 
-            {/* Main Headline */}
-            <motion.h1 
+            {/* Main Headline with High-Impact Display Typography */}
+            <motion.div 
               initial={{ y: 20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{ duration: 0.6, delay: 0.1 }}
-              className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-[#1E1B18] leading-[1.1] sm:leading-[1.12]"
+              className="space-y-3"
             >
-              One AI Workspace.<br />
-              <span className="text-[#1E2B1F] relative inline-block">
-                Endless Possibilities.
-                <span className="absolute left-0 bottom-1 w-full h-3 bg-[#A9C0A4]/35 -z-10 rounded-sm" />
-              </span>
-            </motion.h1>
+              <h1 className="font-display uppercase tracking-tighter text-5xl sm:text-7xl lg:text-8xl font-extrabold text-[#1E1B18] leading-[0.92] select-none">
+                Aivora AI
+              </h1>
+              <h2 className="font-display tracking-tight uppercase text-2xl sm:text-4xl lg:text-5xl font-bold text-[#1E2B1F] leading-tight">
+                One AI Workspace.<br className="hidden sm:inline" /> Endless Possibilities.
+              </h2>
+
+              {/* Progress/Accent Bar (Matching Reference Image) */}
+              <div className="w-full max-w-md mx-auto pt-2 space-y-1.5">
+                <div className="w-full h-1.5 bg-[#2E2822]/15 rounded-full overflow-hidden relative">
+                  <div className="h-full bg-gradient-to-r from-[#C9A875] via-[#E8A338] to-[#FFA500] w-[74%] rounded-full shadow-[0_0_10px_rgba(255,165,0,0.4)]" />
+                </div>
+                <div className="flex justify-between items-center text-[10.5px] font-mono text-[#554E43] font-semibold">
+                  <span className="uppercase tracking-wider">Multi-Agent Engine 2026</span>
+                  <span className="text-[#1E2B1F] font-bold">8 Autonomous Models • Ready</span>
+                </div>
+              </div>
+            </motion.div>
 
             {/* Supporting Pitch Narrative */}
             <motion.p 
@@ -570,7 +582,7 @@ export default function LandingPage({ onStartChat, onOpenLogin, onOpenExplore })
             <span className="text-xs font-bold text-[#4A653C] uppercase tracking-wider">
               Specialized Multi-Agent Studios
             </span>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-[#1E1B18]">
+            <h2 className="font-display tracking-tight uppercase text-3xl sm:text-4xl lg:text-5xl font-bold text-[#1E1B18]">
               8 Deep Domain Experts.<br />One Contextual Canvas.
             </h2>
             <p className="text-sm sm:text-base text-[#696256] leading-relaxed">
@@ -758,7 +770,7 @@ export default function LandingPage({ onStartChat, onOpenLogin, onOpenExplore })
             <span className="text-xs font-bold text-[#4A653C] uppercase tracking-wider">
               Autonomous Pipeline
             </span>
-            <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-[#1E1B18]">
+            <h2 className="font-display tracking-tight uppercase text-3xl sm:text-4xl font-bold text-[#1E1B18]">
               From Prompt to Production Artifact
             </h2>
             <p className="text-sm text-[#554E43]">
@@ -815,7 +827,7 @@ export default function LandingPage({ onStartChat, onOpenLogin, onOpenExplore })
             <span className="text-xs font-bold text-[#4A653C] uppercase tracking-wider">
               Studio Artifacts
             </span>
-            <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-[#1E1B18]">
+            <h2 className="font-display tracking-tight uppercase text-3xl sm:text-4xl font-bold text-[#1E1B18]">
               Experience True Multi-Modal Depth
             </h2>
             <p className="text-sm text-[#554E43]">
@@ -908,7 +920,7 @@ export default function LandingPage({ onStartChat, onOpenLogin, onOpenExplore })
             <span className="text-xs font-bold text-[#4A653C] uppercase tracking-wider">
               The Aivora Advantage
             </span>
-            <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-[#1E1B18]">
+            <h2 className="font-display tracking-tight uppercase text-3xl sm:text-4xl font-bold text-[#1E1B18]">
               Why Switch to Aivora AI?
             </h2>
             <p className="text-sm text-[#696256]">
@@ -966,7 +978,7 @@ export default function LandingPage({ onStartChat, onOpenLogin, onOpenExplore })
             Ready to Upgrade Your AI Workflow?
           </span>
 
-          <h2 className="text-3xl sm:text-5xl font-bold tracking-tight text-white leading-tight">
+          <h2 className="font-display tracking-tight uppercase text-3xl sm:text-5xl lg:text-6xl font-bold text-white leading-tight">
             Ready to experience a smarter workspace?
           </h2>
 

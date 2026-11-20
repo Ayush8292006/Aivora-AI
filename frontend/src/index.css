@@ -26,6 +26,10 @@
     --stone-pill-text: #2A2621;
   }
 
+  html {
+    scroll-behavior: smooth;
+  }
+
   body {
     background: radial-gradient(circle at 15% 20%, #E6D9C4 0%, transparent 45%),
                 radial-gradient(circle at 85% 15%, #E2D4BF 0%, transparent 50%),
@@ -36,7 +40,21 @@
     font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    min-height: 100vh;
+    overflow-x: hidden;
   }
+}
+
+.font-display {
+  font-family: 'Syne', -apple-system, sans-serif;
+  letter-spacing: -0.03em;
+  font-weight: 800;
+}
+
+.font-condensed {
+  font-family: 'Oswald', -apple-system, sans-serif;
+  letter-spacing: -0.015em;
+  font-weight: 700;
 }
 
 /* Minimal Matte Editorial Scrollbars */

@@ -7,7 +7,7 @@ const messageSlice = createSlice({
         messages: [],
         artifacts: [],
         activeArtifactId: null,
-        isOpen: true,
+        isOpen: false,
         isMaximized: false
     },
     reducers: {
@@ -58,12 +58,12 @@ const messageSlice = createSlice({
             state.messages = [];
             state.artifacts = [];
             state.activeArtifactId = null;
+            state.isOpen = false;
         },
         setArtifacts: (state, action) => {
             state.artifacts = action.payload || [];
             if (state.artifacts.length > 0) {
                 state.activeArtifactId = state.artifacts[state.artifacts.length - 1].id;
-                state.isOpen = true;
             }
         },
         setActiveArtifactId: (state, action) => {

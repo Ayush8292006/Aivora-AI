@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react'
 import { 
   MessageSquare, Plus, PenSquare, X, 
   Settings, LogOut, User as UserIcon, Search,
-  Pin, Trash2, Edit3, Check, Globe, Sparkles, Home
+  Pin, Trash2, Edit3, Check, Globe, Sparkles, Home,
+  PanelLeftClose, PanelLeft
 } from 'lucide-react'
 import { getConversation } from '../features/getConversations.js'
 import { useDispatch, useSelector } from 'react-redux'
@@ -22,7 +23,9 @@ function SideBar({
   setMobileMenuOpen, 
   onOpenSettings, 
   onOpenExplore, 
-  onGoToLanding 
+  onGoToLanding,
+  sidebarCollapsed,
+  onToggleSidebar
 }) {
   const dispatch = useDispatch()
   const [imageError, setImageError] = useState(false)
@@ -100,7 +103,6 @@ function SideBar({
   const handleDelete = async (e, convId) => {
     e.stopPropagation()
     if (deletingId === convId) {
-      // confirmed
       try {
         await deleteConversation(convId)
         dispatch(deleteConversationAction(convId))
@@ -184,7 +186,6 @@ function SideBar({
           </div>
         ) : (
           <div className="flex items-center gap-1 shrink-0">
-            {/* Hover Actions: Pin, Rename, Delete */}
             <div className="hidden group-hover:flex items-center gap-0.5">
               <button
                 onClick={(e) => handleTogglePin(e, conv._id)}
@@ -209,7 +210,6 @@ function SideBar({
               </button>
             </div>
 
-            {/* Pinned Icon or Active Dot */}
             {conv.pinned && !isDeleting && (
               <Pin size={10} className="text-[#E8DDC8] fill-[#E8DDC8] shrink-0" />
             )}
@@ -225,6 +225,90 @@ function SideBar({
     )
   }
 
+  // COLLAPSED SIDEBAR RAIL (Minimal 64px width on desktop)
+  if (sidebarCollapsed) {
+    return (
+      <aside className="hidden lg:flex w-[64px] shrink-0 h-full flex-col bg-[#1E2B1F]/95 backdrop-blur-xl rounded-2xl p-2.5 items-center justify-between border border-white/10 select-none text-[#CBD8CA] shadow-md">
+        <div className="flex flex-col items-center gap-3">
+          {/* Logo / Expand Toggle */}
+          <button
+            onClick={onToggleSidebar}
+            className="w-9 h-9 rounded-xl bg-[#E8DDC8] text-[#1E2B1F] flex items-center justify-center font-bold text-sm shadow-xs hover:scale-105 transition-all border-none cursor-pointer"
+            title="Expand Sidebar"
+          >
+            A
+          </button>
+
+          <button
+            onClick={onToggleSidebar}
+            className="p-2 rounded-xl text-[#8EA58C] hover:text-white hover:bg-[#283A27] transition-colors border-none bg-transparent cursor-pointer"
+            title="Expand Sidebar"
+          >
+            <PanelLeft size={16} />
+          </button>
+
+          <div className="w-8 h-px bg-white/10 my-1" />
+
+          {/* New Chat Icon Button */}
+          <button
+            onClick={handleCreateConversation}
+            className="w-9 h-9 rounded-xl bg-[#E8DDC8] text-[#1E2B1F] flex items-center justify-center hover:bg-[#F2E8D7] transition-colors border-none cursor-pointer shadow-xs"
+            title="New Chat"
+          >
+            <Plus size={16} />
+          </button>
+
+          {/* Explore Icon Button */}
+          <button
+            onClick={onOpenExplore}
+            className="w-9 h-9 rounded-xl bg-[#283A27] text-[#C9A875] flex items-center justify-center hover:bg-[#324931] transition-colors border-none cursor-pointer"
+            title="Explore 8 AI Modes"
+          >
+            <Sparkles size={16} />
+          </button>
+
+          {/* Landing Page Shortcut */}
+          <button
+            onClick={onGoToLanding}
+            className="w-9 h-9 rounded-xl text-[#8EA58C] hover:text-white hover:bg-[#283A27] flex items-center justify-center transition-colors border-none bg-transparent cursor-pointer"
+            title="Return to Landing Page"
+          >
+            <Home size={16} />
+          </button>
+        </div>
+
+        {/* Bottom User Avatar & Settings */}
+        <div className="flex flex-col items-center gap-2 pt-2 border-t border-white/10 w-full">
+          <button
+            onClick={onOpenSettings}
+            className="w-9 h-9 rounded-xl bg-[#162117] flex items-center justify-center text-[#8EA58C] hover:text-white transition-colors border-none cursor-pointer"
+            title="Settings & Profile"
+          >
+            <Settings size={15} />
+          </button>
+
+          {userData?.avatar && !imageError ? (
+            <img 
+              src={userData.avatar} 
+              alt="avatar" 
+              onError={() => setImageError(true)}
+              className="w-8 h-8 rounded-full object-cover border border-[#3E553D]/70 cursor-pointer"
+              onClick={onOpenSettings}
+            />
+          ) : (
+            <div 
+              onClick={onOpenSettings}
+              className="w-8 h-8 rounded-full bg-[#2B3C2A] flex items-center justify-center text-[#E8DDC8] font-bold text-xs cursor-pointer"
+            >
+              {userData?.name?.charAt(0) || 'A'}
+            </div>
+          )}
+        </div>
+      </aside>
+    )
+  }
+
+  // EXPANDED SIDEBAR CONTENT
   const sidebarContent = (
     <div className='flex flex-col h-full w-full bg-[#1E2B1F]/95 backdrop-blur-xl rounded-none sm:rounded-2xl p-3.5 relative overflow-hidden border border-white/10 select-none text-[#CBD8CA] shadow-[inset_0_1px_1px_0_rgba(255,255,255,0.15),0_10px_25px_-5px_rgba(15,28,17,0.3)]'>
       
@@ -247,6 +331,16 @@ function SideBar({
         </div>
 
         <div className='flex items-center gap-1'>
+          {onToggleSidebar && (
+            <button 
+              onClick={onToggleSidebar}
+              className='hidden lg:flex items-center justify-center w-7 h-7 rounded-lg text-[#8EA58C] hover:text-white hover:bg-[#283A27]/80 transition-all border-none bg-transparent cursor-pointer'
+              title="Collapse Sidebar"
+            >
+              <PanelLeftClose size={14} />
+            </button>
+          )}
+
           <button 
             onClick={onGoToLanding}
             className='flex items-center justify-center w-7 h-7 rounded-lg text-[#8EA58C] hover:text-white hover:bg-[#283A27]/80 transition-all border-none bg-transparent cursor-pointer'

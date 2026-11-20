@@ -1,16 +1,23 @@
 import React, { useState } from 'react'
 import { 
   Download, Maximize2, Menu, Plus, Copy, Check, 
-  Sparkles, Home, Settings 
+  Sparkles, Home, Settings, PanelLeftClose, PanelLeft, Code2
 } from 'lucide-react'
 import { useSelector, useDispatch } from 'react-redux'
 import { createConversation } from '../features/createConversation'
 import { addConversation, setSelectedConversation } from '../redux/conversationSlice'
-import { clearMessages, toggleMaximize } from '../redux/messageSlice'
+import { clearMessages, toggleMaximize, setArtifactOpen } from '../redux/messageSlice'
 
-function Nav({ onOpenMobileMenu, onGoToLanding, onOpenExplore, onOpenSettings }) {
+function Nav({ 
+  onOpenMobileMenu, 
+  onGoToLanding, 
+  onOpenExplore, 
+  onOpenSettings,
+  sidebarCollapsed,
+  onToggleSidebar
+}) {
   const { selectedConversation } = useSelector(state => state.conversation)
-  const { artifacts, activeArtifactId } = useSelector(state => state.message)
+  const { artifacts, activeArtifactId, isOpen } = useSelector(state => state.message)
   const dispatch = useDispatch()
   const [copiedTitle, setCopiedTitle] = useState(false)
 
@@ -120,8 +127,18 @@ function Nav({ onOpenMobileMenu, onGoToLanding, onOpenExplore, onOpenSettings })
       {/* Desktop Workspace Top Bar */}
       <div className='hidden lg:flex items-center justify-between px-3 py-1.5 border-b border-[#E8DEC9]'>
         
-        {/* Left: Brand Badge + Aivora AI + PRO Pill + Navigation Shortcuts */}
+        {/* Left: Sidebar Toggle + Brand Badge + Shortcuts */}
         <div className='flex items-center gap-3'>
+          {onToggleSidebar && (
+            <button
+              onClick={onToggleSidebar}
+              className='p-1.5 rounded-lg text-[#696256] hover:text-[#1E1B18] hover:bg-[#F2ECE0] transition-colors border-none bg-transparent cursor-pointer'
+              title={sidebarCollapsed ? "Expand Sidebar" : "Collapse Sidebar"}
+            >
+              {sidebarCollapsed ? <PanelLeft size={16} /> : <PanelLeftClose size={16} />}
+            </button>
+          )}
+
           <div 
             onClick={onGoToLanding}
             className='flex items-center gap-2 cursor-pointer group' 
@@ -164,8 +181,19 @@ function Nav({ onOpenMobileMenu, onGoToLanding, onOpenExplore, onOpenSettings })
           </div>
         </div>
 
-        {/* Right Action Icons: Copy Link, Settings, Fullscreen */}
+        {/* Right Action Icons: Open Preview button if artifact exists + Copy Link + Settings + Fullscreen */}
         <div className='flex items-center gap-1.5'>
+          {artifacts && artifacts.length > 0 && !isOpen && (
+            <button
+              onClick={() => dispatch(setArtifactOpen(true))}
+              className='flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-bold bg-[#1E2B1F] text-[#E8DDC8] hover:bg-[#283A27] transition-all border-none cursor-pointer shadow-2xs mr-1'
+              title="Open Project Preview"
+            >
+              <Code2 size={13} />
+              <span>Preview Artifact</span>
+            </button>
+          )}
+
           {onOpenSettings && (
             <button
               onClick={onOpenSettings}
