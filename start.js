@@ -77,10 +77,13 @@ const services = [
 ];
 
 const runningProcesses = [];
+let isShuttingDown = false;
 
 console.log('🚀 Starting Aivora AI All-in-One Cloud Engine on Render...');
 
-services.forEach((service) => {
+function launchService(service) {
+  if (isShuttingDown) return;
+
   const child = spawn('node', [service.script], {
     cwd: service.cwd,
     env: service.env,
@@ -92,14 +95,19 @@ services.forEach((service) => {
   });
 
   child.on('exit', (code, signal) => {
-    console.warn(`⚠️ [${service.name}] Process exited (code: ${code}, signal: ${signal})`);
+    if (isShuttingDown) return;
+    console.warn(`⚠️ [${service.name}] Process exited (code: ${code}, signal: ${signal}). Auto-restarting in 3s...`);
+    setTimeout(() => launchService(service), 3000);
   });
 
   runningProcesses.push(child);
-});
+}
+
+services.forEach(launchService);
 
 // Graceful shutdown
 const shutdown = (signal) => {
+  isShuttingDown = true;
   console.log(`\n🛑 Received ${signal}. Gracefully shutting down all Aivora AI services...`);
   runningProcesses.forEach((p) => {
     try {

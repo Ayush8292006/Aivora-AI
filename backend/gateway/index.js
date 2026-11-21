@@ -93,6 +93,30 @@ app.get("/", (req, res) => {
     res.json({ message: "hello from Aivora AI API Gateway" });
 });
 
+app.get("/api/health", async (req, res) => {
+    const checkService = async (name, url) => {
+        try {
+            const resp = await fetch(url, { signal: AbortSignal.timeout(3000) });
+            const data = await resp.json().catch(() => null);
+            return { name, status: resp.status, ok: true, data };
+        } catch (err) {
+            return { name, ok: false, error: err.message };
+        }
+    };
+
+    const results = await Promise.all([
+        checkService("auth", authService + "/"),
+        checkService("chat", chatService + "/"),
+        checkService("agent", agentService + "/")
+    ]);
+
+    res.json({
+        gateway: "healthy",
+        timestamp: new Date().toISOString(),
+        services: results
+    });
+});
+
 app.listen(port, () => {
     console.log("Aivora Gateway Started at", port);
 });

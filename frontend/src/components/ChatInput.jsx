@@ -20,9 +20,71 @@ function ChatInput() {
   const [attachments, setAttachments] = useState([])
   const [isUploading, setIsUploading] = useState(false)
   const [statusMessage, setStatusMessage] = useState("")
+  const [isListening, setIsListening] = useState(false)
 
   const fileInputRef = useRef(null)
   const abortControllerRef = useRef(null)
+  const recognitionRef = useRef(null)
+
+  const toggleListening = () => {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition
+    if (!SpeechRecognition) {
+      alert("Voice input is not supported in this browser. Please use Chrome, Edge, or Safari.")
+      return
+    }
+
+    if (isListening) {
+      recognitionRef.current?.stop()
+      setIsListening(false)
+      return
+    }
+
+    try {
+      const recognition = new SpeechRecognition()
+      recognition.continuous = false
+      recognition.interimResults = true
+      recognition.lang = navigator.language || 'en-US'
+
+      recognition.onstart = () => {
+        setIsListening(true)
+      }
+
+      recognition.onresult = (event) => {
+        let transcript = ''
+        for (let i = 0; i < event.results.length; i++) {
+          transcript += event.results[i][0].transcript
+        }
+        if (event.results[0].isFinal) {
+          setValue(prev => {
+            const trimmed = prev.trim()
+            return trimmed ? `${trimmed} ${transcript.trim()}` : transcript.trim()
+          })
+          setIsListening(false)
+        }
+      }
+
+      recognition.onerror = (err) => {
+        console.warn("Speech recognition error:", err.error)
+        setIsListening(false)
+      }
+
+      recognition.onend = () => {
+        setIsListening(false)
+      }
+
+      recognitionRef.current = recognition
+      recognition.start()
+    } catch (e) {
+      console.error("Speech recognition start failed:", e)
+      setIsListening(false)
+    }
+  }
+
+  useEffect(() => {
+    return () => {
+      recognitionRef.current?.stop()
+    }
+  }, [])
 
   const { selectedConversation } = useSelector(state => state.conversation)
   const { availableCredits, guestSession } = useSelector(state => state.credit)
@@ -482,11 +544,16 @@ function ChatInput() {
             </button>
             <button 
               type="button"
-              className='flex items-center justify-center w-8 h-8 rounded-xl text-[#696256] hover:text-[#1E1B18] hover:bg-[#ECE5D6] active:scale-95 transition-all bg-transparent border-none cursor-pointer disabled:opacity-50'
+              onClick={toggleListening}
+              className={`flex items-center justify-center w-8 h-8 rounded-xl active:scale-95 transition-all border-none cursor-pointer disabled:opacity-50 ${
+                isListening 
+                  ? 'text-red-600 bg-red-100 animate-pulse ring-2 ring-red-400' 
+                  : 'text-[#696256] hover:text-[#1E1B18] hover:bg-[#ECE5D6] bg-transparent'
+              }`}
               disabled={isLoading}
-              title="Voice Input"
+              title={isListening ? "Listening... (Click to stop)" : "Voice Input (Speech-to-text)"}
             >
-              <Mic size={16}/>
+              <Mic size={16} className={isListening ? 'text-red-600 scale-110' : ''}/>
             </button>
             <button 
               type="button"
