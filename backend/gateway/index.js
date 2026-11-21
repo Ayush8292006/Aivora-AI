@@ -37,9 +37,9 @@ app.use(cors({
 app.use(morgan("dev"));
 app.use(cookieParser());
 
-const authService = process.env.AUTH_SERVICE || "http://localhost:8001";
-const chatService = process.env.CHAT_SERVICE || "http://localhost:8002";
-const agentService = process.env.AGENT_SERVICE || "http://localhost:8003";
+const authService = process.env.AUTH_SERVICE || "http://127.0.0.1:8001";
+const chatService = process.env.CHAT_SERVICE || "http://127.0.0.1:8002";
+const agentService = process.env.AGENT_SERVICE || "http://127.0.0.1:8003";
 
 // 1. Authentication Service
 app.use("/api/auth", proxy(authService));

@@ -11,8 +11,9 @@ function getDbUri(serviceName, defaultDb) {
   if (serviceName === 'chat' && process.env.CHAT_MONGODB_URI) return process.env.CHAT_MONGODB_URI;
   if (serviceName === 'agent' && process.env.AGENT_MONGODB_URI) return process.env.AGENT_MONGODB_URI;
 
-  const base = process.env.MONGODB_URI || process.env.MONGO_URI;
-  if (!base) return undefined;
+  const rawBase = process.env.MONGODB_URI || process.env.MONGO_URI;
+  if (!rawBase) return undefined;
+  const base = rawBase.replace(/^["']|["']$/g, '').trim();
 
   try {
     const [connPart, queryPart] = base.split('?');
@@ -69,9 +70,9 @@ const services = [
     env: {
       ...process.env,
       PORT: process.env.PORT || '8000',
-      AUTH_SERVICE: 'http://localhost:8001',
-      CHAT_SERVICE: 'http://localhost:8002',
-      AGENT_SERVICE: 'http://localhost:8003'
+      AUTH_SERVICE: 'http://127.0.0.1:8001',
+      CHAT_SERVICE: 'http://127.0.0.1:8002',
+      AGENT_SERVICE: 'http://127.0.0.1:8003'
     }
   }
 ];

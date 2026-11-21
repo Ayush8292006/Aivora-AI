@@ -29,7 +29,15 @@ app.get("/", (req, res) => {
     res.json({ message: "hello from Agent & Credit Service" });
 });
 
-app.listen(port, () => {
+// Catch unhandled errors gracefully so process never dies silently
+process.on("unhandledRejection", (reason) => {
+    console.error("⚠️ Unhandled Rejection in Agent Service:", reason);
+});
+process.on("uncaughtException", (err) => {
+    console.error("⚠️ Uncaught Exception in Agent Service:", err);
+});
+
+app.listen(port, "0.0.0.0", () => {
     console.log("Agent & Credit Service Started at", port);
     connectDb();
 
