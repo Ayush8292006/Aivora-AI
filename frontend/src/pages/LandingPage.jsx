@@ -1255,12 +1255,7 @@ export default function LandingPage({ onStartChat, onOpenLogin, onOpenExplore })
               <span>Get Started Free</span>
               <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
             </motion.button>
-            <button
-              onClick={onOpenLogin}
-              className="px-7 py-4 rounded-xl text-sm font-bold bg-white/10 hover:bg-white/15 text-white border border-white/20 transition-all cursor-pointer"
-            >
-              Sign In with Google
-            </button>
+            
           </div>
 
           <p className="text-[11px] text-[#8EA58C]">
