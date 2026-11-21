@@ -6,24 +6,60 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+function getDbUri(serviceName, defaultDb) {
+  if (serviceName === 'auth' && process.env.AUTH_MONGODB_URI) return process.env.AUTH_MONGODB_URI;
+  if (serviceName === 'chat' && process.env.CHAT_MONGODB_URI) return process.env.CHAT_MONGODB_URI;
+  if (serviceName === 'agent' && process.env.AGENT_MONGODB_URI) return process.env.AGENT_MONGODB_URI;
+
+  const base = process.env.MONGODB_URI || process.env.MONGO_URI;
+  if (!base) return undefined;
+
+  try {
+    const [connPart, queryPart] = base.split('?');
+    const protoEnd = connPart.indexOf('://');
+    const pathSlash = protoEnd !== -1 ? connPart.indexOf('/', protoEnd + 3) : -1;
+    const hostPart = pathSlash !== -1 ? connPart.substring(0, pathSlash) : connPart;
+    const query = queryPart ? `?${queryPart}` : '?retryWrites=true&w=majority';
+    return `${hostPart}/${defaultDb}${query}`;
+  } catch (e) {
+    return base;
+  }
+}
+
+const authDbUri = getDbUri('auth', 'auth');
+const chatDbUri = getDbUri('chat', 'chat');
+const agentDbUri = getDbUri('agent', 'agent');
+
 const services = [
   {
     name: 'AUTH SERVICE',
     cwd: path.join(__dirname, 'backend', 'services', 'auth'),
     script: 'index.js',
-    env: { ...process.env, PORT: '8001' }
+    env: {
+      ...process.env,
+      PORT: '8001',
+      ...(authDbUri ? { MONGODB_URI: authDbUri, MONGO_URI: authDbUri } : {})
+    }
   },
   {
     name: 'CHAT SERVICE',
     cwd: path.join(__dirname, 'backend', 'services', 'chat'),
     script: 'index.js',
-    env: { ...process.env, PORT: '8002' }
+    env: {
+      ...process.env,
+      PORT: '8002',
+      ...(chatDbUri ? { MONGODB_URI: chatDbUri, MONGO_URI: chatDbUri } : {})
+    }
   },
   {
     name: 'AGENT SERVICE',
     cwd: path.join(__dirname, 'backend', 'services', 'agent'),
     script: 'index.js',
-    env: { ...process.env, PORT: '8003' }
+    env: {
+      ...process.env,
+      PORT: '8003',
+      ...(agentDbUri ? { MONGODB_URI: agentDbUri, MONGO_URI: agentDbUri } : {})
+    }
   },
   {
     name: 'GATEWAY (PUBLIC)',
