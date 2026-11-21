@@ -3,11 +3,17 @@ import express from "express";
 import proxy from "express-http-proxy";
 import cors from "cors";
 import cookieParser from "cookie-parser";
+import fs from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
 import { getCurrentUser } from "./controllers/user.controller.js";
 import protect from "./middleware/auth.middleware.js";
 import protectOrGuest from "./middleware/protectOrGuest.js";
 import { proxyWithHeader } from "./utils/proxyWithHeader.js";
 import morgan from "morgan";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const port = process.env.PORT || 8000;
 const app = express();
@@ -115,6 +121,24 @@ app.get("/api/health", async (req, res) => {
         timestamp: new Date().toISOString(),
         services: results
     });
+});
+
+app.get("/api/logs", (req, res) => {
+    try {
+        const candidates = [
+            path.resolve(__dirname, "../../services.log"),
+            path.resolve(process.cwd(), "services.log")
+        ];
+        for (const cand of candidates) {
+            if (fs.existsSync(cand)) {
+                const content = fs.readFileSync(cand, "utf8");
+                return res.type("text/plain").send(content.slice(-20000));
+            }
+        }
+        res.send("No log file found at: " + candidates.join(", "));
+    } catch (e) {
+        res.send("Error reading logs: " + e.message);
+    }
 });
 
 app.listen(port, () => {

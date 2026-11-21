@@ -77,6 +77,19 @@ const services = [
   }
 ];
 
+import fs from 'fs';
+
+const logFilePath = path.join(__dirname, 'services.log');
+try {
+  fs.writeFileSync(logFilePath, `=== Aivora Cloud Engine Started at ${new Date().toISOString()} ===\n`);
+} catch (e) {}
+
+function appendLog(msg) {
+  try {
+    fs.appendFileSync(logFilePath, msg + '\n');
+  } catch (e) {}
+}
+
 const runningProcesses = [];
 let isShuttingDown = false;
 
@@ -88,16 +101,30 @@ function launchService(service) {
   const child = spawn('node', [service.script], {
     cwd: service.cwd,
     env: service.env,
-    stdio: 'inherit'
+    stdio: ['inherit', 'pipe', 'pipe']
+  });
+
+  child.stdout.on('data', (d) => {
+    process.stdout.write(`[${service.name}] ${d}`);
+    appendLog(`[${service.name}] ${d}`.trimEnd());
+  });
+
+  child.stderr.on('data', (d) => {
+    process.stderr.write(`❌ [${service.name}] ${d}`);
+    appendLog(`❌ [${service.name} ERR] ${d}`.trimEnd());
   });
 
   child.on('error', (err) => {
-    console.error(`❌ [${service.name}] Failed to start:`, err.message);
+    const msg = `❌ [${service.name}] Failed to start: ${err.message}`;
+    console.error(msg);
+    appendLog(msg);
   });
 
   child.on('exit', (code, signal) => {
+    const msg = `⚠️ [${service.name}] Process exited (code: ${code}, signal: ${signal}). Auto-restarting in 3s...`;
+    console.warn(msg);
+    appendLog(msg);
     if (isShuttingDown) return;
-    console.warn(`⚠️ [${service.name}] Process exited (code: ${code}, signal: ${signal}). Auto-restarting in 3s...`);
     setTimeout(() => launchService(service), 3000);
   });
 
