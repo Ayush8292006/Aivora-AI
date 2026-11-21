@@ -6,7 +6,11 @@
   "type": "module",
   "scripts": {
     "start": "node start.js",
-    "build": "npm install --prefix backend/gateway && npm install --prefix backend/services/auth && npm install --prefix backend/services/chat && npm install --prefix backend/services/agent"
+    "build": "npm install && npm install --prefix backend && npm install --prefix backend/gateway && npm install --prefix backend/services/auth && npm install --prefix backend/services/chat && npm install --prefix backend/services/agent"
+  },
+  "dependencies": {
+    "dotenv": "^17.4.2",
+    "ioredis": "^5.11.1"
   },
   "keywords": ["ai", "saas", "fullstack", "langgraph", "react", "nodejs"],
   "author": "Rahul Kumar",
