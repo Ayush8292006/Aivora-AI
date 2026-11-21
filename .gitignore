@@ -5,7 +5,8 @@ node_modules/
 serviceAccountKey.json
 dist/
 build/
+# Ignore runtime stored files, but keep storage code
+backend/services/agent/storage/*/
 storage/
-**/storage/
 .DS_Store
 *.log
