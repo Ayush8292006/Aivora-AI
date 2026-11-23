@@ -2,6 +2,17 @@ import proxy from "express-http-proxy";
 
 export const proxyWithHeader = (serviceUrl, customOptions = {}) => {
     return proxy(serviceUrl, {
+        proxyErrorHandler: (err, res, next) => {
+            console.error(`[GATEWAY PROXY] Target service connection failed (${serviceUrl}):`, err.message);
+            if (res.headersSent) {
+                return next(err);
+            }
+            return res.status(503).json({
+                success: false,
+                error: "Service warming up, please retry in a moment.",
+                code: "SERVICE_UNAVAILABLE"
+            });
+        },
         ...customOptions,
         proxyReqOptDecorator: (proxyReqOpts, srcReq) => {
             // Get user ID strictly from the verified session (never trust client header)

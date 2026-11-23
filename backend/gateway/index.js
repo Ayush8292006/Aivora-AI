@@ -141,6 +141,16 @@ app.get("/api/logs", (req, res) => {
     }
 });
 
+// Global error handling middleware for Gateway
+app.use((err, req, res, next) => {
+    console.error("[GATEWAY GLOBAL ERROR]", err.message);
+    if (res.headersSent) return next(err);
+    res.status(500).json({
+        success: false,
+        error: err.message || "Internal Gateway Error"
+    });
+});
+
 app.listen(port, () => {
     console.log("Aivora Gateway Started at", port);
 });

@@ -131,7 +131,20 @@ function launchService(service) {
   runningProcesses.push(child);
 }
 
-services.forEach(launchService);
+const internalServices = services.filter(s => s.name !== 'GATEWAY (PUBLIC)');
+const gatewayService = services.find(s => s.name === 'GATEWAY (PUBLIC)');
+
+console.log('📦 Booting internal microservices (Auth, Chat, Agent)...');
+internalServices.forEach(launchService);
+
+// Allow 3.5s for internal microservices to bind to ports (8001, 8002, 8003) and connect to MongoDB & Redis
+// before exposing the public Gateway port to Render's router.
+setTimeout(() => {
+  if (!isShuttingDown && gatewayService) {
+    console.log('🌐 Internal microservices warmed up. Launching Public Gateway...');
+    launchService(gatewayService);
+  }
+}, 3500);
 
 // Graceful shutdown
 const shutdown = (signal) => {
